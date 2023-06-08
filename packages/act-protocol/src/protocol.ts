@@ -8,7 +8,7 @@ import type {
   ShowVideoModalIdRequest,
   ShowVideoModalLabelRequest,
   IAssetForClient,
-} from '@recative/definitions';
+} from '@web-media/definitions';
 
 export interface BGM {
   id: string;

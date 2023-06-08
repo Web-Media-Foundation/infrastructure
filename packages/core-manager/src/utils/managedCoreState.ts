@@ -4,7 +4,7 @@ import {
   IResourceFileForClient,
   BGM_CORE_STATE_EXTENSION_ID,
   SUBTITLE_MANAGED_CORE_STATE_EXTENSION_ID,
-} from '@recative/definitions';
+} from '@web-media/definitions';
 
 import { BGMSpec } from '../audio/bgmManager';
 import type { BGMStateSpec, InternalEpisodeData } from '../types';

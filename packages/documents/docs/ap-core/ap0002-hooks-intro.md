@@ -4,17 +4,17 @@ sidebar_position: 0002
 
 # AP0002: Introduction to AP Core Hooks
 
-React users may be familiar with this concept. To Recative AP, it's an easy way to reuse
+React users may be familiar with this concept. To Web Media Foundation AP, it's an easy way to reuse
 logics to make your life easier.
 
-Since there isn't a concept of Virtual DOM in Recative AP, it is a more lenient
+Since there isn't a concept of Virtual DOM in Web Media Foundation AP, it is a more lenient
 constraint on the programming paradigm, like, you can call a hook conditionally,
 even in a for loop (but it doesn't mean you should do).
 
 It looks like this:
 
 ```ts
-import { useStore, AtomDefinition } from '@recative/ap-core'
+import { useStore, AtomDefinition } from '@web-media/ap-core'
 import { TextureButton } from '@paperclip/ap-components'
 
 const COUNT_STORE = AtomDefinition<number>(0);
@@ -121,7 +121,7 @@ which will be released at the end of the interaction lifecycle, if we are not di
 it manually. This means that the second example will cause a memory leak, which we don't
 want to see.
 
-React's Hooks and Recative AP's Hooks are only similar in form, but the mechanism
+React's Hooks and Web Media Foundation AP's Hooks are only similar in form, but the mechanism
 underneath completely different, React users should be careful about this.
 
 # Motivation

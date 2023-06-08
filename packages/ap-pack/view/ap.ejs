@@ -72,7 +72,7 @@
     <div id="overlay"></div>
   </body>
   <script>
-    if (localStorage.getItem('@recative/ap-pack/debug-lifecycle')) {
+    if (localStorage.getItem('@web-media/ap-pack/debug-lifecycle')) {
       document.querySelector('#overlay')?.classList.add('recative-not-ready');
     }
     let emergencyChannel;
@@ -158,7 +158,7 @@
                 file;
             });
 
-            if (localStorage.getItem('@recative/ap-pack/debug-lifecycle')) {
+            if (localStorage.getItem('@web-media/ap-pack/debug-lifecycle')) {
               document
                 .querySelector('#overlay')
                 ?.classList.remove('recative-not-ready');
@@ -172,7 +172,7 @@
 
     if (
       'serviceWorker' in navigator &&
-      localStorage.getItem('@recative/ap-pack/experimental-sw')
+      localStorage.getItem('@web-media/ap-pack/experimental-sw')
     ) {
       window.addEventListener('load', () => {
         navigator.serviceWorker

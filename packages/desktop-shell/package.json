@@ -1,5 +1,5 @@
 {
-  "name": "@recative/desktop-shell",
+  "name": "@web-media/desktop-shell",
   "version": "0.4.0",
   "main": "build/main.js",
   "scripts": {
@@ -54,5 +54,5 @@
       "last 1 safari version"
     ]
   },
-  "productName": "@recative-desktop-shell"
+  "productName": "@web-media-desktop-shell"
 }

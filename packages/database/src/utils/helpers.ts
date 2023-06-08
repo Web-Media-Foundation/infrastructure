@@ -1,4 +1,4 @@
-import { DotNotation, lens } from '@recative/lens';
+import { DotNotation, lens } from '@web-media/lens';
 
 /** Helper function for determining 'less-than' conditions for ops, sorting,
  *  and binary indices.

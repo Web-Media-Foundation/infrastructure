@@ -7,9 +7,9 @@ import {
   useSdkConfig,
   useEpisodeDetail,
   ContentModuleFactory,
-} from '@recative/client-sdk';
+} from '@web-media/client-sdk';
 
-import type { SegmentEndEventDetail } from '@recative/core-manager';
+import type { SegmentEndEventDetail } from '@web-media/core-manager';
 
 import { Block } from 'baseui/block';
 

@@ -4,7 +4,7 @@ sidebar_position: 0005
 
 # AP0005: Style Sheet hooks
 
-Recative AP use [`stylesheets`](/classes/stylesheet) to expose component styles, it's
+Web Media Foundation AP use [`stylesheets`](/classes/stylesheet) to expose component styles, it's
 the only recommended way to update component styles across scopes (like 
 components or hooks).
 
@@ -13,7 +13,7 @@ components or hooks).
 Like store definition, we need to SHOUT OUT A NEW STYLE DEFINITION.
 
 ```ts
-import { StyleDefinition } from '@recative/ap-core'
+import { StyleDefinition } from '@web-media/ap-core'
 
 export const LOGO_OPACITY_STYLE = StyleDefinition()
 ```
@@ -24,7 +24,7 @@ Then, we can register the style to the style sheet in our component:
 
 ```ts
 import * as PIXI from 'pixi.js'
-import { useStylesheet } from '@recative/ap-core'
+import { useStylesheet } from '@web-media/ap-core'
 
 const Logo = () => {
     const stylesheet = useStylesheet()
@@ -54,7 +54,7 @@ mapped to numbers.
 Then, we may want to operate this style from other scopes:
 
 ```ts
-import { useStylesheet } from '@recative/ap-core'
+import { useStylesheet } from '@web-media/ap-core'
 
 import { LOGO_OPACITY_STYLE } from './Logo'
 
@@ -68,7 +68,7 @@ const controllerHook = () => {
 ## When to use
 
 The main purpose of designing `stylesheet` is to make sure animation logic could
-be handled in one place. In Recative AP, [anime.js](https://animejs.com/) is used to 
+be handled in one place. In Web Media Foundation AP, [anime.js](https://animejs.com/) is used to 
 handle animation, we only need to pass `stylesheet.styles` as animation target,
 Styles from multiple elements can then be adjusted centrally, which reduces the 
 risk of fragmented animation logic, (it's painful).

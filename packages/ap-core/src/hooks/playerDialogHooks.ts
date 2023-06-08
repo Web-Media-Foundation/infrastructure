@@ -1,11 +1,11 @@
 import { isString } from 'lodash';
 import { v4 as uuidV4 } from 'uuid';
 
-import { DialogDirection } from '@recative/act-protocol';
+import { DialogDirection } from '@web-media/act-protocol';
 import type {
   ImageDialogMessage,
   TextDialogMessage,
-} from '@recative/act-protocol';
+} from '@web-media/act-protocol';
 
 import { DIALOG_ACTION_TRIGGERED } from '../core/protocol';
 

@@ -1,9 +1,9 @@
-import { PreloadLevel } from '@recative/definitions';
+import { PreloadLevel } from '@web-media/definitions';
 import {
   allSettled,
   requestIdleCallback,
   OpenPromise,
-} from '@recative/open-promise';
+} from '@web-media/open-promise';
 
 import { IComponentContext } from '../core/componentContext';
 import { ENV_VARIABLE_STORE, INITIALIZE_TASK_STORE } from '../core/protocol';
@@ -40,7 +40,7 @@ export const bindAppToPlayerEvent = (
       // If the resource is cached to hard-disk, we think that it do not
       // need to be preloaded. since the loading speed should be fast
       // enough. And there's an edge case, the bare bundle created by
-      // Recative Studio, no resource will be cached, this case should be
+      // Web Media Foundation Studio, no resource will be cached, this case should be
       // handled by the web-root template properly.
       if (resource.cacheToHardDisk) {
         return null;

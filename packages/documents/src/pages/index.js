@@ -12,7 +12,7 @@ function HomepageHeader() {
   return (
     <header className={clsx('hero hero--primary', styles.heroBanner)}>
       <div className="container">
-        <h1 className={styles.title}>Recative System</h1>
+        <h1 className={styles.title}>Web Media Foundation</h1>
         <p className={styles.subtitle}>A comprehensive toolchain to build interactive content for the Web platform.</p>
       </div>
     </header>
@@ -24,7 +24,7 @@ export default function Home() {
   return (
     <Layout
       title="Home"
-      description="The homepage of Recative System">
+      description="The homepage of Web Media Foundation">
       <HomepageHeader />
       <main>
         <HomepageFeatures />

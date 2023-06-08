@@ -1,11 +1,11 @@
 {
-  "name": "@recative/time-schedule",
+  "name": "@web-media/time-schedule",
   "version": "0.2.1",
   "source": "src/index.ts",
   "main": "dist/main.js",
   "module": "dist/module.js",
   "types": "dist/types.d.ts",
-  "repository": "https://github.com/recative/recative-system",
+  "repository": "https://github.com/Web-Media-Foundation/infrastructure",
   "scripts": {
     "prepack": "yarn clean && yarn build",
     "clean": "rimraf ./dist",
@@ -13,7 +13,7 @@
     "build": "rollup -c"
   },
   "devDependencies": {
-    "@recative/audio-station": "^0.4.0"
+    "@web-media/audio-station": "^0.4.0"
   },
   "packageManager": "yarn@3.1.0",
   "files": [

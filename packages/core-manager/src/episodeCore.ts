@@ -8,13 +8,13 @@ import {
   OpenPromiseState,
   PromiseResolvedError,
   QueueType,
-} from '@recative/open-promise';
-import { ResourceLoader } from '@recative/resource-loader';
-import { getGlobalAudioStation } from '@recative/audio-station';
+} from '@web-media/open-promise';
+import { ResourceLoader } from '@web-media/resource-loader';
+import { getGlobalAudioStation } from '@web-media/audio-station';
 import type {
   AddAudioRequest,
   AdditionalSubtitleDefine,
-} from '@recative/act-protocol';
+} from '@web-media/act-protocol';
 import {
   IResourceFileForClient,
   ManagedCoreState,
@@ -23,7 +23,7 @@ import {
   PAUSE_CORE_STATE_EXTENSION_ID,
   RawUserImplementedFunctions,
   UserImplementedFunctions,
-} from '@recative/definitions';
+} from '@web-media/definitions';
 
 import { atom, computed } from 'nanostores';
 import type { WritableAtom } from 'nanostores';
@@ -186,13 +186,13 @@ export class EpisodeCore<
 
   readonly panicCode = atom<string | null>(null);
 
-  readonly volume = jsonAtom('@recative/core-manager/volume', 1);
+  readonly volume = jsonAtom('@web-media/core-manager/volume', 1);
 
   readonly fullScreen = atom(false);
 
-  readonly miniMode = jsonAtom('@recative/core-manager/mini-mode', false);
+  readonly miniMode = jsonAtom('@web-media/core-manager/mini-mode', false);
 
-  readonly resolution = jsonAtom('@recative/core-manager/resolution', {
+  readonly resolution = jsonAtom('@web-media/core-manager/resolution', {
     width: 1920,
     height: 1080,
   });
@@ -245,11 +245,11 @@ export class EpisodeCore<
     (globalThis as any).audioStation = this.audioStation;
     this.episodeId = config.episodeId;
     this.contentLanguage = jsonAtom(
-      '@recative/core-manager/content-lang',
+      '@web-media/core-manager/content-lang',
       config.defaultContentLanguage ?? DEFAULT_LANGUAGE
     );
     this.subtitleLanguage = jsonAtom(
-      '@recative/core-manager/subtitle-lang',
+      '@web-media/core-manager/subtitle-lang',
       config.defaultSubtitleLanguage ?? DEFAULT_LANGUAGE
     );
 

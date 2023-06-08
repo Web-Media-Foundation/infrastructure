@@ -11,8 +11,8 @@
 - Updated dependencies [156055e]
 - Updated dependencies [0b36c02]
 - Updated dependencies [156055e]
-  - @recative/open-promise@0.3.0
-  - @recative/resource-loader@0.3.0
+  - @web-media/open-promise@0.3.0
+  - @web-media/resource-loader@0.3.0
 
 ## 0.12.3
 
@@ -42,8 +42,8 @@
 ### Patch Changes
 
 - Updated dependencies [46019d0]
-  - @recative/audio-station@0.4.0
-  - @recative/phonograph@2.2.0
+  - @web-media/audio-station@0.4.0
+  - @web-media/phonograph@2.2.0
 
 ## 0.11.9
 
@@ -69,7 +69,7 @@
 
 - d42ea97: feat: Add life cycle related function to the protocol
 - Updated dependencies [d42ea97]
-  - @recative/act-protocol@0.2.11
+  - @web-media/act-protocol@0.2.11
 
 ## 0.11.5
 
@@ -98,7 +98,7 @@
 - 3fbfcf2: fix: AudioTrack time rewind
 - 0ee108e: fix: AudioTrack time should force update after AudioElement load
 - Updated dependencies [52ccfd1]
-  - @recative/definitions@0.5.1
+  - @web-media/definitions@0.5.1
 
 ## 0.11.1
 
@@ -107,7 +107,7 @@
 - f5a4267: feat: Seek after pause if pause is too late
 - 509e568: feat: Destroy unused preloaded content
 - Updated dependencies [685ef92]
-  - @recative/smart-resource@0.2.1
+  - @web-media/smart-resource@0.2.1
 
 ## 0.11.0
 
@@ -121,9 +121,9 @@
 - 68448ee: fix: Stuck when audio track is set to null
 - Updated dependencies [94ada38]
 - Updated dependencies [c0142d7]
-  - @recative/definitions@0.5.0
-  - @recative/act-protocol@0.2.9
-  - @recative/resource-loader@0.2.3
+  - @web-media/definitions@0.5.0
+  - @web-media/act-protocol@0.2.9
+  - @web-media/resource-loader@0.2.3
 
 ## 0.10.0
 
@@ -141,7 +141,7 @@
 
 - 9fdeb4b: fix: Pause new content explicitly when switching
 - Updated dependencies [be5bc59]
-  - @recative/time-schedule@0.2.1
+  - @web-media/time-schedule@0.2.1
 
 ## 0.8.0
 
@@ -152,7 +152,7 @@
 ### Patch Changes
 
 - Updated dependencies [148013b]
-  - @recative/act-protocol@0.2.8
+  - @web-media/act-protocol@0.2.8
 
 ## 0.7.0
 
@@ -176,9 +176,9 @@
 - Updated dependencies [acbb9bf]
 - Updated dependencies [15109d5]
 - Updated dependencies [9ced044]
-  - @recative/phonograph@2.0.0
-  - @recative/audio-station@0.3.0
-  - @recative/open-promise@0.2.3
+  - @web-media/phonograph@2.0.0
+  - @web-media/audio-station@0.3.0
+  - @web-media/open-promise@0.2.3
 
 ## 0.5.7
 
@@ -198,7 +198,7 @@
 
 - f44fa99: fix: Query `userImplementedFunctions` after core destroyed will trigger an error
 - Updated dependencies [f1e3e64]
-  - @recative/open-promise@0.2.1
+  - @web-media/open-promise@0.2.1
 
 ## 0.5.2
 
@@ -223,7 +223,7 @@
 ### Patch Changes
 
 - Updated dependencies [bda3138]
-  - @recative/definitions@0.4.2
+  - @web-media/definitions@0.4.2
 
 ## 0.5.0-beta.0
 
@@ -236,9 +236,9 @@
 ### Patch Changes
 
 - Updated dependencies
-  - @recative/definitions@0.4.0
-  - @recative/act-protocol@0.2.7
-  - @recative/resource-loader@0.2.2
+  - @web-media/definitions@0.4.0
+  - @web-media/act-protocol@0.2.7
+  - @web-media/resource-loader@0.2.2
 
 ## 0.4.4
 
@@ -273,9 +273,9 @@
 ### Patch Changes
 
 - Updated dependencies
-  - @recative/definitions@0.3.0
-  - @recative/act-protocol@0.2.6
-  - @recative/resource-loader@0.2.1
+  - @web-media/definitions@0.3.0
+  - @web-media/act-protocol@0.2.6
+  - @web-media/resource-loader@0.2.1
 
 ## 0.3.0
 
@@ -296,7 +296,7 @@
 
 - fix: Typing problem for nesting packages
 - Updated dependencies
-  - @recative/act-protocol@0.2.1
+  - @web-media/act-protocol@0.2.1
 
 ## 0.2.2
 
@@ -319,13 +319,13 @@
 ### Patch Changes
 
 - Updated dependencies
-  - @recative/act-protocol@0.2.0
-  - @recative/audio-station@0.2.0
-  - @recative/definitions@0.2.0
-  - @recative/open-promise@0.2.0
-  - @recative/resource-loader@0.2.0
-  - @recative/smart-resource@0.2.0
-  - @recative/time-schedule@0.2.0
+  - @web-media/act-protocol@0.2.0
+  - @web-media/audio-station@0.2.0
+  - @web-media/definitions@0.2.0
+  - @web-media/open-promise@0.2.0
+  - @web-media/resource-loader@0.2.0
+  - @web-media/smart-resource@0.2.0
+  - @web-media/time-schedule@0.2.0
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
@@ -333,10 +333,10 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 
 ### Features
 
-- Configure deploy tool ([9bb27cb](https://github.com/recative/recative-system/commit/9bb27cb7512d097b7d4e385876db3e90a8da24ec))
+- Configure deploy tool ([9bb27cb](https://github.com/Web-Media-Foundation/infrastructure/commit/9bb27cb7512d097b7d4e385876db3e90a8da24ec))
 
 ### Bug Fixes
 
-- Language issue ([279c7ad](https://github.com/recative/recative-system/commit/279c7adc6312a2c54fc6df27d3ab30b9df527a74))
-- Performance issue while querying resources ([a595e6d](https://github.com/recative/recative-system/commit/a595e6d16cff41f7a49fc1e48b8c064c7a41d741))
-- URL query performance improvement ([17abad0](https://github.com/recative/recative-system/commit/17abad0a1ee3ef875db133aabc821e956458c78e))
+- Language issue ([279c7ad](https://github.com/Web-Media-Foundation/infrastructure/commit/279c7adc6312a2c54fc6df27d3ab30b9df527a74))
+- Performance issue while querying resources ([a595e6d](https://github.com/Web-Media-Foundation/infrastructure/commit/a595e6d16cff41f7a49fc1e48b8c064c7a41d741))
+- URL query performance improvement ([17abad0](https://github.com/Web-Media-Foundation/infrastructure/commit/17abad0a1ee3ef875db133aabc821e956458c78e))

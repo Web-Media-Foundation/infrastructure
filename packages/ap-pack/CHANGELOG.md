@@ -6,7 +6,7 @@
 
 - 64b0c01: chore: Supports fetching version number
 - Updated dependencies [4c56c57]
-  - @recative/act-player@0.5.18
+  - @web-media/act-player@0.5.18
 
 ## 0.4.7
 
@@ -26,21 +26,21 @@
 
 - 07dc4e0: feat: Add a life cycle debugging flag
 - Updated dependencies [56bb94e]
-  - @recative/act-player@0.5.11
+  - @web-media/act-player@0.5.11
 
 ## 0.4.4
 
 ### Patch Changes
 
 - Updated dependencies [b252f5f]
-  - @recative/act-player@0.5.0
+  - @web-media/act-player@0.5.0
 
 ## 0.4.3
 
 ### Patch Changes
 
 - Updated dependencies [15109d5]
-  - @recative/act-player@0.4.0
+  - @web-media/act-player@0.4.0
 
 ## 0.4.2
 
@@ -48,21 +48,21 @@
 
 - Updated dependencies [775f617]
 - Updated dependencies [a98f797]
-  - @recative/act-player@0.3.0
+  - @web-media/act-player@0.3.0
 
 ## 0.4.2-beta.0
 
 ### Patch Changes
 
 - Updated dependencies [775f617]
-  - @recative/act-player@0.3.0-beta.0
+  - @web-media/act-player@0.3.0-beta.0
 
 ## 0.4.1
 
 ### Patch Changes
 
 - Updated dependencies [141ccfb]
-  - @recative/act-player@0.2.0
+  - @web-media/act-player@0.2.0
 
 ## 0.4.0
 
@@ -97,27 +97,27 @@
 ### Patch Changes
 
 - Updated dependencies [e413c8d]
-  - @recative/act-player@0.1.2
+  - @web-media/act-player@0.1.2
 
 ## 0.2.6
 
 ### Patch Changes
 
 - Updated dependencies
-  - @recative/act-player@0.1.0
+  - @web-media/act-player@0.1.0
 
 ## 0.2.5
 
 ### Patch Changes
 
-- @recative/act-player@0.0.4
+- @web-media/act-player@0.0.4
 
 ## 0.2.4
 
 ### Patch Changes
 
 - Updated dependencies
-  - @recative/act-player@0.0.3
+  - @web-media/act-player@0.0.3
 
 ## 0.2.3
 
@@ -125,7 +125,7 @@
 
 - chore: Performance improvement by batch RPC requests
 - Updated dependencies
-  - @recative/act-player@0.0.2
+  - @web-media/act-player@0.0.2
 
 ## 0.2.2
 
@@ -139,7 +139,7 @@
 
 - fix: Inconsistent react version caused rendering problem
 - Updated dependencies
-  - @recative/act-player@0.0.1
+  - @web-media/act-player@0.0.1
 
 ## 0.2.0
 
@@ -150,7 +150,7 @@
 ### Patch Changes
 
 - Updated dependencies
-  - @recative/act-player@0.0.0
+  - @web-media/act-player@0.0.0
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
@@ -158,4 +158,4 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 
 ### Features
 
-- Configure deploy tool ([9bb27cb](https://github.com/recative/recative-system/commit/9bb27cb7512d097b7d4e385876db3e90a8da24ec))
+- Configure deploy tool ([9bb27cb](https://github.com/Web-Media-Foundation/infrastructure/commit/9bb27cb7512d097b7d4e385876db3e90a8da24ec))

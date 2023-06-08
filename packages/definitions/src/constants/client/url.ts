@@ -1,1 +1,1 @@
-export const REDIRECT_URL_EXTENSION_ID = '@recative/redirect';
+export const REDIRECT_URL_EXTENSION_ID = '@web-media/redirect';

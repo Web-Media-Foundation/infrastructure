@@ -1,5 +1,5 @@
-import { lens } from '@recative/lens';
-import type { ValidSimpleLensField } from '@recative/lens';
+import { lens } from '@web-media/lens';
+import type { ValidSimpleLensField } from '@web-media/lens';
 
 import { IntMap } from './utils/IntMap';
 

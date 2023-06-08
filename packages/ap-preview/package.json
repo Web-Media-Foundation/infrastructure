@@ -1,8 +1,8 @@
 {
-  "name": "@recative/ap-preview",
+  "name": "@web-media/ap-preview",
   "version": "0.4.10",
   "source": "src/index.html",
-  "repository": "https://github.com/recative/recative-system",
+  "repository": "https://github.com/Web-Media-Foundation/infrastructure",
   "scripts": {
     "prepack": "yarn clean && yarn build",
     "clean": "rimraf ./dist",
@@ -35,11 +35,11 @@
   "dependencies": {
     "@nanostores/react": "0.2.0",
     "@react-hookz/web": "^15.1.0",
-    "@recative/act-player": "^0.5.18",
-    "@recative/act-protocol": "^0.2.9",
-    "@recative/core-manager": "^0.13.0",
-    "@recative/definitions": "^0.5.0",
-    "@recative/smart-resource": "^0.2.0",
+    "@web-media/act-player": "^0.5.18",
+    "@web-media/act-protocol": "^0.2.9",
+    "@web-media/core-manager": "^0.13.0",
+    "@web-media/definitions": "^0.5.0",
+    "@web-media/smart-resource": "^0.2.0",
     "classnames": "^2.3.1",
     "debug": "^4.3.4",
     "lodash": "^4.17.21",

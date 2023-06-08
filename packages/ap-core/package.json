@@ -1,11 +1,11 @@
 {
-  "name": "@recative/ap-core",
+  "name": "@web-media/ap-core",
   "version": "0.7.5",
   "source": "src/index.ts",
   "main": "dist/main.js",
   "module": "dist/module.js",
   "types": "dist/types.d.ts",
-  "repository": "https://github.com/recative/recative-system",
+  "repository": "https://github.com/Web-Media-Foundation/infrastructure",
   "scripts": {
     "start:docs": "serve ./docs",
     "prepack": "yarn clean && yarn build",
@@ -16,12 +16,12 @@
   },
   "dependencies": {
     "@nanostores/persistent": "^0.5.1",
-    "@recative/act-protocol": "^0.2.11",
-    "@recative/definitions": "^0.5.0",
-    "@recative/open-promise": "^0.3.0",
-    "@recative/resource-bridge": "^0.2.6",
-    "@recative/smart-resource": "^0.2.0",
     "@ungap/event-target": "^0.2.2",
+    "@web-media/act-protocol": "^0.2.11",
+    "@web-media/definitions": "^0.5.0",
+    "@web-media/open-promise": "^0.3.0",
+    "@web-media/resource-bridge": "^0.2.6",
+    "@web-media/smart-resource": "^0.2.0",
     "debug": "^4.3.3",
     "lodash": "^4.17.21",
     "uuid": "^8.3.2"

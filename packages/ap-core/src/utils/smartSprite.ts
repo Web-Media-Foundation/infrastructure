@@ -1,9 +1,9 @@
 import * as PIXI from 'pixi.js-legacy';
 
-import { IResourceFileForClient } from '@recative/definitions';
-import { getMatchedResource, ResourceEntry } from '@recative/smart-resource';
+import { IResourceFileForClient } from '@web-media/definitions';
+import { getMatchedResource, ResourceEntry } from '@web-media/smart-resource';
 
-import { OpenPromise, OpenPromiseState } from '@recative/open-promise';
+import { OpenPromise, OpenPromiseState } from '@web-media/open-promise';
 import { IFailedResponse, useQuery } from '../hooks/fetchDataHooks';
 import { DataSource, useCombinator, useSelector } from '../core/DataSource';
 import {

@@ -1,5 +1,5 @@
 {
-  "name": "@recative/phonograph",
+  "name": "@web-media/phonograph",
   "description": "Play audio files without the dreaded 'DOMException: play() can only be initiated by a user gesture' error.",
   "version": "2.2.1",
   "source": "src/index.ts",
@@ -7,7 +7,7 @@
   "module": "dist/module.js",
   "browser": "dist/browser.js",
   "types": "dist/types.d.ts",
-  "repository": "https://github.com/recative/recative-system",
+  "repository": "https://github.com/Web-Media-Foundation/infrastructure",
   "files": [
     "src",
     "dist",

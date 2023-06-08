@@ -1,7 +1,7 @@
 import * as React from "react";
 import { setupIonicReact } from "@ionic/react";
 
-import { useEpisodes } from "@recative/client-sdk";
+import { useEpisodes } from "@web-media/client-sdk";
 
 import { Routes, Route, Navigate } from "react-router-dom";
 

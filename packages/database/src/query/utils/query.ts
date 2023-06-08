@@ -1,5 +1,5 @@
 /* eslint-disable import/no-cycle */
-import { DotNotation, DotNotationValue, lens } from '@recative/lens';
+import { DotNotation, DotNotationValue, lens } from '@web-media/lens';
 
 import { SchemaQueryValue, getSchemaMethod } from './getSchema';
 

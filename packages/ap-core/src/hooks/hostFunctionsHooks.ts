@@ -1,8 +1,8 @@
 import type { _AsyncVersionOf } from 'async-call-rpc';
 
-import { createClientConnector } from '@recative/act-protocol';
-import { createActPointConnector } from '@recative/resource-bridge';
-import type { ServiceWorkerFunctions } from '@recative/resource-bridge';
+import { createClientConnector } from '@web-media/act-protocol';
+import { createActPointConnector } from '@web-media/resource-bridge';
+import type { ServiceWorkerFunctions } from '@web-media/resource-bridge';
 
 import { connectToHost } from '../core/protocol';
 import { FunctionalAtomDefinition } from '../core/AtomStore';

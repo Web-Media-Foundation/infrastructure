@@ -1,6 +1,6 @@
 import { createStore, get, set, UseStore } from 'idb-keyval';
-import { ResourceLoaderCacheLevel } from '@recative/definitions';
-import { OpenPromise, OpenPromiseState } from '@recative/open-promise';
+import { ResourceLoaderCacheLevel } from '@web-media/definitions';
+import { OpenPromise, OpenPromiseState } from '@web-media/open-promise';
 
 interface IResourceLoaderItem {
   id: string;

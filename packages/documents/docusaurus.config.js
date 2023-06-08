@@ -7,9 +7,9 @@ const labels = require('./packages');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Recative System',
+  title: 'Web Media Foundation',
   tagline: 'Web is Beautiful',
-  url: 'https://recative.github.io',
+  url: 'https://Web-Media-Foundation.github.io',
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
@@ -40,14 +40,14 @@ const config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/recative/recative-system/tree/master/packages/documents',
+            'https://github.com/Web-Media-Foundation/infrastructure/tree/master/packages/documents',
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/recative/recative-system/tree/master/packages/documents',
+            'https://github.com/Web-Media-Foundation/infrastructure/tree/master/packages/documents',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
@@ -61,7 +61,7 @@ const config = {
     ({
       navbar: {
         logo: {
-          alt: 'Recative System',
+          alt: 'Web Media Foundation',
           src: 'img/logo.svg',
         },
         items: [
@@ -91,7 +91,7 @@ const config = {
           },
           { to: '/blog', label: 'Blog', position: 'left' },
           {
-            href: 'https://github.com/recative/recative-system',
+            href: 'https://github.com/Web-Media-Foundation/infrastructure',
             label: 'GitHub',
             position: 'right',
           },
@@ -99,7 +99,7 @@ const config = {
       },
       footer: {
         links: [],
-        copyright: `© Recative System ${new Date().getFullYear()}`,
+        copyright: `© Web Media Foundation ${new Date().getFullYear()}`,
       },
       colorMode: {
         defaultMode: 'light',

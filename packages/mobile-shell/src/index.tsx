@@ -14,7 +14,7 @@ import { Provider as StyletronProvider } from 'styletron-react';
 import { ScreenOrientation } from '@awesome-cordova-plugins/screen-orientation';
 import { AndroidFullScreen } from '@awesome-cordova-plugins/android-full-screen';
 
-import { PlayerSdkProvider } from '@recative/client-sdk';
+import { PlayerSdkProvider } from '@web-media/client-sdk';
 
 import { CONSOLE, WAIT_FOR_GLOBAL_EVENT } from './app/constants/storageKeys';
 import {

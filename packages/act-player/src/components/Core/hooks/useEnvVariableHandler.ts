@@ -1,11 +1,11 @@
 import * as React from 'react';
 
-import { EpisodeCore } from '@recative/core-manager';
+import { EpisodeCore } from '@web-media/core-manager';
 
 import type {
   IUserRelatedEnvVariable,
   IDefaultAdditionalEnvVariable,
-} from '@recative/core-manager';
+} from '@web-media/core-manager';
 
 export const useEnvVariableHandler = <
 T extends Record<string, unknown> = IDefaultAdditionalEnvVariable,

@@ -18,4 +18,4 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 
 ### Features
 
-- Configure deploy tool ([9bb27cb](https://github.com/recative/recative-system/commit/9bb27cb7512d097b7d4e385876db3e90a8da24ec))
+- Configure deploy tool ([9bb27cb](https://github.com/Web-Media-Foundation/infrastructure/commit/9bb27cb7512d097b7d4e385876db3e90a8da24ec))

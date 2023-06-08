@@ -14,11 +14,11 @@ const temporaryUploader = localStorage.getItem(PREFERRED_UPLOADERS);
 export const preferredUploaders = temporaryUploader
   ? temporaryUploader.split(',')
   : [
-      '@recative/uploader-extension-mobile-shell/cached',
-      '@recative/uploader-extension-mobile-shell/build-in',
-      '@recative/uploader-extension-s3-oss/S3Uploader',
+      '@web-media/uploader-extension-mobile-shell/cached',
+      '@web-media/uploader-extension-mobile-shell/build-in',
+      '@web-media/uploader-extension-s3-oss/S3Uploader',
     ];
 
 export const trustedUploaders = [
-  '@recative/uploader-extension-mobile-shell/build-in',
+  '@web-media/uploader-extension-mobile-shell/build-in',
 ];

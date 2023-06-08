@@ -4,7 +4,7 @@ import { Block } from 'baseui/block';
 import { useStyletron } from 'baseui';
 import type { StyleObject } from 'styletron-react';
 
-import { filterSubtitleState } from '@recative/core-manager';
+import { filterSubtitleState } from '@web-media/core-manager';
 import type { InterfaceExtensionComponent } from '../../types/ExtensionCore';
 import { ModuleContainer } from '../Layout/ModuleContainer';
 
@@ -29,7 +29,7 @@ export const Subtitle: InterfaceExtensionComponent = (props) => {
   const [css] = useStyletron();
 
   const states = useStore(props.core.managedCoreState);
-  const subtitle:string[] = filterSubtitleState(states);
+  const subtitle: string[] = filterSubtitleState(states);
 
   const controllerContainerStyles = cn(css(SUBTITLE_CONTAINER_STYLE));
 

@@ -6,16 +6,16 @@ import {
   ResourceList,
   REDIRECT_URL_EXTENSION_ID,
   cleanUpResourceListForClient,
-} from '@recative/definitions';
-import { OpenPromise } from '@recative/open-promise';
-import { getMatchedResource } from '@recative/smart-resource';
+} from '@web-media/definitions';
+import { OpenPromise } from '@web-media/open-promise';
+import { getMatchedResource } from '@web-media/smart-resource';
 
 import type {
   IResourceItemForClient,
   IResourceFileForClient,
   IDetailedResourceItemForClient,
   IDetailedResourceGroupForClient,
-} from '@recative/definitions';
+} from '@web-media/definitions';
 
 import { selectUrl } from '../../utils/resource';
 import { tryValidResourceUrl } from '../../utils/tryValidResourceUrl';
@@ -153,7 +153,7 @@ export class ResourceListForClient extends ResourceList<IDetailedResourceItemFor
     // If the URL is not cached.
     const task = new OpenPromise<Result | null>((resolve, reject) => {
       const reportTryTask = !!localStorage.getItem(
-        '@recative/core-manager/report-resource-validation'
+        '@web-media/core-manager/report-resource-validation'
       );
       const logObject: Record<string, string> | undefined = reportTryTask
         ? {}

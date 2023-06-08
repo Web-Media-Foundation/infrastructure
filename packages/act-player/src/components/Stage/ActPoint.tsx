@@ -9,7 +9,7 @@ import { useStore } from '@nanostores/react';
 import { useStyletron } from 'baseui';
 import { useAsync, useThrottledCallback } from '@react-hookz/web';
 
-import { ResolutionMode } from '@recative/definitions';
+import { ResolutionMode } from '@web-media/definitions';
 
 import { Block } from 'baseui/block';
 

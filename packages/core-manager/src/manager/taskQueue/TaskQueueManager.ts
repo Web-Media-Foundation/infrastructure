@@ -1,5 +1,5 @@
 /* eslint-disable max-classes-per-file */
-import { OpenPromise, OpenPromiseState } from '@recative/open-promise';
+import { OpenPromise, OpenPromiseState } from '@web-media/open-promise';
 import type { ContentInstance, InstanceOption } from '../../instance';
 
 export class TaskAlreadyAddedError extends Error {

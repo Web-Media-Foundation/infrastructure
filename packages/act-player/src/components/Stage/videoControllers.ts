@@ -1,4 +1,4 @@
-import type { ComponentFunctions, CoreFunctions } from '@recative/core-manager';
+import type { ComponentFunctions, CoreFunctions } from '@web-media/core-manager';
 import { isSafari } from '../../variables/safari';
 
 const IS_SAFARI = isSafari();

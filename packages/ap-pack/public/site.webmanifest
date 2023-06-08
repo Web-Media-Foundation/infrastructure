@@ -1,6 +1,6 @@
 {
-  "name": "Recative Developer Preview",
-  "short_name": "Recative",
+  "name": "Web Media Foundation Developer Preview",
+  "short_name": "Web Media Foundation",
   "description": "A utils for developers to preview your act point program.",
   "icons": [
     { "src": "icon-192x192.png", "sizes": "192x192", "type": "image/png" },

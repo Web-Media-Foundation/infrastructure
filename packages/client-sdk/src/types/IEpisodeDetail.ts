@@ -2,7 +2,7 @@ import type {
   IEpisode,
   IAssetForClient,
   IResourceItemForClient,
-} from '@recative/definitions';
+} from '@web-media/definitions';
 
 export interface IEpisodeAbstraction {
   key: string;

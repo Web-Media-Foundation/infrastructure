@@ -37,7 +37,7 @@ yarn-error.log*
 .pnp.*
 
 
-# Recative
+# Web Media Foundation
 .recative
 public/bundle/*
 public/constants.json

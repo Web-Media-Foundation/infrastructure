@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
 
-import { useEpisodes } from '@recative/client-sdk';
+import { useEpisodes } from '@web-media/client-sdk';
 
 import { INDEX_ORDER } from './constants/storageKeys';
 

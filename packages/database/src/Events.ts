@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { createEventName, Event } from '@recative/event-target';
+import { createEventName, Event } from '@web-media/event-target';
 
 import type { DynamicView } from './DynamicView';
 

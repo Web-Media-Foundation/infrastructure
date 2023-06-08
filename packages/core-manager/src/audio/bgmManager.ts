@@ -4,7 +4,7 @@ import {
   AudioMixer,
   AudioSource,
   AudioStation,
-} from '@recative/audio-station';
+} from '@web-media/audio-station';
 
 import type { RawAudioClipResponse } from '../utils/selectUrlAudioTypePostProcess';
 

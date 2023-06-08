@@ -29,30 +29,30 @@ The Reactive System's resource management system provides:
 
 ### Data flow
 
-- **`@recative/definition`:** This package defines the metadata for each
+- **`@web-media/definition`:** This package defines the metadata for each
   resource file. Developers can manually write definitions for each file, but it
-  is recommended to use Recative Studio to generate them for a more
+  is recommended to use Web Media Foundation Studio to generate them for a more
   user-friendly interface and ease of management for larger sets of files.
 
-- **`@recative/client-sdk`:** If using Recative Studio to generate
+- **`@web-media/client-sdk`:** If using Web Media Foundation Studio to generate
   configurations, this package can utilize the output and handle data fetching
   and decoding tasks.
 
-- **`@recative/act-player`:** If using `@recative/client-sdk`, the player is
+- **`@web-media/act-player`:** If using `@web-media/client-sdk`, the player is
   automatically created. Alternatively, developers can manually pass resource
   definitions to the player, which acts as a conduit to the
-  `@recative/core-manager` for resource management.
+  `@web-media/core-manager` for resource management.
 
-- **`@recative/core-manager`:** This layer is responsible for managing the
+- **`@web-media/core-manager`:** This layer is responsible for managing the
   selection of resources.
 
 ### Resource selection
 
 If the developer required a resource group, like a texture. The resource will be
-selected with a weighted score. Recative System will pick the resource with the
+selected with a weighted score. Web Media Foundation will pick the resource with the
 maximum score as the result resource file.
 
-Such tasks is finished by the [`@recative/smart-resource`](/api/smart-resource/function/calculateResourceScore)
+Such tasks is finished by the [`@web-media/smart-resource`](/api/smart-resource/function/calculateResourceScore)
 
 There are three necessary elements for the resource selection task:
 
@@ -66,40 +66,40 @@ There are three necessary elements for the resource selection task:
   ```
 
 - **Environmental variable configurations: ** This is the detailed config of
-  users' devices. If you are using the API provided by `@recative/core-manager`,
-  these variables would be specified by the [`EnvVariableManager`](https://github.com/recative/recative-system/blob/a391b0dfbc42a8ccffcec6404dc3e86bb019f12f/packages/core-manager/src/manager/envVariable/EnvVariableManager.ts)
+  users' devices. If you are using the API provided by `@web-media/core-manager`,
+  these variables would be specified by the [`EnvVariableManager`](https://github.com/Web-Media-Foundation/infrastructure/blob/a391b0dfbc42a8ccffcec6404dc3e86bb019f12f/packages/core-manager/src/manager/envVariable/EnvVariableManager.ts)
   with the following keys:
 
   - **`lang`:** The language of users' devices.
 
   - **`device`:** The input device is a mouse or a touch screen.
 
-  - **`screen`:** The screen size is [small, medium or large](https://github.com/recative/recative-system/blob/a391b0dfbc42a8ccffcec6404dc3e86bb019f12f/packages/core-manager/src/manager/envVariable/utils/screenSize.ts#L1).
+  - **`screen`:** The screen size is [small, medium or large](https://github.com/Web-Media-Foundation/infrastructure/blob/a391b0dfbc42a8ccffcec6404dc3e86bb019f12f/packages/core-manager/src/manager/envVariable/utils/screenSize.ts#L1).
 
 ## Configuration Generation
 
-If developers decide to manage their resource files with the Recative Studio,
+If developers decide to manage their resource files with the Web Media Foundation Studio,
 the configuration will be managed automatically. By importing the resource will
 be processed by various extensions:
 
-- **`@recative/extension-av`:** Splits audio and video files into different
-  channels for the video playback system provided by the Recative System. This
+- **`@web-media/extension-av`:** Splits audio and video files into different
+  channels for the video playback system provided by the Web Media Foundation. This
   improves consistency across all major platforms. The audio file will be
   converted to fix any possible compatibility issues.
-- **`@recative/atlas`:** Analyzes the dimensions of textures and packs them into
+- **`@web-media/atlas`:** Analyzes the dimensions of textures and packs them into
   an atlas texture to save memory and improve the stability of the application
   on mobile platforms.
-- **`@recative/extension-audio-backends`:** Provides options on the interface
+- **`@web-media/extension-audio-backends`:** Provides options on the interface
   that guide the audio system to play audio files in a streamed way even when
   using the [Web Audio API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API).
-- **`@recative/extension-crowdin`: ** Provides scripts for synchronizing
+- **`@web-media/extension-crowdin`: ** Provides scripts for synchronizing
   translation files from the Crowdin platform. These files can be used for
   internationalization purposes.
 
 :::info
-Although there is currently no way for users of the Recative Studio to add
+Although there is currently no way for users of the Web Media Foundation Studio to add
 third-party extensions, developers can create a pull request to the code
-repository and discuss their desired extension with the Recative team.
+repository and discuss their desired extension with the Web Media Foundation team.
 
 This way, the team can review the proposed solution and potentially implement
 it in the future.
@@ -109,7 +109,7 @@ it in the future.
 
 ### Video
 
-The official implementation of the Video component in the Recative Studio
+The official implementation of the Video component in the Web Media Foundation Studio
 requires that the audio and video channels be split into two separate files. The
 category tag must be set to video and audio, respectively, for each file. This
 means that the group must contain two files, one with the `category:audio` tag
@@ -120,10 +120,10 @@ channels during playback.
 ### Interactive program
 
 For developers who is developing your program with `PIXI.js`, here is a
-component provided by the `@recative/ap-core`, here is an example:
+component provided by the `@web-media/ap-core`, here is an example:
 
 ```ts
-import { SmartSprite } from '@recative/ap-core';
+import { SmartSprite } from '@web-media/ap-core';
 
 const MyComponent = () => {
   const nameSprite = new SmartSprite({ label: YOUR_RESOURCE_LABEL });
@@ -159,5 +159,5 @@ const matchedResource = props.core
   );
 ```
 
-Please checkout the [official implementation](https://github.com/recative/recative-system/blob/feb76e968128289ccde3782dea390e7decc766a1/packages/act-player/src/components/Stage/Video.tsx#L228-L299)
+Please checkout the [official implementation](https://github.com/Web-Media-Foundation/infrastructure/blob/feb76e968128289ccde3782dea390e7decc766a1/packages/act-player/src/components/Stage/Video.tsx#L228-L299)
 for more detail.

@@ -13,7 +13,7 @@ Like the `useStore` hook, we need to define a store before using it:
 
 ```ts
 import { Boolean } from 'runtypes';
-import { RemoteAtomDefinition } from '@recative/ap-core'
+import { RemoteAtomDefinition } from '@web-media/ap-core'
 
 const FINISHED_TASK_STORE = RemoteAtomDefinition(
     'CryptographyHall/P1', // Slot ID

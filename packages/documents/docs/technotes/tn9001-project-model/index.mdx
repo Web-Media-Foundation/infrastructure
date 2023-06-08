@@ -21,7 +21,7 @@ this three-level model.
 
 ## Introduction
 
-Recative System manages its content with a three-level model:
+Web Media Foundation manages its content with a three-level model:
 
 <ThreeLevelModel
   style={{
@@ -29,7 +29,7 @@ Recative System manages its content with a three-level model:
     padding: '0 16px',
     float: 'right',
   }}
-  alt="The three-level model of the Recative System"
+  alt="The three-level model of the Web Media Foundation"
 />
 
 - **<span id="asset">Asset</span>:** Asset is the minimum unit of independent
@@ -63,7 +63,7 @@ lifecycles, RAM consumption, and performance issue.
   alt="Four level of packages for the three-level model"
 />
 
-- **`ap-core`:** `@recative/ap-core` is a set of toolkits for building
+- **`ap-core`:** `@web-media/ap-core` is a set of toolkits for building
   simple interactive content, we implemented multiple scheduling mechanisms to help
   developers building a web application without performance issues. Currently,
   there's official support for [PIXI.js](https://pixijs.com/),
@@ -74,13 +74,13 @@ lifecycles, RAM consumption, and performance issue.
 :::caution
 Although our customers have built quite a few content products using ap-core,
 the API design has not yet reached the level of public availability. We are
-trying to disassemble `@recative/ap-core` into multiple smaller packages, to
+trying to disassemble `@web-media/ap-core` into multiple smaller packages, to
 reduce the complexity of the whole solution.
 :::
 
-- **Act Player:** `@recative/act-player` is a React component which can render
+- **Act Player:** `@web-media/act-player` is a React component which can render
   a lot of _assets_. [`EpisodeCore`](/API/core-manager/class/EpisodeCore)
-  of [`@recative/core-manager`](/api/core-manager) can take
+  of [`@web-media/core-manager`](/api/core-manager) can take
   care of the task of lifecycle management and RAM management. The implementation
   of the core manager is "UI-frame neutral", it is useful if your team is not using
   [React](https://reactjs.org/) or want to build a different product based on
@@ -88,7 +88,7 @@ reduce the complexity of the whole solution.
   pass your own implementation of every single component. Read the following
   articles for more details about how to customize it.
 
-- **SDK:** `@recative/client-sdk` is a React component for managing multiple
+- **SDK:** `@web-media/client-sdk` is a React component for managing multiple
   episodes, client sdk will take care of data fetching and life cycle management,
   and interface customize. If you are building a product that has multiple
   episodes, SDK could be helpful. _SDK_ also supports interface customize, by
@@ -102,9 +102,9 @@ reduce the complexity of the whole solution.
   cache, sharing, or deep-link. We're trying our best to build a set of official
   shell implementations for most use cases. For users without special requirements,
   we encourage you to use the official shell implementation, which is better
-  integrated into _Recative Studio_'s workflow. If you want to customize the
+  integrated into _Web Media Foundation Studio_'s workflow. If you want to customize the
   capability of shells, please fork our official implementation. We will
-  introduce how the Shell interacts with Recative Studio in the following article.
+  introduce how the Shell interacts with Web Media Foundation Studio in the following article.
 
 :::tip
 It's not necessary to fork the shell implementation if you only want to
@@ -114,7 +114,7 @@ component"_ can greatly improve the maintainability of the project.
 
 ## Use Cases
 
-Recative is a highly comprehensive system for interactive content management,
+Web Media Foundation is a highly comprehensive system for interactive content management,
 developers can implement various web applications with different levels of
 architectures, here're some examples:
 
@@ -130,6 +130,6 @@ architectures, here're some examples:
   issues, especially for <span title="A web browser developed by Apple mainly for render apple.com correctly">Safari</span>.
 
 - **A complex web application with mixed forms of content:** This is our main
-  purpose of developing the Recative System, by using the whole solution you can
+  purpose of developing the Web Media Foundation, by using the whole solution you can
   get a series of simplified workflows from resource management, and preprocessing to
   project packaging and deployment.

@@ -1,5 +1,5 @@
-import { IAssetForClient } from '@recative/definitions';
-import { allSettled } from '@recative/open-promise';
+import { IAssetForClient } from '@web-media/definitions';
+import { allSettled } from '@web-media/open-promise';
 import type { InstanceOption } from '../../instance';
 import { WithLogger } from '../../LogCollector';
 // eslint-disable-next-line import/no-cycle

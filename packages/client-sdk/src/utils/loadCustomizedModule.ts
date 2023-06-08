@@ -28,13 +28,13 @@ const dependencies = {
   'lottie-react': require('lottie-react'),
   'i18next': require('i18next'),
   'react-i18next': require('react-i18next'),
-  '@recative/client-sdk': sdk,
-  '@recative/act-player': require('@recative/act-player'),
-  '@recative/definitions': require('@recative/definitions'),
-  '@recative/open-promise': require('@recative/open-promise'),
-  '@recative/act-protocol': require('@recative/act-protocol'),
-  '@recative/core-manager': require('@recative/core-manager'),
-  '@recative/smart-resource': require('@recative/smart-resource'),
+  '@web-media/client-sdk': sdk,
+  '@web-media/act-player': require('@web-media/act-player'),
+  '@web-media/definitions': require('@web-media/definitions'),
+  '@web-media/open-promise': require('@web-media/open-promise'),
+  '@web-media/act-protocol': require('@web-media/act-protocol'),
+  '@web-media/core-manager': require('@web-media/core-manager'),
+  '@web-media/smart-resource': require('@web-media/smart-resource'),
 };
 
 export const loadCustomizedModule = (

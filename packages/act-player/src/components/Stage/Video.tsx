@@ -8,17 +8,17 @@ import { useStyletron } from 'baseui';
 
 import { Block } from 'baseui/block';
 
-import { getMatchedResource } from '@recative/smart-resource';
+import { getMatchedResource } from '@web-media/smart-resource';
 import {
   convertSRTToStates,
   selectUrlAudioElementInitPostProcess
-} from '@recative/core-manager';
+} from '@web-media/core-manager';
 
 import type {
   AudioElementInit,
   PostProcessCallback,
-} from '@recative/core-manager';
-import { IResourceFileForClient } from '@recative/definitions';
+} from '@web-media/core-manager';
+import { IResourceFileForClient } from '@web-media/definitions';
 
 import { isSafari } from '../../variables/safari';
 import { ModuleContainer } from '../Layout/ModuleContainer';

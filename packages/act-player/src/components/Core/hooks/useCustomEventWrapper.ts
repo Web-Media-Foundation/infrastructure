@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { EpisodeCore, SeriesCore } from '@recative/core-manager';
+import { EpisodeCore, SeriesCore } from '@web-media/core-manager';
 
 export const useCustomEventWrapper = <T extends Function>(
   callback: T | undefined,

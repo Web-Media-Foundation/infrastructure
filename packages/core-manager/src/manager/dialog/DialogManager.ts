@@ -4,19 +4,19 @@ import { atom, computed } from 'nanostores';
 
 import type { ReadableAtom } from 'nanostores';
 
-import { GroupType, Category } from '@recative/definitions';
-import { getMatchedResource } from '@recative/smart-resource';
+import { GroupType, Category } from '@web-media/definitions';
+import { getMatchedResource } from '@web-media/smart-resource';
 
 import type {
   DialogActions,
   DialogActionTriggerResponse,
   DialogMessage,
-} from '@recative/act-protocol';
+} from '@web-media/act-protocol';
 import type {
   IDetailedResourceItemForClient,
   IResourceFileForClient,
-} from '@recative/definitions';
-import type { OpenPromise } from '@recative/open-promise';
+} from '@web-media/definitions';
+import type { OpenPromise } from '@web-media/open-promise';
 
 import type { IEnvVariable } from '../envVariable/EnvVariableManager';
 

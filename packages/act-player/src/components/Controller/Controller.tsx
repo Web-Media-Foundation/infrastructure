@@ -3,7 +3,7 @@ import cn from 'classnames';
 import { useStore } from '@nanostores/react';
 import { useStyletron } from 'baseui';
 
-import type { EpisodeCore } from '@recative/core-manager';
+import type { EpisodeCore } from '@web-media/core-manager';
 
 import { Block } from 'baseui/block';
 
@@ -146,7 +146,7 @@ export const Controller = (config: IControllerConfig) => React.memo((props) => {
 
   const mainBarStyles = css({
     backgroundImage:
-        'linear-gradient(0deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 100%)',
+      'linear-gradient(0deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 100%)',
     pointerEvents: 'auto',
     transform: 'translateY(100%)',
     animationFillMode: 'forwards',
@@ -196,7 +196,7 @@ export const Controller = (config: IControllerConfig) => React.memo((props) => {
   const handleEnterMiniMode = React.useCallback(() => setMiniMode(true), []);
   const handleExitMiniMode = React.useCallback(() => setMiniMode(false), []);
   const handleResolutionChange = React.useCallback(
-    (width:number, height:number) => props.core.resolution.set({ width, height }),
+    (width: number, height: number) => props.core.resolution.set({ width, height }),
     [props.core],
   );
   const handleDialogOpen = React.useCallback(
@@ -208,7 +208,7 @@ export const Controller = (config: IControllerConfig) => React.memo((props) => {
     [props.core],
   );
   const handleVolumeChange = React.useCallback(
-    (vol:number) => props.core.volume.set(vol),
+    (vol: number) => props.core.volume.set(vol),
     [props.core],
   );
   const handleEnterFullScreen = React.useCallback(
@@ -220,128 +220,128 @@ export const Controller = (config: IControllerConfig) => React.memo((props) => {
     [props.core],
   );
   const handleContentLanguageChange = React.useCallback(
-    (lang:string) => props.core.contentLanguage.set(lang),
+    (lang: string) => props.core.contentLanguage.set(lang),
     [props.core],
   );
   const handleSubtitleLanguageChange = React.useCallback(
-    (lang:string) => props.core.subtitleLanguage.set(lang),
+    (lang: string) => props.core.subtitleLanguage.set(lang),
     [props.core],
   );
 
   const playButton = (
-      <PlayButton
-        status={playing ? PlayButtonStatus.Playing : PlayButtonStatus.Paused}
-        onPlay={props.core.play}
-        onPause={props.core.pause}
-      />
+    <PlayButton
+      status={playing ? PlayButtonStatus.Playing : PlayButtonStatus.Paused}
+      onPlay={props.core.play}
+      onPause={props.core.pause}
+    />
   );
 
   const miniModeButton = (
-      <MiniModeButton
-        status={miniMode ? MiniModeButtonStatus.On : MiniModeButtonStatus.Off}
-        onEnterMiniMode={handleEnterMiniMode}
-        onExitMiniMode={handleExitMiniMode}
-      />
+    <MiniModeButton
+      status={miniMode ? MiniModeButtonStatus.On : MiniModeButtonStatus.Off}
+      onEnterMiniMode={handleEnterMiniMode}
+      onExitMiniMode={handleExitMiniMode}
+    />
   );
 
   return (
-      <ModuleContainer
-        id="controllerContainer"
-        key="controller"
-        className={cn(controllerContainerStyles)}
-      >
-        {!miniMode && (
-          <Block
-            width="100%"
-            display="flex"
-            flexDirection="row"
-            justifyContent="space-between"
-            className={mainBarStyles}
-          >
-            <Block display="flex" justifyContent="space-between">
-              <Block>{playButton}</Block>
-              <Block>
-                <HomeButton onClick={handleClickHomeButton} />
-              </Block>
-              <Block>
-                <VolumeController
-                  volume={volume}
-                  onChange={handleVolumeChange}
-                />
-              </Block>
-              <Block className={timeStyles}>
-                {totalTime >= 0 && (
-                  <span>
-                    {formatTime(time)} / {formatTime(totalTime)}
-                  </span>
-                )}
-              </Block>
+    <ModuleContainer
+      id="controllerContainer"
+      key="controller"
+      className={cn(controllerContainerStyles)}
+    >
+      {!miniMode && (
+        <Block
+          width="100%"
+          display="flex"
+          flexDirection="row"
+          justifyContent="space-between"
+          className={mainBarStyles}
+        >
+          <Block display="flex" justifyContent="space-between">
+            <Block>{playButton}</Block>
+            <Block>
+              <HomeButton onClick={handleClickHomeButton} />
             </Block>
-            <Block display="flex" justifyContent="space-between">
-              <Block>{miniModeButton}</Block>
-              {(config.languageAvailable ?? true) && (
-                <Block>
-                  <LanguageButton
-                    contentLanguage={contentLanguage}
-                    subtitleLanguage={subtitleLanguage}
-                    onContentLanguageChange={handleContentLanguageChange}
-                    onSubtitleLanguageChange={handleSubtitleLanguageChange}
-                  />
-                </Block>
+            <Block>
+              <VolumeController
+                volume={volume}
+                onChange={handleVolumeChange}
+              />
+            </Block>
+            <Block className={timeStyles}>
+              {totalTime >= 0 && (
+                <span>
+                  {formatTime(time)} / {formatTime(totalTime)}
+                </span>
               )}
+            </Block>
+          </Block>
+          <Block display="flex" justifyContent="space-between">
+            <Block>{miniModeButton}</Block>
+            {(config.languageAvailable ?? true) && (
               <Block>
-                <ResolutionSwitcher
-                  width={resolution.width}
-                  height={resolution.height}
-                  onChange={handleResolutionChange}
+                <LanguageButton
+                  contentLanguage={contentLanguage}
+                  subtitleLanguage={subtitleLanguage}
+                  onContentLanguageChange={handleContentLanguageChange}
+                  onSubtitleLanguageChange={handleSubtitleLanguageChange}
                 />
               </Block>
+            )}
+            <Block>
+              <ResolutionSwitcher
+                width={resolution.width}
+                height={resolution.height}
+                onChange={handleResolutionChange}
+              />
+            </Block>
+            <Block>
+              <DialogSwitcher
+                status={
+                  dialogAreaVisible
+                    ? DialogSwitcherStatus.Open
+                    : DialogSwitcherStatus.Closed
+                }
+                onOpen={handleDialogOpen}
+                onClose={handleDialogClose}
+              />
+            </Block>
+            {ifBrowserSupportsFullScreen() && (
               <Block>
-                <DialogSwitcher
+                <FullScreenSwitcher
                   status={
-                    dialogAreaVisible
-                      ? DialogSwitcherStatus.Open
-                      : DialogSwitcherStatus.Closed
+                    fullScreen
+                      ? FullScreenSwitcherStatus.On
+                      : FullScreenSwitcherStatus.Off
                   }
-                  onOpen={handleDialogOpen}
-                  onClose={handleDialogClose}
+                  onEnterFullScreenMode={handleEnterFullScreen}
+                  onExitFullScreenMode={handleExitFullScreen}
                 />
               </Block>
-              {ifBrowserSupportsFullScreen() && (
-                <Block>
-                  <FullScreenSwitcher
-                    status={
-                      fullScreen
-                        ? FullScreenSwitcherStatus.On
-                        : FullScreenSwitcherStatus.Off
-                    }
-                    onEnterFullScreenMode={handleEnterFullScreen}
-                    onExitFullScreenMode={handleExitFullScreen}
-                  />
-                </Block>
-              )}
-            </Block>
+            )}
           </Block>
-        )}
-        <ProgressBar
-          progress={progress}
-          durations={durations}
-          miniMode={miniMode}
-          onSeek={handleProgressSeek}
-        />
-        {miniMode && (
-          <Block
-            className={miniBarStyles}
-            backgroundColor="rgba(0, 0, 0, 0.2)"
-            position="absolute"
-            bottom="48px"
-            left="0"
-          >
-            {playButton}
-            {miniModeButton}
-          </Block>
-        )}
-        <Block className={fillerStyles} />
-      </ModuleContainer>
+        </Block>
+      )}
+      <ProgressBar
+        progress={progress}
+        durations={durations}
+        miniMode={miniMode}
+        onSeek={handleProgressSeek}
+      />
+      {miniMode && (
+        <Block
+          className={miniBarStyles}
+          backgroundColor="rgba(0, 0, 0, 0.2)"
+          position="absolute"
+          bottom="48px"
+          left="0"
+        >
+          {playButton}
+          {miniModeButton}
+        </Block>
+      )}
+      <Block className={fillerStyles} />
+    </ModuleContainer>
   );
 }) as React.FC<IControllerProps>;

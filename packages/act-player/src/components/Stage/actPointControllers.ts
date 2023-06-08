@@ -2,10 +2,10 @@
 /* eslint-disable no-await-in-loop */
 import { debug } from 'debug';
 
-import { RawUserImplementedFunctions } from '@recative/definitions';
-import { createHostConnector, HostFunctions } from '@recative/act-protocol';
-import type { ResourceLoaderCacheLevel } from '@recative/definitions';
-import type { ComponentFunctions, CoreFunctions } from '@recative/core-manager';
+import { RawUserImplementedFunctions } from '@web-media/definitions';
+import { createHostConnector, HostFunctions } from '@web-media/act-protocol';
+import type { ResourceLoaderCacheLevel } from '@web-media/definitions';
+import type { ComponentFunctions, CoreFunctions } from '@web-media/core-manager';
 
 const log = debug('player:ap-control');
 
@@ -247,12 +247,12 @@ export const getController = (id: string) => {
           setSavedData: forwardToUserImplementedFunctions('setSavedData'),
           getPlayerData: (slotId) => {
             return window.localStorage.getItem(
-              `@recative/act-player/player-data/${slotId}`
+              `@web-media/act-player/player-data/${slotId}`
             );
           },
           setPlayerData: (slotId, data) => {
             window.localStorage.setItem(
-              `@recative/act-player/player-data/${slotId}`,
+              `@web-media/act-player/player-data/${slotId}`,
               data
             );
           },

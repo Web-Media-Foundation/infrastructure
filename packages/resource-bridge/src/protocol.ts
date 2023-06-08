@@ -1,5 +1,5 @@
-import { ResourceLoaderCacheLevel } from '@recative/definitions';
-import type { IResourceItemForClient } from '@recative/definitions';
+import { ResourceLoaderCacheLevel } from '@web-media/definitions';
+import type { IResourceItemForClient } from '@web-media/definitions';
 
 export interface ActPointFunctions {
   fetchResource(

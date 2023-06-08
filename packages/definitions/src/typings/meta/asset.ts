@@ -16,12 +16,12 @@ export interface IAsset {
    * The unique identifier of the content extension used for this asset.
    * Possible values are:
    *
-   * - `@recative/content-extension-video`: A video with splitted audio channel
+   * - `@web-media/content-extension-video`: A video with splitted audio channel
    *   file and video file.
-   * - `@recative/content-extension-act-point`: An embedded web application that
-   *   adapted the [act protocol](https://github.com/recative/recative-system/tree/master/packages/act-protocol).
+   * - `@web-media/content-extension-act-point`: An embedded web application that
+   *   adapted the [act protocol](https://github.com/Web-Media-Foundation/infrastructure/tree/master/packages/act-protocol).
    *
-   * Developers could find the [implementation of different components](https://github.com/recative/recative-system/blob/master/packages/act-player/src/components/Stage/Stage.tsx#L19-L22)
+   * Developers could find the [implementation of different components](https://github.com/Web-Media-Foundation/infrastructure/blob/master/packages/act-player/src/components/Stage/Stage.tsx#L19-L22)
    * here.
    */
   contentExtensionId: string;

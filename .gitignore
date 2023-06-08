@@ -51,7 +51,7 @@ Thumbs.db
 .parcel-cache
 *.recative
 
-# Recative System
+# Web Media Foundation
 **/bundle/**/*
 constants.json
 version.txt

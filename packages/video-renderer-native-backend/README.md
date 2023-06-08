@@ -1,3 +1,3 @@
-# @recative/video-renderer-native-backend
+# @web-media/video-renderer-native-backend
 
 Video render via ffmpeg

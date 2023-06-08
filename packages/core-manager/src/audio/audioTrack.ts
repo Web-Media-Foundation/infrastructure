@@ -1,6 +1,6 @@
 /* eslint-disable no-await-in-loop */
-import { Track } from '@recative/time-schedule';
-import { AudioMixer, AudioStation } from '@recative/audio-station';
+import { Track } from '@web-media/time-schedule';
+import { AudioMixer, AudioStation } from '@web-media/audio-station';
 
 import { WithLogger } from '../LogCollector';
 

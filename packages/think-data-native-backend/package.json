@@ -1,5 +1,5 @@
 {
-  "name": "@recative/think-data-native-backend",
+  "name": "@web-media/think-data-native-backend",
   "version": "0.0.6",
   "description": "Analysis for ionic include ThinkingData implements",
   "source": "src/index.ts",
@@ -13,16 +13,16 @@
     "android/build.gradle",
     "dist/",
     "ios/Plugin/**/*",
-    "RecativeThinkDataNativeBackend.podspec"
+    "Web Media FoundationThinkDataNativeBackend.podspec"
   ],
   "author": "WindFi",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/recative/recative-system.git"
+    "url": "git+https://github.com/Web-Media-Foundation/infrastructure.git"
   },
   "bugs": {
-    "url": "https://github.com/recative/recative-system/issues"
+    "url": "https://github.com/Web-Media-Foundation/infrastructure/issues"
   },
   "keywords": [
     "capacitor",

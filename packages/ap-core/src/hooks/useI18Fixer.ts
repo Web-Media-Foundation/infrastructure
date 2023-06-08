@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js-legacy';
 import * as THREE from 'three';
 
-import type { ResourceEntry } from '@recative/smart-resource';
+import type { ResourceEntry } from '@web-media/smart-resource';
 
 import { Receiver } from '../core/Receiver';
 import { AtomDefinition } from '../core/AtomStore';

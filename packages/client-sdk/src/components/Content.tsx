@@ -3,7 +3,7 @@ import debug from 'debug';
 import { atom } from 'nanostores';
 import { useStore } from '@nanostores/react';
 
-import { ActPlayer, InterfaceExtensionComponent } from '@recative/act-player';
+import { ActPlayer, InterfaceExtensionComponent } from '@web-media/act-player';
 import {
   SeriesCore,
   EndEventDetail,
@@ -12,13 +12,13 @@ import {
   SegmentStartEventDetail,
   IUserRelatedEnvVariable,
   EpisodeCore,
-} from '@recative/core-manager';
+} from '@web-media/core-manager';
 
-import type { IEpisode, RawUserImplementedFunctions } from '@recative/definitions';
+import type { IEpisode, RawUserImplementedFunctions } from '@web-media/definitions';
 import type {
   IEpisodeMetadata,
   ISeriesCoreConfig,
-} from '@recative/core-manager';
+} from '@web-media/core-manager';
 
 import { useInjector } from './hooks/useInjector';
 import { useSeriesCore } from './hooks/useSeriesCore';

@@ -1,5 +1,5 @@
 {
-  "name": "@recative/video-renderer-native-backend",
+  "name": "@web-media/video-renderer-native-backend",
   "version": "0.0.3",
   "description": "Video render via FFmpeg",
   "source": "src/index.ts",
@@ -13,16 +13,16 @@
     "android/build.gradle",
     "dist/",
     "ios/Plugin/**/*",
-    "RecativeVideoRendererNativeBackend.podspec"
+    "Web Media FoundationVideoRendererNativeBackend.podspec"
   ],
   "author": "WindFi",
   "license": "GPL-3.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/recative/recative-system.git"
+    "url": "git+https://github.com/Web-Media-Foundation/infrastructure.git"
   },
   "bugs": {
-    "url": "https://github.com/recative/recative-system/issues"
+    "url": "https://github.com/Web-Media-Foundation/infrastructure/issues"
   },
   "keywords": [
     "capacitor",

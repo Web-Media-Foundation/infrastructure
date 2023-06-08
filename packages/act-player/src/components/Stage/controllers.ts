@@ -1,7 +1,7 @@
 import { atom, computed } from 'nanostores';
 
-import type { ComponentFunctions } from '@recative/core-manager';
-import type { ContentSpec } from '@recative/definitions';
+import type { ComponentFunctions } from '@web-media/core-manager';
+import type { ContentSpec } from '@web-media/definitions';
 
 interface AssetExtraData {
   order: number;

@@ -1,5 +1,5 @@
-import { Target } from '@recative/event-target';
-import { OpenPromise } from '@recative/open-promise';
+import { Target } from '@web-media/event-target';
+import { OpenPromise } from '@web-media/open-promise';
 
 import { Collection, ICollectionDocument } from './Collection';
 import { deepFreeze } from './utils/freeze';

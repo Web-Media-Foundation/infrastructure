@@ -17,8 +17,8 @@ import { ActPoint } from './ActPoint';
 import { getController } from './controllers';
 
 const CONTENT_EXTENSIONS: Record<string, AssetExtensionComponent> = {
-  '@recative/content-extension-video': Video,
-  '@recative/content-extension-act-point': ActPoint,
+  '@web-media/content-extension-video': Video,
+  '@web-media/content-extension-act-point': ActPoint,
 };
 
 const useStyles = () => {
@@ -87,10 +87,10 @@ export const Stage: InterfaceExtensionComponent = React.memo((props) => {
           );
         })}
       </Block>
-      { playing && stuck && (
-          <Block className={cn(bufferingStyles)}>
-            <Buffering loadingComponent={props.loadingComponent} />
-          </Block>
+      {playing && stuck && (
+        <Block className={cn(bufferingStyles)}>
+          <Buffering loadingComponent={props.loadingComponent} />
+        </Block>
       )}
     </ModuleContainer>
   );

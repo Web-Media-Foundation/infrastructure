@@ -3,7 +3,7 @@ require 'json'
 package = JSON.parse(File.read(File.join(__dir__, 'package.json')))
 
 Pod::Spec.new do |s|
-  s.name = 'RecativeResourceLoaderNativeBackend'
+  s.name = 'Web Media FoundationResourceLoaderNativeBackend'
   s.version = package['version']
   s.summary = package['description']
   s.license = package['license']
@@ -23,5 +23,5 @@ Pod::Spec.new do |s|
   s.info_plist = {
     'IPHONEOS_DEPLOYMENT_TARGET' => '12.0'
   }
-  
+
 end

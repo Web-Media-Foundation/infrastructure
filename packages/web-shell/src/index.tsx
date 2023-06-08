@@ -5,7 +5,7 @@ import { Client as Styletron } from 'styletron-engine-monolithic';
 import { DarkTheme, BaseProvider } from 'baseui';
 import { Provider as StyletronProvider } from 'styletron-react';
 
-import { PlayerSdkProvider } from '@recative/client-sdk';
+import { PlayerSdkProvider } from '@web-media/client-sdk';
 
 import {
   pathPattern,

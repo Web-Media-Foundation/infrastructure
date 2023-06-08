@@ -1,4 +1,4 @@
-import { Target } from '@recative/event-target';
+import { Target } from '@web-media/event-target';
 
 import type {
   Collection,

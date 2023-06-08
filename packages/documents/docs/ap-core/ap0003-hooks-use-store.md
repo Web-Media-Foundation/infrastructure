@@ -12,12 +12,12 @@ and the design concept comes from [Recoil](https://recoiljs.org/).
 We need to define a store before using it:
 
 ```ts
-import { AtomDefinition } from '@recative/ap-core'
+import { AtomDefinition } from '@web-media/ap-core'
 
 const COUNT_STORE = AtomDefinition<number>(0)
 ```
 
-In Recative AP, the variables used to define Atom are usually SCREAMING_SNAKE_CASE,
+In Web Media Foundation AP, the variables used to define Atom are usually SCREAMING_SNAKE_CASE,
 the name of the variable should end with `_STORE`, JUST SHOUT IT OUT!
 
 You can consume it with the `useStore` hook, it will return three methods:
@@ -47,9 +47,9 @@ objects, use stylesheet instead.
 ## Some implementation details
 
 The logic behind `useStore` is handled by [`AtomStore`](modules#atomstore), this
-is why there's something called `AtomDefinition`, when the Recative AP app initialized,
+is why there's something called `AtomDefinition`, when the Web Media Foundation AP app initialized,
 values in AtomDefinition will be copied to `AtomStore`, when the app is killed, 
-the values that have been stored are automatically cleaned up by Recative AP and 
+the values that have been stored are automatically cleaned up by Web Media Foundation AP and 
 user's browser.
 
 You can check out the source code to get more detail.

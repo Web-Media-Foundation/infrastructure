@@ -3,7 +3,7 @@ export const tsxRule = (production: boolean) => [
     test: /\.tsx?$/i,
     exclude: production
       ? /node_modules/
-      : /node_modules\/(?!(@recative\/act-player)\/).*/,
+      : /node_modules\/(?!(@web-media\/act-player)\/).*/,
     use: {
       loader: 'babel-loader',
       options: {

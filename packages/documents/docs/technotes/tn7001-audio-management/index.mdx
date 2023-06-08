@@ -16,10 +16,10 @@ since different browsers have different media playback strategy:
 - Chromium or Safari based WebView, or GeckoView have their own API to decide
   if the browser should allow auto play or not.
 
-To handle these complex problem Recative System created a consistence audio
+To handle these complex problem Web Media Foundation created a consistence audio
 experience across all major browser platforms. This feature is enabled by
-[`@recative/audio-station`](/api/audio-station) and
-[`@recative/phonograph`](/api/phonograph),
+[`@web-media/audio-station`](/api/audio-station) and
+[`@web-media/phonograph`](/api/phonograph),
 which created a global `AudioContext`, and manually manage the media playback
 related work instead of using
 [HTMLMediaElement](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement).
@@ -39,7 +39,7 @@ the audio management system.
 manager, user need to call the
 [`getGlobalAudioStation`](/api/audio-station/function/getGlobalAudioStation)
 method to
-[interact with the manager](https://github.com/recative/recative-system/blob/bbc22e46471e4516333525819a24b111c167b9ed/packages/core-manager/src/episodeCore.ts#L105).
+[interact with the manager](https://github.com/Web-Media-Foundation/infrastructure/blob/bbc22e46471e4516333525819a24b111c167b9ed/packages/core-manager/src/episodeCore.ts#L105).
 
 ```TypeScript
 const audioStation = getGlobalAudioStation();
@@ -56,18 +56,18 @@ audioStation.activate().then(() => {
 ```
 
 You can find
-[related source code from here](https://github.com/recative/recative-system/blob/bbc22e46471e4516333525819a24b111c167b9ed/packages/core-manager/src/episodeCore.ts#L343-L346).
+[related source code from here](https://github.com/Web-Media-Foundation/infrastructure/blob/bbc22e46471e4516333525819a24b111c167b9ed/packages/core-manager/src/episodeCore.ts#L343-L346).
 
 # Architecture
 
 Audio is managed in a three level model, with different kind of audio backend:
 
-- **Audio Host**: There is an audio host [for each asset](https://github.com/recative/recative-system/blob/df61508153b79018f530f4552b8fbc72df341569/packages/core-manager/src/instance.ts#L110)
-  called [`AudioHost`](https://github.com/recative/recative-system/blob/df61508153b79018f530f4552b8fbc72df341569/packages/core-manager/src/audio/audioHost.ts#L152),
+- **Audio Host**: There is an audio host [for each asset](https://github.com/Web-Media-Foundation/infrastructure/blob/df61508153b79018f530f4552b8fbc72df341569/packages/core-manager/src/instance.ts#L110)
+  called [`AudioHost`](https://github.com/Web-Media-Foundation/infrastructure/blob/df61508153b79018f530f4552b8fbc72df341569/packages/core-manager/src/audio/audioHost.ts#L152),
   it will handle resource loading, playback, destroy, volume manage and subtitle
   management for different audio files.
 
-* [**LoadableAudioElement**](https://github.com/recative/recative-system/blob/df61508153b79018f530f4552b8fbc72df341569/packages/core-manager/src/audio/audioHost.ts#L22):
+* [**LoadableAudioElement**](https://github.com/Web-Media-Foundation/infrastructure/blob/df61508153b79018f530f4552b8fbc72df341569/packages/core-manager/src/audio/audioHost.ts#L22):
   Build a general abstract interface for different type of audio backend. This
   level of abstraction will hold the loading status of the audio file.
 
@@ -77,7 +77,7 @@ Audio is managed in a three level model, with different kind of audio backend:
 
 ### Audio Elements
 
-Recative System has two builds in implementations for different use cases, The
+Web Media Foundation has two builds in implementations for different use cases, The
 implementation of audio elements extensible, which means developers cannot
 write their own AudioElement implementations.
 
@@ -103,7 +103,7 @@ need this feature, or even better, would like to implement this feature.
 
 ## Usage
 
-For developers that using Recative Studio, open the resource tab of the resource
+For developers that using Web Media Foundation Studio, open the resource tab of the resource
 manager, double click the audio resource to open the resource editing modal,
 and tick the _Enable Phonograph backend_ checkbox, your resource will be played
 using the `PhonographAudioElement` to manage the audio file.
@@ -111,7 +111,7 @@ using the `PhonographAudioElement` to manage the audio file.
 For developers who are writing resource definitions manually, write a key with:
 
 ```
-'@recative/extension-audio-backends/PhonographAudioBackend~~backend'
+'@web-media/extension-audio-backends/PhonographAudioBackend~~backend'
 ```
 
 with the value `yes`, inside the [`extensionConfiguration`](/api/definitions/interface/IResourceFile#extensionConfigurations)

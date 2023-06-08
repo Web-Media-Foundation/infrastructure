@@ -2,7 +2,7 @@ import debug from 'debug';
 
 import { atom } from 'nanostores';
 
-import type { EpisodeCore } from '@recative/core-manager';
+import type { EpisodeCore } from '@web-media/core-manager';
 
 import { useBugFreeStore } from '../../../hooks/useBugFreeStore';
 

@@ -13,9 +13,9 @@ import type {
   IUserRelatedEnvVariable,
   IEpisodeMetadata,
   ISeriesCoreConfig,
-} from '@recative/core-manager';
-import type { IManagedActPointProps } from '@recative/act-player';
-import type { RawUserImplementedFunctions } from '@recative/definitions';
+} from '@web-media/core-manager';
+import type { IManagedActPointProps } from '@web-media/act-player';
+import type { RawUserImplementedFunctions } from '@web-media/definitions';
 
 import type { IEpisodeDetail } from '../../external';
 import type { IContentProps } from '../Content';
@@ -106,7 +106,7 @@ const ON_SEGMENT_START: IContentProps<
  * It is used as the return type of a React hook.
  *
  * @template PlayerPropsInjectedDependencies - Dependencies injected to
- *           the `ManagedActPlayer` component of the `@recative/act-player`
+ *           the `ManagedActPlayer` component of the `@web-media/act-player`
  *           package
  * @template EnvVariable - Environment variables injected to client-sdk
  *           configuration

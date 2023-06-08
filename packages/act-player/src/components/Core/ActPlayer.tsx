@@ -3,15 +3,15 @@ import * as React from 'react';
 import useConstant from 'use-constant';
 import { useStore } from '@nanostores/react';
 
-import { EpisodeCore } from '@recative/core-manager';
+import { EpisodeCore } from '@web-media/core-manager';
 import {
   IResourceItemForClient,
   RawUserImplementedFunctions,
-} from '@recative/definitions';
+} from '@web-media/definitions';
 import type {
   IInitialAssetStatus,
   IUserRelatedEnvVariable,
-} from '@recative/core-manager';
+} from '@web-media/core-manager';
 
 import { Block } from 'baseui/block';
 

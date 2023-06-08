@@ -5,12 +5,12 @@ import {
   allSettled,
   OpenPromise,
   TimeSlicingQueue,
-} from '@recative/open-promise';
+} from '@web-media/open-promise';
 import {
   IResourceFileForClient,
   PreloadLevel,
   ResourceLoaderCacheLevel,
-} from '@recative/definitions';
+} from '@web-media/definitions';
 
 import { isNotNullable } from '../../utils/isNullable';
 

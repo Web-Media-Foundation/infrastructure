@@ -5,7 +5,7 @@ import { nanoid } from 'nanoid';
 import {
   MessagePortChannel,
   LazyMessagePortChannel,
-} from '@recative/act-protocol';
+} from '@web-media/act-protocol';
 
 import { logActPointChannel } from './log';
 

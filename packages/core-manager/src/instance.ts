@@ -5,17 +5,17 @@ import {
   Timeline,
   RemoteTrack,
   MonitorTrack,
-} from '@recative/time-schedule';
+} from '@web-media/time-schedule';
 import {
   ContentSpec,
   ManagedCoreStateList,
   ManagedCoreStateManager,
   ManagerCoreStateTrigger,
   UpdateReason,
-} from '@recative/definitions';
-import { OpenPromise, TimeSlicingQueue } from '@recative/open-promise';
+} from '@web-media/definitions';
+import { OpenPromise, TimeSlicingQueue } from '@web-media/open-promise';
 
-import type { AudioStation } from '@recative/audio-station';
+import type { AudioStation } from '@web-media/audio-station';
 
 import { AudioHost } from './audio/audioHost';
 import { AudioTrack } from './audio/audioTrack';

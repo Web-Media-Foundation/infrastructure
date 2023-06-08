@@ -4,9 +4,9 @@ import {
   AudioSource,
   AudioStation,
   getGlobalAudioStation,
-} from '@recative/audio-station';
-import { IResourceFileForClient } from '@recative/definitions';
-import { Clip as PhonographClip, mp3Adapter } from '@recative/phonograph';
+} from '@web-media/audio-station';
+import { IResourceFileForClient } from '@web-media/definitions';
+import { Clip as PhonographClip, mp3Adapter } from '@web-media/phonograph';
 
 export class PhonographClipWithAudioStation {
   phonograph: PhonographClip<unknown>;
@@ -341,7 +341,7 @@ export const selectUrlPhonographAudioElementInitPostProcess = async (
 };
 
 const AUDIO_BACKEND_EXTENSION_KEY =
-  '@recative/extension-audio-backends/PhonographAudioBackend~~backend';
+  '@web-media/extension-audio-backends/PhonographAudioBackend~~backend';
 
 export const selectUrlAudioElementInitPostProcess = async (
   url: string,

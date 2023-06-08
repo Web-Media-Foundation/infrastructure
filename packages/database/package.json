@@ -1,11 +1,11 @@
 {
-  "name": "@recative/database",
+  "name": "@web-media/database",
   "version": "0.0.4",
   "source": "src/index.ts",
   "main": "dist/main.js",
   "module": "dist/module.js",
   "types": "dist/types.d.ts",
-  "repository": "https://github.com/recative/recative-system",
+  "repository": "https://github.com/Web-Media-Foundation/infrastructure",
   "scripts": {
     "clean": "rimraf ./dist",
     "watch": "rollup -c -w",
@@ -13,9 +13,9 @@
     "test": "jest"
   },
   "dependencies": {
-    "@recative/lens": "workspace:^",
-    "@recative/open-promise": "workspace:^",
-    "@ungap/event-target": "^0.2.3"
+    "@ungap/event-target": "^0.2.3",
+    "@web-media/lens": "workspace:^",
+    "@web-media/open-promise": "workspace:^"
   },
   "devDependencies": {
     "@faker-js/faker": "^7.5.0",

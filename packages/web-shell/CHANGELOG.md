@@ -1,4 +1,4 @@
-# @recative/web-shell
+# @web-media/web-shell
 
 ## 0.4.4
 
@@ -6,7 +6,7 @@
 
 - Updated dependencies [6fab431]
 - Updated dependencies [6d18085]
-  - @recative/act-player@0.5.19
+  - @web-media/act-player@0.5.19
 
 ## 0.4.3
 
@@ -14,7 +14,7 @@
 
 - 64b0c01: chore: Supports fetching version number
 - Updated dependencies [4c56c57]
-  - @recative/act-player@0.5.18
+  - @web-media/act-player@0.5.18
 
 ## 0.4.2
 
@@ -22,7 +22,7 @@
 
 - Updated dependencies [2432b63]
 - Updated dependencies [ac22b56]
-  - @recative/act-player@0.5.17
+  - @web-media/act-player@0.5.17
 
 ## 0.4.1
 

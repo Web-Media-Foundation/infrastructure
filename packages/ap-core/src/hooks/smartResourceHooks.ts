@@ -1,7 +1,7 @@
 import debug from 'debug';
 
-import { getMatchedResource } from '@recative/smart-resource';
-import type { ResourceEntry } from '@recative/smart-resource';
+import { getMatchedResource } from '@web-media/smart-resource';
+import type { ResourceEntry } from '@web-media/smart-resource';
 
 import { useSelector } from '../core/DataSource';
 import { useEnvVariableDataSource } from './envVariableHooks';

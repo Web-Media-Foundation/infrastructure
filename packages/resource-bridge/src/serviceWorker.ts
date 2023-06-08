@@ -4,9 +4,9 @@
 /// <reference lib="es2020" />
 /// <reference lib="WebWorker" />
 
-import { OpenPromise } from '@recative/open-promise';
-import { ResourceLoaderCacheLevel } from '@recative/definitions';
-import type { IResourceItemForClient } from '@recative/definitions';
+import { OpenPromise } from '@web-media/open-promise';
+import { ResourceLoaderCacheLevel } from '@web-media/definitions';
+import type { IResourceItemForClient } from '@web-media/definitions';
 
 import { createServiceWorkerConnector } from './connector';
 

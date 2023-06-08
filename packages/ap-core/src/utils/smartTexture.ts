@@ -1,4 +1,4 @@
-import { IResourceFileForClient } from '@recative/definitions';
+import { IResourceFileForClient } from '@web-media/definitions';
 import * as PIXI from 'pixi.js-legacy';
 import { DataSource, useSelector } from '../core/DataSource';
 import { useEnvVariableDataSource } from '../hooks/envVariableHooks';
@@ -17,19 +17,19 @@ export interface SmartTextureInfo {
   rotate?: number
 }
 
-export const ATLAS_EX_KEY = '@recative/extension-rs-atlas/TextureAnalysisProcessor~~ex';
-export const ATLAS_EY_KEY = '@recative/extension-rs-atlas/TextureAnalysisProcessor~~ey';
-export const ATLAS_EW_KEY = '@recative/extension-rs-atlas/TextureAnalysisProcessor~~ew';
-export const ATLAS_EH_KEY = '@recative/extension-rs-atlas/TextureAnalysisProcessor~~eh';
-export const ATLAS_TW_KEY = '@recative/extension-rs-atlas/TextureAnalysisProcessor~~tw';
-export const ATLAS_TH_KEY = '@recative/extension-rs-atlas/TextureAnalysisProcessor~~th';
-export const ATLAS_X_KEY = '@recative/extension-rs-atlas/AtlasResourceProcessor~~x';
-export const ATLAS_Y_KEY = '@recative/extension-rs-atlas/AtlasResourceProcessor~~y';
-export const ATLAS_W_KEY = '@recative/extension-rs-atlas/AtlasResourceProcessor~~w';
-export const ATLAS_H_KEY = '@recative/extension-rs-atlas/AtlasResourceProcessor~~h';
-export const ATLAS_F_KEY = '@recative/extension-rs-atlas/AtlasResourceProcessor~~f';
-export const ATLAS_ENABLE_KEY = '@recative/extension-rs-atlas/AtlasResourceProcessor~~enabled';
-export const ATLAS_FRAMES_KEY = '@recative/extension-rs-atlas/AtlasResourceProcessor~~frames';
+export const ATLAS_EX_KEY = '@web-media/extension-rs-atlas/TextureAnalysisProcessor~~ex';
+export const ATLAS_EY_KEY = '@web-media/extension-rs-atlas/TextureAnalysisProcessor~~ey';
+export const ATLAS_EW_KEY = '@web-media/extension-rs-atlas/TextureAnalysisProcessor~~ew';
+export const ATLAS_EH_KEY = '@web-media/extension-rs-atlas/TextureAnalysisProcessor~~eh';
+export const ATLAS_TW_KEY = '@web-media/extension-rs-atlas/TextureAnalysisProcessor~~tw';
+export const ATLAS_TH_KEY = '@web-media/extension-rs-atlas/TextureAnalysisProcessor~~th';
+export const ATLAS_X_KEY = '@web-media/extension-rs-atlas/AtlasResourceProcessor~~x';
+export const ATLAS_Y_KEY = '@web-media/extension-rs-atlas/AtlasResourceProcessor~~y';
+export const ATLAS_W_KEY = '@web-media/extension-rs-atlas/AtlasResourceProcessor~~w';
+export const ATLAS_H_KEY = '@web-media/extension-rs-atlas/AtlasResourceProcessor~~h';
+export const ATLAS_F_KEY = '@web-media/extension-rs-atlas/AtlasResourceProcessor~~f';
+export const ATLAS_ENABLE_KEY = '@web-media/extension-rs-atlas/AtlasResourceProcessor~~enabled';
+export const ATLAS_FRAMES_KEY = '@web-media/extension-rs-atlas/AtlasResourceProcessor~~frames';
 
 export const atlasKeys = [
   ATLAS_EX_KEY,

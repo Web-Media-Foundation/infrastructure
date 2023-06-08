@@ -1,4 +1,4 @@
-# @recative/ap-preview
+# @web-media/ap-preview
 
 ## 0.4.10
 
@@ -6,16 +6,16 @@
 
 - Updated dependencies [4c56c57]
 - Updated dependencies [0b36c02]
-  - @recative/act-player@0.5.18
-  - @recative/core-manager@0.13.0
+  - @web-media/act-player@0.5.18
+  - @web-media/core-manager@0.13.0
 
 ## 0.4.9
 
 ### Patch Changes
 
 - Updated dependencies [46019d0]
-  - @recative/core-manager@0.12.0
-  - @recative/act-player@0.5.16
+  - @web-media/core-manager@0.12.0
+  - @web-media/act-player@0.5.16
 
 ## 0.4.8
 
@@ -25,18 +25,18 @@
 - Updated dependencies [94ada38]
 - Updated dependencies [c0142d7]
 - Updated dependencies [cffb93b]
-  - @recative/core-manager@0.11.0
-  - @recative/definitions@0.5.0
-  - @recative/act-player@0.5.3
-  - @recative/act-protocol@0.2.9
+  - @web-media/core-manager@0.11.0
+  - @web-media/definitions@0.5.0
+  - @web-media/act-player@0.5.3
+  - @web-media/act-protocol@0.2.9
 
 ## 0.4.7
 
 ### Patch Changes
 
 - Updated dependencies [fc982ac]
-  - @recative/core-manager@0.10.0
-  - @recative/act-player@0.5.1
+  - @web-media/core-manager@0.10.0
+  - @web-media/act-player@0.5.1
 
 ## 0.4.6
 
@@ -45,8 +45,8 @@
 - Updated dependencies [f1c3093]
 - Updated dependencies [b252f5f]
 - Updated dependencies [9fdeb4b]
-  - @recative/core-manager@0.9.0
-  - @recative/act-player@0.5.0
+  - @web-media/core-manager@0.9.0
+  - @web-media/act-player@0.5.0
 
 ## 0.4.5
 
@@ -54,17 +54,17 @@
 
 - Updated dependencies [148013b]
 - Updated dependencies [7b07837]
-  - @recative/act-protocol@0.2.8
-  - @recative/core-manager@0.8.0
-  - @recative/act-player@0.4.2
+  - @web-media/act-protocol@0.2.8
+  - @web-media/core-manager@0.8.0
+  - @web-media/act-player@0.4.2
 
 ## 0.4.4
 
 ### Patch Changes
 
 - Updated dependencies [25eecc8]
-  - @recative/core-manager@0.7.0
-  - @recative/act-player@0.4.1
+  - @web-media/core-manager@0.7.0
+  - @web-media/act-player@0.4.1
 
 ## 0.4.3
 
@@ -75,8 +75,8 @@
 - Updated dependencies [33d4903]
 - Updated dependencies [2a2aa9c]
 - Updated dependencies [15109d5]
-  - @recative/core-manager@0.6.0
-  - @recative/act-player@0.4.0
+  - @web-media/core-manager@0.6.0
+  - @web-media/act-player@0.4.0
 
 ## 0.4.2
 
@@ -102,15 +102,15 @@
 - Updated dependencies [bda3138]
 - Updated dependencies [775f617]
 - Updated dependencies [a98f797]
-  - @recative/core-manager@0.5.0
-  - @recative/definitions@0.4.2
+  - @web-media/core-manager@0.5.0
+  - @web-media/definitions@0.4.2
 
 ## 0.3.2-beta.0
 
 ### Patch Changes
 
 - Updated dependencies [775f617]
-  - @recative/core-manager@0.5.0-beta.0
+  - @web-media/core-manager@0.5.0-beta.0
 
 ## 0.3.1
 
@@ -135,9 +135,9 @@
 ### Patch Changes
 
 - Updated dependencies
-  - @recative/definitions@0.4.0
-  - @recative/act-protocol@0.2.7
-  - @recative/core-manager@0.4.5
+  - @web-media/definitions@0.4.0
+  - @web-media/act-protocol@0.2.7
+  - @web-media/core-manager@0.4.5
 
 ## 0.1.0
 
@@ -148,9 +148,9 @@
 ### Patch Changes
 
 - Updated dependencies
-  - @recative/core-manager@0.4.0
-  - @recative/definitions@0.3.0
-  - @recative/act-protocol@0.2.6
+  - @web-media/core-manager@0.4.0
+  - @web-media/definitions@0.3.0
+  - @web-media/act-protocol@0.2.6
 
 ## 0.0.5
 
@@ -164,7 +164,7 @@
 
 - Updated dependencies
 - Updated dependencies
-  - @recative/core-manager@0.3.0
+  - @web-media/core-manager@0.3.0
 
 ## 0.0.3
 
@@ -172,7 +172,7 @@
 
 - feat: Implement `trustedUploaders` to improve performance
 - Updated dependencies
-  - @recative/core-manager@0.2.4
+  - @web-media/core-manager@0.2.4
 
 ## 0.0.2
 
@@ -181,8 +181,8 @@
 - fix: Typing problem for nesting packages
 - Updated dependencies
 - Updated dependencies
-  - @recative/core-manager@0.2.3
-  - @recative/act-protocol@0.2.1
+  - @web-media/core-manager@0.2.3
+  - @web-media/act-protocol@0.2.1
 
 ## 0.0.1
 
@@ -199,7 +199,7 @@
 ### Patch Changes
 
 - Updated dependencies
-  - @recative/act-protocol@0.2.0
-  - @recative/core-manager@0.2.0
-  - @recative/definitions@0.2.0
-  - @recative/smart-resource@0.2.0
+  - @web-media/act-protocol@0.2.0
+  - @web-media/core-manager@0.2.0
+  - @web-media/definitions@0.2.0
+  - @web-media/smart-resource@0.2.0

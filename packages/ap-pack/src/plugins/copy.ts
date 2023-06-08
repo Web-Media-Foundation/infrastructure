@@ -13,7 +13,7 @@ export const copyPlugin = [
       },
       {
         from: require.resolve(
-          '@recative/resource-bridge/dist/sw/serviceWorker.js',
+          '@web-media/resource-bridge/dist/sw/serviceWorker.js',
         ),
         to: './sw.js',
         // Public files should not be minimized by terser plugin

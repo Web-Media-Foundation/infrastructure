@@ -2,7 +2,7 @@ import {
   AudioMixer,
   AudioSource,
   getGlobalAudioStation,
-} from '@recative/audio-station';
+} from '@web-media/audio-station';
 
 import { Remote, RemoteTrack, Timeline, MonitorTrack } from '../src';
 

@@ -1,5 +1,5 @@
 {
-  "name": "@recative/device-pressure-measurement-native-backend",
+  "name": "@web-media/device-pressure-measurement-native-backend",
   "version": "0.0.11",
   "description": "Measure the pressure of memory",
   "source": "src/index.ts",
@@ -13,16 +13,16 @@
     "android/build.gradle",
     "dist/",
     "ios/Plugin/**/*",
-    "RecativeDevicePressureMeasuremetNativeBackend.podspec"
+    "Web Media FoundationDevicePressureMeasuremetNativeBackend.podspec"
   ],
   "author": "SunZheng",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/recative/recative-system.git"
+    "url": "git+https://github.com/Web-Media-Foundation/infrastructure.git"
   },
   "bugs": {
-    "url": "https://github.com/recative/recative-system/issues"
+    "url": "https://github.com/Web-Media-Foundation/infrastructure/issues"
   },
   "keywords": [
     "capacitor",

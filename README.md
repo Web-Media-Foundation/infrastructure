@@ -1,16 +1,16 @@
 <div>
-  <img alt="Recative System" width="100%" src="https://raw.githubusercontent.com/recative/recative-system/05a199e188eecf9b10cbb0225a478463d0a878d7/assets/title.svg" />
+  <img alt="Web Media Foundation" width="100%" src="https://raw.githubusercontent.com/Web-Media-Foundation/infrastructure/05a199e188eecf9b10cbb0225a478463d0a878d7/assets/title.svg" />
 </div>
 
-Recative is a comprehensive system to help creators to build interactive media for the modern web platform. The Recative System aims to allow creators to build their dreaming interactive content without bothering with trivial troubles of the performance issue, compatibility, etc.
+Web Media Foundation is a comprehensive system to help creators to build interactive media for the modern web platform. The Web Media Foundation aims to allow creators to build their dreaming interactive content without bothering with trivial troubles of the performance issue, compatibility, etc.
 
 Our architectural design allows creators to integrate a variety of content from diverse sources, with several types into a solitary product, like video, interactive programs, and distribute it to different platforms, in multiple forms, including desktop clients, mobile applications, and websites.
 
-It is highly recommended to use `Recative Studio` with this system, which can handle resource management, automatic compatibility issue fixing, internationalization, version control, media publishing, application bundling, and more tasks with ease.
+It is highly recommended to use `Web Media Foundation Studio` with this system, which can handle resource management, automatic compatibility issue fixing, internationalization, version control, media publishing, application bundling, and more tasks with ease.
 
 ## Status
 
-Recative System is under active development, and we are currently focusing on optimizing the architecture, refining the documentation, and completing the functionality.
+Web Media Foundation is under active development, and we are currently focusing on optimizing the architecture, refining the documentation, and completing the functionality.
 
 You can expect breaking changes at any time until we release the stable version.
 
@@ -63,7 +63,7 @@ Nx will automatically build and publish all changed packages.
 If you think we need to create a new package, use the following command:
 
 ```
-yarn nx generate @nrwl/js:library --name=[name] --publishable --importPath @recative/[name]
+yarn nx generate @nrwl/js:library --name=[name] --publishable --importPath @web-media/[name]
 ```
 
 Replace `[name]` with your package name.

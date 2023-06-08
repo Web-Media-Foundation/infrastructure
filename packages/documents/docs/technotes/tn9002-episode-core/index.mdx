@@ -24,9 +24,9 @@ provided by creators, it will manage the following tasks:
   how lifecycle works later.
 
 - **Time synchronize and schedule:**
-  [Synchronizing multiple media source](https://github.com/recative/recative-system/blob/05a199e188eecf9b10cbb0225a478463d0a878d7/packages/time-schedule/src/timeline.ts) like
+  [Synchronizing multiple media source](https://github.com/Web-Media-Foundation/infrastructure/blob/05a199e188eecf9b10cbb0225a478463d0a878d7/packages/time-schedule/src/timeline.ts) like
   video channel and audio channel.
-  [triggering events](https://github.com/recative/recative-system/blob/05a199e188eecf9b10cbb0225a478463d0a878d7/packages/definitions/src/utils/managedCoreState.ts#L183)
+  [triggering events](https://github.com/Web-Media-Foundation/infrastructure/blob/05a199e188eecf9b10cbb0225a478463d0a878d7/packages/definitions/src/utils/managedCoreState.ts#L183)
   for various purpose like displaying subtitles, showing additional tips at
   specific time point of the video, switching BGM at different time, etc.
 
@@ -39,13 +39,13 @@ provided by creators, it will manage the following tasks:
 
 :::info
 For video files, we split the file into two different parts: a video file and
-an audio files. There is an extension can handle this task in _Recative Studio_,
+an audio files. There is an extension can handle this task in _Web Media Foundation Studio_,
 after the file is imported, channel splitting, compatibility fixing and many
 other tasks can be finished automatically.
 :::
 
 - **Resource management:** Core Manager will manage all files imported to
-  _Recative Studio_ (like audio, video, subtitle files or texture files). It will
+  _Web Media Foundation Studio_ (like audio, video, subtitle files or texture files). It will
   preload necessary resources, automatically select different resource for
   different language and platform, select resource from multiple CDN and storage
   source (which make offline storage possible).
@@ -149,7 +149,7 @@ sequence switches to `undefined` content, it will fire an `end` event.
     padding: '0 16px',
     float: 'right',
   }}
-  alt="The three-level model of the Recative System"
+  alt="The three-level model of the Web Media Foundation"
 />
 
 Assets can create their own subsequences. `subsequence`s are like the main

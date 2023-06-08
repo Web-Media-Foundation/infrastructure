@@ -1,7 +1,7 @@
 import * as React from 'react';
 
-import { useEpisodes } from '@recative/client-sdk';
-import type { IEpisodeDetail } from '@recative/client-sdk';
+import { useEpisodes } from '@web-media/client-sdk';
+import type { IEpisodeDetail } from '@web-media/client-sdk';
 
 export const useEnvVariable = (
   episodeDetail: IEpisodeDetail | null,

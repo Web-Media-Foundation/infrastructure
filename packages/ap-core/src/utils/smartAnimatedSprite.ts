@@ -1,7 +1,7 @@
 import { utils } from 'pixi.js-legacy';
 import * as PIXI from 'pixi.js-legacy';
-import { IDetailedResourceItemForClient, IResourceFileForClient } from '@recative/definitions';
-import { getMatchedResource, ResourceEntry } from '@recative/smart-resource';
+import { IDetailedResourceItemForClient, IResourceFileForClient } from '@web-media/definitions';
+import { getMatchedResource, ResourceEntry } from '@web-media/smart-resource';
 
 import { IFailedResponse, ISuccessResponse, useQuery } from '../hooks/fetchDataHooks';
 import { DataSource, useCombinator, useSelector } from '../core/DataSource';

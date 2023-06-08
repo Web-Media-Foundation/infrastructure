@@ -6,7 +6,7 @@ import type { StyleObject } from 'styletron-react';
 import { Block } from 'baseui/block';
 import { ParagraphSmall } from 'baseui/typography';
 
-import { DialogActionTriggerResponse } from '@recative/act-protocol';
+import { DialogActionTriggerResponse } from '@web-media/act-protocol';
 import React from 'react';
 import { ModuleContainer } from '../Layout/ModuleContainer';
 
@@ -36,7 +36,7 @@ export const Dialog: InterfaceExtensionComponent = (props) => {
 
   const hackedClassName = useRandomId();
 
-  const handleDialogAction = React.useCallback((action:DialogActionTriggerResponse) => {
+  const handleDialogAction = React.useCallback((action: DialogActionTriggerResponse) => {
     props.core.dialogManager.triggerDialogAction(action);
     props.core.dialogManager.dialogActions.set(null);
     props.core.dialogManager.sendDialogMessage([{
@@ -80,7 +80,7 @@ export const Dialog: InterfaceExtensionComponent = (props) => {
           className={cn(debugStyles, hackedClassName)}
         >
           {dialogActions !== null && (
-            <DialogActionPanel actions={dialogActions} onAction={handleDialogAction}/>
+            <DialogActionPanel actions={dialogActions} onAction={handleDialogAction} />
           )}
           {dialogMessage.accumulated.length <= 0
             && (<DialogUnit
@@ -102,7 +102,7 @@ export const Dialog: InterfaceExtensionComponent = (props) => {
 
               {
                 (dialogUnit.type === 'image')
-                && (<img src={dialogUnit.src} alt="Alt message"/>)
+                && (<img src={dialogUnit.src} alt="Alt message" />)
               }
             </DialogUnit>
           ))}

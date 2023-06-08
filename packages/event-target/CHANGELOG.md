@@ -1,4 +1,4 @@
-# @recative/ugly-json
+# @web-media/ugly-json
 
 ## 0.0.1
 

@@ -5,10 +5,10 @@ sidebar_position: 0006
 # AP0006: Animation Hooks
 
 This page describes hooks that you can use to create vivid animations, checkout
-[this introduction](/pages/Hooks/hooks-intro) if you are new to Recative AP hooks.
+[this introduction](/pages/Hooks/hooks-intro) if you are new to Web Media Foundation AP hooks.
 
 * Low-level API bindings:
-    * `useRaf`: Recative AP binding of `requestAnimationFrame`;
+    * `useRaf`: Web Media Foundation AP binding of `requestAnimationFrame`;
     * `useTicker`: Get low level time manager, which drives all animation hooks;
     * `useBatchPaint`: Batch a series of function calls to one;
     * `useThrottle`: Limit function call to a reasonable frequency.
@@ -40,7 +40,7 @@ restart.
 const ticker = useTicker()
 ```
 
-Each Recative AP application (or, an interactive point) has a time manager which 
+Each Web Media Foundation AP application (or, an interactive point) has a time manager which 
 controls all the animations. the underlying tool is [`TimeMagic`](/classes/timemagic).
 
 We don't encourage you to manipulate it directly. `useRaf` or other high level 
@@ -107,7 +107,7 @@ Here's a brief definition of throttle from
 > the event, the attached function will be executed only once in a given time 
 > interval.
 
-The useThrottle hook implements a throttle function with Recative AP's player lifecycle
+The useThrottle hook implements a throttle function with Web Media Foundation AP's player lifecycle
 binding.
 
 Say, we want to limit function call to 12 fps:

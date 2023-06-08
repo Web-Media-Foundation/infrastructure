@@ -22,8 +22,8 @@ import {
   useSdkConfig,
   PlayerSdkProvider,
   ContentModuleFactory,
-} from '@recative/client-sdk';
-import { Error, Loading } from '@recative/act-player';
+} from '@web-media/client-sdk';
+import { Error, Loading } from '@web-media/act-player';
 
 import { Block } from 'baseui/block';
 import { Drawer, SIZE as DRAWER_SIZE } from 'baseui/drawer';
@@ -33,23 +33,23 @@ import type { ButtonOverrides } from 'baseui/button';
 import { useEnvVariable } from './utils/useEnvVariable';
 
 const PREFERRED_UPLOADERS = [
-  '@recative/uploader-extension-studio/ResourceManager',
-  '@recative/uploader-polyv-vod/PolyVUploader',
+  '@web-media/uploader-extension-studio/ResourceManager',
+  '@web-media/uploader-polyv-vod/PolyVUploader',
 ];
 
 const TRUSTED_UPLOADERS = [
-  '@recative/uploader-extension-studio/ResourceManager',
+  '@web-media/uploader-extension-studio/ResourceManager',
 ];
 
-if (window.localStorage.getItem('@recative/act-player/error-request')) {
-  PREFERRED_UPLOADERS.push('@recative/uploader-extension-error/not-exists');
+if (window.localStorage.getItem('@web-media/act-player/error-request')) {
+  PREFERRED_UPLOADERS.push('@web-media/uploader-extension-error/not-exists');
 }
 
-const temporaryPath = localStorage.getItem('@recative/demo-player/path');
+const temporaryPath = localStorage.getItem('@web-media/demo-player/path');
 const indexEpisodeOrder = localStorage.getItem(
-  '@recative/mobile-template/index-order',
+  '@web-media/mobile-template/index-order',
 );
-const dataType = localStorage.getItem('@recative/demo-player/data-type') as
+const dataType = localStorage.getItem('@web-media/demo-player/data-type') as
   | 'bson'
   | 'json';
 

@@ -4,14 +4,14 @@ import {
   AudioMixer,
   AudioStation,
   getGlobalAudioStation,
-} from '@recative/audio-station';
+} from '@web-media/audio-station';
 import {
   ManagedCoreStateList,
   ManagedCoreStateManager,
   SUBTITLE_MANAGED_CORE_STATE_EXTENSION_ID,
   UpdateReason,
-} from '@recative/definitions';
-import { AdditionalSubtitleDefine } from '@recative/act-protocol';
+} from '@web-media/definitions';
+import { AdditionalSubtitleDefine } from '@web-media/act-protocol';
 
 import { WithLogger } from '../LogCollector';
 import { convertSRTToStatesWithPrefix } from '../utils/managedCoreState';

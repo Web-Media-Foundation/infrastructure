@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { EpisodeCore } from '@recative/core-manager';
+import { EpisodeCore } from '@web-media/core-manager';
 
 export const useFullScreen = (
   fullScreen: boolean,

@@ -7,7 +7,7 @@ import { useKonami } from 'react-konami-code';
 import { useStyletron } from 'baseui';
 
 import type { StyleObject } from 'styletron-react';
-import type { EpisodeCore, ContentSequence } from '@recative/core-manager';
+import type { EpisodeCore, ContentSequence } from '@web-media/core-manager';
 
 import { Block } from 'baseui/block';
 import { StatefulTooltip } from 'baseui/tooltip';
@@ -21,11 +21,11 @@ import { MemoryRecorder } from './utils/MemoryRecorder';
 import { useRaf } from './hooks/useRaf';
 
 import { Prototype } from '../Prototype/Prototype';
-import { RecativeLogo } from '../Logo/RecativeLogo';
+import { WebMediaFoundationLogo } from '../Logo/WebMediaFoundationLogo';
 
 import { useEvent } from '../../hooks/useEvent';
 import { errorCollectingAtom } from './utils/errorCollector';
-import { forEachConfig, getRecativeConfigurations } from './utils/storageKeys';
+import { forEachConfig, getWebMediaFoundationConfigurations } from './utils/storageKeys';
 
 const s = (x: boolean) => x.toString();
 
@@ -221,7 +221,7 @@ if (!window.__RECATIVE_INTERNAL_REQUIRE_MEMORY_RECORD__) {
 
 export const ConfigureEditor = React.memo(() => {
   const [css] = useStyletron();
-  const [config, setConfig] = React.useState(getRecativeConfigurations);
+  const [config, setConfig] = React.useState(getWebMediaFoundationConfigurations);
 
   const callbacks = React.useMemo(() => {
     const result = new Map<string, (event: React.ChangeEvent<HTMLInputElement>) => void>();
@@ -391,7 +391,7 @@ export const Inspector = <T extends Record<string, unknown>>({ core }: IInspecto
     return <Block className={css(containerStyle)}>
       <Block className={css(contentStyle)}>
         <HeadingXSmall className={css(titleStyle)}>
-          <RecativeLogo height="1.5em" /><Block marginLeft="8px"> | Inspector</Block>
+          <WebMediaFoundationLogo height="1.5em" /><Block marginLeft="8px"> | Inspector</Block>
         </HeadingXSmall>
 
         <LabelMedium>
@@ -433,7 +433,7 @@ export const Inspector = <T extends Record<string, unknown>>({ core }: IInspecto
       `}</style>
       <Block className={cn(css(contentStyle), 'recative-inspector')}>
         <HeadingXSmall className={css(titleStyle)}>
-          <RecativeLogo height="1.5em" /><Block marginLeft="8px"> | Inspector</Block>
+          <WebMediaFoundationLogo height="1.5em" /><Block marginLeft="8px"> | Inspector</Block>
         </HeadingXSmall>
 
         <SectionTitle>

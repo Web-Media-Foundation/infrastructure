@@ -4026,9 +4026,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ionic/cli@patch:@ionic/cli@npm:6.20.1#../../.yarn/patches/@ionic-cli-npm-6.20.1-53fb01ed2a.patch::locator=%40recative%2Fmobile-shell%40workspace%3Apackages%2Fmobile-shell":
+"@ionic/cli@patch:@ionic/cli@npm:6.20.1#../../.yarn/patches/@ionic-cli-npm-6.20.1-53fb01ed2a.patch::locator=%40web-media%2Fmobile-shell%40workspace%3Apackages%2Fmobile-shell":
   version: 6.20.1
-  resolution: "@ionic/cli@patch:@ionic/cli@npm%3A6.20.1#../../.yarn/patches/@ionic-cli-npm-6.20.1-53fb01ed2a.patch::version=6.20.1&hash=983364&locator=%40recative%2Fmobile-shell%40workspace%3Apackages%2Fmobile-shell"
+  resolution: "@ionic/cli@patch:@ionic/cli@npm%3A6.20.1#../../.yarn/patches/@ionic-cli-npm-6.20.1-53fb01ed2a.patch::version=6.20.1&hash=983364&locator=%40web-media%2Fmobile-shell%40workspace%3Apackages%2Fmobile-shell"
   dependencies:
     "@ionic/cli-framework": 5.1.3
     "@ionic/cli-framework-output": 2.2.5
@@ -6629,633 +6629,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@recative/act-player@^0.5.18, @recative/act-player@^0.5.19, @recative/act-player@workspace:^, @recative/act-player@workspace:packages/act-player":
-  version: 0.0.0-use.local
-  resolution: "@recative/act-player@workspace:packages/act-player"
-  dependencies:
-    "@nanostores/react": 0.2.0
-    "@paciolan/remote-module-loader": ^3.0.2
-    "@react-hookz/web": ^15.1.0
-    "@recative/act-protocol": ^0.2.11
-    "@recative/core-manager": ^0.13.0
-    "@recative/definitions": ^0.5.4
-    "@recative/smart-resource": ^0.2.0
-    "@types/debug": ^4.1.7
-    "@types/fs-extra": ^9.0.13
-    "@types/lodash": ^4.14.177
-    "@types/react-slider": ^1.3.1
-    buffer: ^6.0.3
-    classnames: ^2.3.1
-    debug: ^4.3.4
-    events: ^3.3.0
-    fs-extra: ^10.0.0
-    https-browserify: ^1.0.0
-    lodash: ^4.17.21
-    lottie-react: ^2.3.1
-    nanostores: ^0.5.12
-    process: ^0.11.10
-    querystring-es3: ^0.2.1
-    react-click-away-listener: ^2.0.5
-    react-error-boundary: ^3.1.4
-    react-konami-code: ^2.3.0
-    react-slider: 2.0.1
-    react-tooltip: ^4.2.21
-    react-use: ^17.3.1
-    stream-http: ^3.2.0
-    ts-node: 10.9.1
-    unplugin-auto-import: ^0.11.1
-    url: ^0.11.0
-    use-constant: ^1.1.0
-  peerDependencies:
-    baseui: ^12.1.0
-    react: ^18.2.0
-    react-dom: ^18.2.0
-    styletron-engine-monolithic: 1.0.0
-    styletron-react: 6.1.0
-  languageName: unknown
-  linkType: soft
-
-"@recative/act-protocol@^0.2.11, @recative/act-protocol@^0.2.9, @recative/act-protocol@workspace:packages/act-protocol":
-  version: 0.0.0-use.local
-  resolution: "@recative/act-protocol@workspace:packages/act-protocol"
-  dependencies:
-    "@recative/definitions": ^0.5.0
-    "@types/debug": ^4.1.7
-    async-call-rpc: 6.1.2
-    debug: ^4.3.3
-  languageName: unknown
-  linkType: soft
-
-"@recative/ap-core@workspace:packages/ap-core":
-  version: 0.0.0-use.local
-  resolution: "@recative/ap-core@workspace:packages/ap-core"
-  dependencies:
-    "@nanostores/persistent": ^0.5.1
-    "@recative/act-protocol": ^0.2.11
-    "@recative/definitions": ^0.5.0
-    "@recative/open-promise": ^0.3.0
-    "@recative/resource-bridge": ^0.2.6
-    "@recative/smart-resource": ^0.2.0
-    "@types/animejs": ^3.1.2
-    "@types/debug": ^4.1.5
-    "@types/lodash": ^4.14.169
-    "@types/three": ^0.127.1
-    "@types/uuid": ^8.3.0
-    "@ungap/event-target": ^0.2.2
-    animejs: ^3.2.1
-    debug: ^4.3.3
-    lodash: ^4.17.21
-    pixi.js-legacy: 6.3.2
-    runtypes: "*"
-    serve: ^11.3.2
-    three: ^0.140.2
-    ts-loader: ^8.0.14
-    uuid: ^8.3.2
-  peerDependencies:
-    animejs: "*"
-    pixi.js-legacy: "*"
-    three: "*"
-  languageName: unknown
-  linkType: soft
-
-"@recative/ap-pack@workspace:packages/ap-pack":
-  version: 0.0.0-use.local
-  resolution: "@recative/ap-pack@workspace:packages/ap-pack"
-  dependencies:
-    "@babel/core": 7.16.10
-    "@babel/plugin-transform-runtime": 7.16.10
-    "@babel/preset-env": 7.16.11
-    "@babel/preset-react": 7.16.7
-    "@babel/preset-typescript": 7.16.7
-    "@babel/runtime-corejs3": 7.16.8
-    "@paciolan/remote-module-loader": ^3.0.2
-    "@recative/act-player": ^0.5.18
-    "@recative/resource-bridge": ^0.2.6
-    "@types/fs-extra": 9.0.13
-    "@types/mkdirp": 1.0.2
-    babel-loader: 8.2.3
-    clean-webpack-plugin: 4.0.0
-    copy-webpack-plugin: 10.2.1
-    css-loader: 6.5.1
-    file-loader: 6.2.0
-    fs-extra: 10.0.0
-    html-loader: ^1.3.2
-    html-webpack-plugin: ^5.5.0
-    json-stream-stringify: ^2.0.4
-    mkdirp: ^1.0.4
-    node-polyfill-webpack-plugin: ^1.1.2
-    style-loader: ^2.0.0
-    ts-loader: 9.2.6
-    ts-node: 10.9.1
-    typescript: 4.9.3
-    url-loader: ^4.1.1
-    webpack: 5.66.0
-    webpack-dev-server: 4.7.3
-    webpack-manifest-plugin: 4.1.1
-    webpack-plugin-pwa-manifest: ^1.1.0
-  peerDependencies:
-    ap-preview: "*"
-  bin:
-    ap-pack: ./bin/ap-pack.js
-  languageName: unknown
-  linkType: soft
-
-"@recative/ap-preview@workspace:packages/ap-preview":
-  version: 0.0.0-use.local
-  resolution: "@recative/ap-preview@workspace:packages/ap-preview"
-  dependencies:
-    "@nanostores/react": 0.2.0
-    "@paciolan/remote-module-loader": ^3.0.2
-    "@parcel/packager-ts": ^2.7.0
-    "@parcel/transformer-react-refresh-wrap": ^2.7.0
-    "@parcel/transformer-typescript-types": ^2.7.0
-    "@react-hookz/web": ^15.1.0
-    "@recative/act-player": ^0.5.18
-    "@recative/act-protocol": ^0.2.9
-    "@recative/core-manager": ^0.13.0
-    "@recative/definitions": ^0.5.0
-    "@recative/smart-resource": ^0.2.0
-    "@types/debug": ^4.1.7
-    "@types/fs-extra": ^9.0.13
-    "@types/lodash": ^4.14.177
-    "@types/react-slider": ^1.3.1
-    buffer: ^6.0.3
-    classnames: ^2.3.1
-    debug: ^4.3.4
-    events: ^3.3.0
-    fs-extra: ^10.0.0
-    lodash: ^4.17.21
-    lottie-react: ^2.3.1
-    nanostores: ^0.5.12
-    parcel: ^2.7.0
-    process: ^0.11.10
-    querystring-es3: ^0.2.1
-    react-click-away-listener: ^2.0.5
-    react-error-boundary: ^3.1.4
-    react-router-dom: 6.3.0
-    react-tooltip: ^4.2.21
-    react-use: ^17.3.1
-    stream-http: ^3.2.0
-    ts-node: 10.9.1
-    url: ^0.11.0
-    use-constant: ^1.1.0
-  peerDependencies:
-    baseui: ^12.1.0
-    react: ^18.2.0
-    react-dom: ^18.2.0
-    styletron-engine-monolithic: 1.0.0
-    styletron-react: 6.1.0
-  languageName: unknown
-  linkType: soft
-
-"@recative/atlas@workspace:packages/atlas":
-  version: 0.0.0-use.local
-  resolution: "@recative/atlas@workspace:packages/atlas"
-  languageName: unknown
-  linkType: soft
-
-"@recative/audio-station@^0.4.0, @recative/audio-station@workspace:packages/audio-station":
-  version: 0.0.0-use.local
-  resolution: "@recative/audio-station@workspace:packages/audio-station"
-  dependencies:
-    "@ungap/event-target": ^0.2.3
-    standardized-audio-context: ^25.3.28
-  languageName: unknown
-  linkType: soft
-
-"@recative/capacitor-geckoview@workspace:packages/capacitor-geckoview":
-  version: 0.0.0-use.local
-  resolution: "@recative/capacitor-geckoview@workspace:packages/capacitor-geckoview"
-  peerDependencies:
-    "@capacitor/core": ^4.6.2
-  languageName: unknown
-  linkType: soft
-
-"@recative/client-sdk@^13.0.0, @recative/client-sdk@workspace:packages/client-sdk":
-  version: 0.0.0-use.local
-  resolution: "@recative/client-sdk@workspace:packages/client-sdk"
-  dependencies:
-    "@msgpack/msgpack": ^2.7.2
-    "@nanostores/react": ^0.1.5
-    "@paciolan/remote-module-loader": ^3.0.2
-    "@react-hookz/web": ^15.1.0
-    "@recative/act-player": ^0.5.19
-    "@recative/act-protocol": ^0.2.11
-    "@recative/core-manager": ^0.13.0
-    "@recative/definitions": ^0.5.4
-    "@recative/open-promise": ^0.3.0
-    "@recative/smart-resource": ^0.2.1
-    "@recative/ugly-json": "workspace:^"
-    "@types/debug": ^4.1.7
-    classnames: ^2.3.1
-    debug: ^4.3.3
-    detect-gpu: ^4.0.43
-    i18next: ^22.0.5
-    lottie-react: ^2.3.1
-    nanoid: ^3.3.3
-    nanostores: ^0.5.10
-    react-i18next: ^12.0.0
-    react-slider: 2.0.1
-    react-use: ^17.3.2
-    use-constant: ^1.1.0
-  peerDependencies:
-    "@nanostores/react": ^0.1.5
-    "@paciolan/remote-module-loader": "*"
-    "@recative/act-player": 0.5.19
-    "@recative/act-protocol": "*"
-    "@recative/core-manager": 0.13.0
-    "@recative/smart-resource": "*"
-    baseui: ^12.1.0
-    classnames: "*"
-    lottie-react: "*"
-    nanostores: ^0.5.10
-    react: ^18.2.0
-    react-dom: ^18.2.0
-    react-slider: "*"
-    react-use: "*"
-    use-constant: "*"
-  languageName: unknown
-  linkType: soft
-
-"@recative/core-manager@^0.13.0, @recative/core-manager@workspace:packages/core-manager":
-  version: 0.0.0-use.local
-  resolution: "@recative/core-manager@workspace:packages/core-manager"
-  dependencies:
-    "@nanostores/persistent": ^0.5.2
-    "@recative/act-protocol": ^0.2.11
-    "@recative/audio-station": ^0.4.0
-    "@recative/definitions": ^0.5.1
-    "@recative/open-promise": ^0.3.0
-    "@recative/phonograph": ^2.2.0
-    "@recative/resource-loader": ^0.3.0
-    "@recative/smart-resource": ^0.2.1
-    "@recative/time-schedule": ^0.2.1
-    "@types/debug": ^4.1.7
-    "@ungap/event-target": ^0.2.3
-    debug: ^4.3.3
-    nanoid: ^3.1.30
-    nanostores: ^0.5.10
-    object.entries: ^1.1.5
-    srt-parser-2: ^1.1.7
-  languageName: unknown
-  linkType: soft
-
-"@recative/database@workspace:packages/database":
-  version: 0.0.0-use.local
-  resolution: "@recative/database@workspace:packages/database"
-  dependencies:
-    "@faker-js/faker": ^7.5.0
-    "@recative/lens": "workspace:^"
-    "@recative/open-promise": "workspace:^"
-    "@types/tmp": ^0.2.3
-    "@ungap/event-target": ^0.2.3
-    tmp: ^0.2.1
-  languageName: unknown
-  linkType: soft
-
-"@recative/definitions@^0.5.0, @recative/definitions@^0.5.1, @recative/definitions@^0.5.4, @recative/definitions@workspace:packages/definitions":
-  version: 0.0.0-use.local
-  resolution: "@recative/definitions@workspace:packages/definitions"
-  dependencies:
-    "@types/xxhashjs": ^0.2.2
-    xxhashjs: ^0.2.2
-  languageName: unknown
-  linkType: soft
-
-"@recative/desktop-shell@workspace:packages/desktop-shell":
-  version: 0.0.0-use.local
-  resolution: "@recative/desktop-shell@workspace:packages/desktop-shell"
-  dependencies:
-    "@electron-forge/cli": ^6.0.3
-    "@electron-forge/maker-zip": ^6.0.3
-    "@electron/universal": ^1.3.4
-    "@types/fs-extra": 9.0.13
-    async-call-rpc: ^6.1.5
-    electron: ^21.2.0
-    electron-is-dev: ^2.0.0
-    electron-squirrel-startup: ^1.0.0
-    fs-extra: 10.0.0
-    npm-run-all: ^4.1.5
-    react-scripts: 5.0.1
-    ts-node: 10.9.1
-  languageName: unknown
-  linkType: soft
-
-"@recative/device-pressure-measurement-native-backend@workspace:packages/device-pressure-measurement-native-backend":
-  version: 0.0.0-use.local
-  resolution: "@recative/device-pressure-measurement-native-backend@workspace:packages/device-pressure-measurement-native-backend"
-  dependencies:
-    "@capacitor/android": ^3.0.0
-    "@capacitor/core": ^3.0.0
-    "@capacitor/ios": ^3.0.0
-    "@ionic/eslint-config": ^0.3.0
-    "@ionic/prettier-config": ^1.0.1
-    "@ionic/swiftlint-config": ^1.1.2
-    prettier-plugin-java: ~1.0.0
-    swiftlint: ^1.0.1
-  peerDependencies:
-    "@capacitor/core": ^3.0.0
-  languageName: unknown
-  linkType: soft
-
-"@recative/documents@workspace:packages/documents":
-  version: 0.0.0-use.local
-  resolution: "@recative/documents@workspace:packages/documents"
-  dependencies:
-    "@docusaurus/core": ^2.2.0
-    "@docusaurus/module-type-aliases": ^2.2.0
-    "@docusaurus/preset-classic": ^2.2.0
-    "@mdx-js/react": ^1.6.22
-    "@tsconfig/docusaurus": ^1.0.6
-    clsx: ^1.2.1
-    docusaurus-plugin-typedoc-api: ^2.4.0
-    prism-react-renderer: ^1.3.5
-    react: 18.2.0
-    react-dom: 18.2.0
-    typedoc: 0.23.10
-    typedoc-plugin-markdown: ^3.13.4
-  languageName: unknown
-  linkType: soft
-
-"@recative/event-target@workspace:packages/event-target":
-  version: 0.0.0-use.local
-  resolution: "@recative/event-target@workspace:packages/event-target"
-  dependencies:
-    "@ungap/event-target": ^0.2.3
-  languageName: unknown
-  linkType: soft
-
-"@recative/lens@workspace:^, @recative/lens@workspace:packages/lens":
-  version: 0.0.0-use.local
-  resolution: "@recative/lens@workspace:packages/lens"
-  languageName: unknown
-  linkType: soft
-
-"@recative/mobile-shell@workspace:packages/mobile-shell":
-  version: 0.0.0-use.local
-  resolution: "@recative/mobile-shell@workspace:packages/mobile-shell"
-  dependencies:
-    "@awesome-cordova-plugins/android-full-screen": ^5.45.0
-    "@awesome-cordova-plugins/core": ^5.45.0
-    "@awesome-cordova-plugins/screen-orientation": ^5.45.0
-    "@capacitor/android": 3.8.0
-    "@capacitor/app": ^4.0.1
-    "@capacitor/cli": 3.5.1
-    "@capacitor/core": 3.8.0
-    "@capacitor/ios": 3.8.0
-    "@craco/craco": ^6.4.3
-    "@ionic/cli": "patch:@ionic/cli@npm:6.20.1#../../.yarn/patches/@ionic-cli-npm-6.20.1-53fb01ed2a.patch"
-    "@ionic/react": ^6.0.0
-    "@ionic/react-router": ^6.0.0
-    "@paciolan/remote-module-loader": ^3.0.2
-    "@recative/act-player": ^0.5.18
-    "@recative/client-sdk": ^13.0.0
-    "@types/craco__craco": ^6.4.0
-    "@types/fs-extra": ^9.0.13
-    "@types/path-browserify": ^1.0.0
-    "@welldone-software/why-did-you-render": ^7.0.1
-    cordova-plugin-fullscreen: ^1.3.0
-    cordova-plugin-screen-orientation: ^3.0.2
-    cordova-res: ^0.15.4
-    cpx: ^1.5.0
-    cross-env: ^7.0.3
-    debug: ^4.3.3
-    es6-promise-plugin: ^4.2.2
-    fs-extra: ^10.1.0
-    path-browserify: ^1.0.1
-    react-router: ^6.3.0
-    react-router-dom: ^6.3.0
-    react-scripts: 5.0.1
-    ts-node: 10.9.1
-    vconsole: 3.14.6
-    web-vitals: ^0.2.4
-    workbox-background-sync: ^5.1.4
-    workbox-broadcast-update: ^5.1.4
-    workbox-cacheable-response: ^5.1.4
-    workbox-core: ^5.1.4
-    workbox-expiration: ^5.1.4
-    workbox-google-analytics: ^5.1.4
-    workbox-navigation-preload: ^5.1.4
-    workbox-precaching: ^5.1.4
-    workbox-range-requests: ^5.1.4
-    workbox-routing: ^5.1.4
-    workbox-strategies: ^5.1.4
-    workbox-streams: ^5.1.4
-  peerDependencies:
-    baseui: ^12.1.0
-    react: ^18.2.0
-    react-dom: ^18.2.0
-    styletron-engine-monolithic: 1.0.0
-    styletron-react: 6.1.0
-  languageName: unknown
-  linkType: soft
-
-"@recative/open-promise@^0.3.0, @recative/open-promise@workspace:^, @recative/open-promise@workspace:packages/open-promise":
-  version: 0.0.0-use.local
-  resolution: "@recative/open-promise@workspace:packages/open-promise"
-  dependencies:
-    "@types/debug": ^4.1.7
-    "@ungap/event-target": ^0.2.3
-    debug: ^4.3.4
-  languageName: unknown
-  linkType: soft
-
-"@recative/phonograph@^2.2.0, @recative/phonograph@workspace:packages/phonograph":
-  version: 0.0.0-use.local
-  resolution: "@recative/phonograph@workspace:packages/phonograph"
-  dependencies:
-    serve: ^10.1.1
-    standardized-audio-context: ^25.3.29
-  languageName: unknown
-  linkType: soft
-
-"@recative/recative-system@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "@recative/recative-system@workspace:."
-  dependencies:
-    "@changesets/cli": ^2.24.1
-    "@commitlint/cli": ^17.0.0
-    "@commitlint/config-conventional": ^17.0.0
-    "@nrwl/cli": 14.5.2
-    "@nrwl/eslint-plugin-nx": 14.5.2
-    "@nrwl/jest": 14.5.2
-    "@nrwl/js": 14.5.2
-    "@nrwl/linter": 14.5.2
-    "@nrwl/node": ^14.5.2
-    "@nrwl/nx-cloud": latest
-    "@nrwl/web": ^14.5.2
-    "@nrwl/workspace": ^14.5.2
-    "@parcel/packager-ts": ^2.7.0
-    "@parcel/transformer-typescript-types": ^2.7.0
-    "@rollup/plugin-commonjs": 22.0.2
-    "@rollup/plugin-node-resolve": 15.0.1
-    "@rollup/plugin-sucrase": 5.0.1
-    "@types/jest": ^28.1.8
-    "@types/node": ^18.7.15
-    "@types/react": ^18.0.18
-    "@types/react-dom": ^18.0.6
-    "@types/rollup-plugin-peer-deps-external": ^2.2.1
-    "@types/styletron-engine-monolithic": ^0.0.0
-    "@types/styletron-react": ^5.0.3
-    "@types/styletron-standard": ^2.0.2
-    "@typescript-eslint/eslint-plugin": 5.36.1
-    "@typescript-eslint/parser": 5.36.1
-    archiver: ^5.3.1
-    baseui: 12.1.2
-    cross-env: ^7.0.3
-    eslint: 8.23.0
-    eslint-config-airbnb-base: 15.0.0
-    eslint-config-airbnb-typescript: 17.0.0
-    eslint-config-prettier: ^8.5.0
-    eslint-plugin-import: 2.26.0
-    eslint-plugin-jsx-a11y: 6.6.1
-    eslint-plugin-react: 7.30.1
-    eslint-plugin-react-hooks: 4.6.0
-    husky: ^8.0.0
-    jest: 27.5.1
-    npm-run-all: ^4.1.5
-    nx: 14.5.2
-    prettier: ^2.7.1
-    prettier-eslint: ^15.0.1
-    rimraf: ^3.0.2
-    rollup: ^2.79.0
-    rollup-plugin-dts: ^4.2.2
-    rollup-plugin-peer-deps-external: ^2.2.4
-    rollup-plugin-polyfill-node: ^0.10.2
-    styletron-engine-monolithic: 1.0.0
-    styletron-react: 6.1.0
-    ts-jest: 27.1.4
-    ts-node: 10.9.1
-    tslib: ^2.3.0
-    typescript: 4.9.3
-  languageName: unknown
-  linkType: soft
-
-"@recative/resource-bridge@^0.2.6, @recative/resource-bridge@workspace:packages/resource-bridge":
-  version: 0.0.0-use.local
-  resolution: "@recative/resource-bridge@workspace:packages/resource-bridge"
-  dependencies:
-    "@recative/act-protocol": ^0.2.9
-    "@recative/definitions": ^0.5.0
-    "@recative/open-promise": ^0.3.0
-    "@types/debug": ^4.1.7
-    async-call-rpc: 6.1.2
-    buffer: ^6.0.3
-    debug: ^4.3.3
-    nanoid: ^3.1.30
-    process: ^0.11.10
-  languageName: unknown
-  linkType: soft
-
-"@recative/resource-loader-native-backend@workspace:packages/resource-loader-native-backend":
-  version: 0.0.0-use.local
-  resolution: "@recative/resource-loader-native-backend@workspace:packages/resource-loader-native-backend"
-  dependencies:
-    "@capacitor/android": ^3.0.0
-    "@capacitor/core": ^3.0.0
-    "@capacitor/ios": ^3.0.0
-    "@ionic/eslint-config": ^0.3.0
-    "@ionic/prettier-config": ^1.0.1
-    "@ionic/swiftlint-config": ^1.1.2
-    prettier-plugin-java: ~1.0.0
-    swiftlint: ^1.0.1
-  peerDependencies:
-    "@capacitor/core": ^3.0.0
-  languageName: unknown
-  linkType: soft
-
-"@recative/resource-loader@^0.3.0, @recative/resource-loader@workspace:packages/resource-loader":
-  version: 0.0.0-use.local
-  resolution: "@recative/resource-loader@workspace:packages/resource-loader"
-  dependencies:
-    "@recative/definitions": ^0.5.0
-    "@recative/open-promise": ^0.3.0
-    idb-keyval: ^6.0.3
-  languageName: unknown
-  linkType: soft
-
-"@recative/smart-resource@^0.2.0, @recative/smart-resource@^0.2.1, @recative/smart-resource@workspace:packages/smart-resource":
-  version: 0.0.0-use.local
-  resolution: "@recative/smart-resource@workspace:packages/smart-resource"
-  dependencies:
-    "@types/debug": ^4.1.7
-    debug: ^4.3.4
-  languageName: unknown
-  linkType: soft
-
-"@recative/think-data-native-backend@workspace:packages/think-data-native-backend":
-  version: 0.0.0-use.local
-  resolution: "@recative/think-data-native-backend@workspace:packages/think-data-native-backend"
-  dependencies:
-    "@capacitor/android": ^3.0.0
-    "@capacitor/cli": ^3.5.1
-    "@capacitor/core": ^3.0.0
-    "@capacitor/ios": ^3.0.0
-    "@ionic/eslint-config": ^0.3.0
-    "@ionic/prettier-config": ^1.0.1
-    "@ionic/swiftlint-config": ^1.1.2
-    prettier-plugin-java: ~1.0.0
-    swiftlint: ^1.0.1
-  peerDependencies:
-    "@capacitor/core": ^3.0.0
-  languageName: unknown
-  linkType: soft
-
-"@recative/time-schedule@^0.2.1, @recative/time-schedule@workspace:packages/time-schedule":
-  version: 0.0.0-use.local
-  resolution: "@recative/time-schedule@workspace:packages/time-schedule"
-  dependencies:
-    "@recative/audio-station": ^0.4.0
-  languageName: unknown
-  linkType: soft
-
-"@recative/ugly-json@workspace:^, @recative/ugly-json@workspace:packages/ugly-json":
-  version: 0.0.0-use.local
-  resolution: "@recative/ugly-json@workspace:packages/ugly-json"
-  languageName: unknown
-  linkType: soft
-
-"@recative/video-renderer-native-backend@workspace:packages/video-renderer-native-backend":
-  version: 0.0.0-use.local
-  resolution: "@recative/video-renderer-native-backend@workspace:packages/video-renderer-native-backend"
-  dependencies:
-    "@capacitor/android": ^3.0.0
-    "@capacitor/core": ^3.0.0
-    "@capacitor/ios": ^3.0.0
-    "@ionic/eslint-config": ^0.3.0
-    "@ionic/prettier-config": ^1.0.1
-    "@ionic/swiftlint-config": ^1.1.2
-    prettier-plugin-java: ~1.0.0
-    swiftlint: ^1.0.1
-  peerDependencies:
-    "@capacitor/core": ^3.0.0
-  languageName: unknown
-  linkType: soft
-
-"@recative/web-shell@workspace:packages/web-shell":
-  version: 0.0.0-use.local
-  resolution: "@recative/web-shell@workspace:packages/web-shell"
-  dependencies:
-    "@react-hookz/web": ^15.1.0
-    "@recative/act-player": "workspace:^"
-    http: "npm:stream-http@^3.2.0"
-    https: "npm:https-browserify@^1.0.0"
-    react: 18.2.0
-    react-dom: 18.2.0
-    react-router: ^6.3.0
-    react-router-dom: ^6.3.0
-    react-scripts: 5.0.1
-    rimraf: ^3.0.2
-    ts-node: ^10.9.1
-  peerDependencies:
-    baseui: ^12.1.0
-    react: ^18.2.0
-    react-dom: ^18.2.0
-    styletron-engine-monolithic: 1.0.0
-    styletron-react: 6.1.0
-  languageName: unknown
-  linkType: soft
-
 "@rollup/plugin-babel@npm:^5.2.0, @rollup/plugin-babel@npm:^5.3.0":
   version: 5.3.1
   resolution: "@rollup/plugin-babel@npm:5.3.1"
@@ -9157,6 +8530,633 @@ __metadata:
   checksum: 712f423becae23591397ccc44ca9056eb413d1e00e6b2cad88895b3d97368ecee0a73da51dc40c0c65e7bc5fef2b3db5544a809c21806c6db85c9308c782814e
   languageName: node
   linkType: hard
+
+"@web-media/act-player@^0.5.18, @web-media/act-player@^0.5.19, @web-media/act-player@workspace:^, @web-media/act-player@workspace:packages/act-player":
+  version: 0.0.0-use.local
+  resolution: "@web-media/act-player@workspace:packages/act-player"
+  dependencies:
+    "@nanostores/react": 0.2.0
+    "@paciolan/remote-module-loader": ^3.0.2
+    "@react-hookz/web": ^15.1.0
+    "@types/debug": ^4.1.7
+    "@types/fs-extra": ^9.0.13
+    "@types/lodash": ^4.14.177
+    "@types/react-slider": ^1.3.1
+    "@web-media/act-protocol": ^0.2.11
+    "@web-media/core-manager": ^0.13.0
+    "@web-media/definitions": ^0.5.4
+    "@web-media/smart-resource": ^0.2.0
+    buffer: ^6.0.3
+    classnames: ^2.3.1
+    debug: ^4.3.4
+    events: ^3.3.0
+    fs-extra: ^10.0.0
+    https-browserify: ^1.0.0
+    lodash: ^4.17.21
+    lottie-react: ^2.3.1
+    nanostores: ^0.5.12
+    process: ^0.11.10
+    querystring-es3: ^0.2.1
+    react-click-away-listener: ^2.0.5
+    react-error-boundary: ^3.1.4
+    react-konami-code: ^2.3.0
+    react-slider: 2.0.1
+    react-tooltip: ^4.2.21
+    react-use: ^17.3.1
+    stream-http: ^3.2.0
+    ts-node: 10.9.1
+    unplugin-auto-import: ^0.11.1
+    url: ^0.11.0
+    use-constant: ^1.1.0
+  peerDependencies:
+    baseui: ^12.1.0
+    react: ^18.2.0
+    react-dom: ^18.2.0
+    styletron-engine-monolithic: 1.0.0
+    styletron-react: 6.1.0
+  languageName: unknown
+  linkType: soft
+
+"@web-media/act-protocol@^0.2.11, @web-media/act-protocol@^0.2.9, @web-media/act-protocol@workspace:packages/act-protocol":
+  version: 0.0.0-use.local
+  resolution: "@web-media/act-protocol@workspace:packages/act-protocol"
+  dependencies:
+    "@types/debug": ^4.1.7
+    "@web-media/definitions": ^0.5.0
+    async-call-rpc: 6.1.2
+    debug: ^4.3.3
+  languageName: unknown
+  linkType: soft
+
+"@web-media/ap-core@workspace:packages/ap-core":
+  version: 0.0.0-use.local
+  resolution: "@web-media/ap-core@workspace:packages/ap-core"
+  dependencies:
+    "@nanostores/persistent": ^0.5.1
+    "@types/animejs": ^3.1.2
+    "@types/debug": ^4.1.5
+    "@types/lodash": ^4.14.169
+    "@types/three": ^0.127.1
+    "@types/uuid": ^8.3.0
+    "@ungap/event-target": ^0.2.2
+    "@web-media/act-protocol": ^0.2.11
+    "@web-media/definitions": ^0.5.0
+    "@web-media/open-promise": ^0.3.0
+    "@web-media/resource-bridge": ^0.2.6
+    "@web-media/smart-resource": ^0.2.0
+    animejs: ^3.2.1
+    debug: ^4.3.3
+    lodash: ^4.17.21
+    pixi.js-legacy: 6.3.2
+    runtypes: "*"
+    serve: ^11.3.2
+    three: ^0.140.2
+    ts-loader: ^8.0.14
+    uuid: ^8.3.2
+  peerDependencies:
+    animejs: "*"
+    pixi.js-legacy: "*"
+    three: "*"
+  languageName: unknown
+  linkType: soft
+
+"@web-media/ap-pack@workspace:packages/ap-pack":
+  version: 0.0.0-use.local
+  resolution: "@web-media/ap-pack@workspace:packages/ap-pack"
+  dependencies:
+    "@babel/core": 7.16.10
+    "@babel/plugin-transform-runtime": 7.16.10
+    "@babel/preset-env": 7.16.11
+    "@babel/preset-react": 7.16.7
+    "@babel/preset-typescript": 7.16.7
+    "@babel/runtime-corejs3": 7.16.8
+    "@paciolan/remote-module-loader": ^3.0.2
+    "@types/fs-extra": 9.0.13
+    "@types/mkdirp": 1.0.2
+    "@web-media/act-player": ^0.5.18
+    "@web-media/resource-bridge": ^0.2.6
+    babel-loader: 8.2.3
+    clean-webpack-plugin: 4.0.0
+    copy-webpack-plugin: 10.2.1
+    css-loader: 6.5.1
+    file-loader: 6.2.0
+    fs-extra: 10.0.0
+    html-loader: ^1.3.2
+    html-webpack-plugin: ^5.5.0
+    json-stream-stringify: ^2.0.4
+    mkdirp: ^1.0.4
+    node-polyfill-webpack-plugin: ^1.1.2
+    style-loader: ^2.0.0
+    ts-loader: 9.2.6
+    ts-node: 10.9.1
+    typescript: 4.9.3
+    url-loader: ^4.1.1
+    webpack: 5.66.0
+    webpack-dev-server: 4.7.3
+    webpack-manifest-plugin: 4.1.1
+    webpack-plugin-pwa-manifest: ^1.1.0
+  peerDependencies:
+    ap-preview: "*"
+  bin:
+    ap-pack: ./bin/ap-pack.js
+  languageName: unknown
+  linkType: soft
+
+"@web-media/ap-preview@workspace:packages/ap-preview":
+  version: 0.0.0-use.local
+  resolution: "@web-media/ap-preview@workspace:packages/ap-preview"
+  dependencies:
+    "@nanostores/react": 0.2.0
+    "@paciolan/remote-module-loader": ^3.0.2
+    "@parcel/packager-ts": ^2.7.0
+    "@parcel/transformer-react-refresh-wrap": ^2.7.0
+    "@parcel/transformer-typescript-types": ^2.7.0
+    "@react-hookz/web": ^15.1.0
+    "@types/debug": ^4.1.7
+    "@types/fs-extra": ^9.0.13
+    "@types/lodash": ^4.14.177
+    "@types/react-slider": ^1.3.1
+    "@web-media/act-player": ^0.5.18
+    "@web-media/act-protocol": ^0.2.9
+    "@web-media/core-manager": ^0.13.0
+    "@web-media/definitions": ^0.5.0
+    "@web-media/smart-resource": ^0.2.0
+    buffer: ^6.0.3
+    classnames: ^2.3.1
+    debug: ^4.3.4
+    events: ^3.3.0
+    fs-extra: ^10.0.0
+    lodash: ^4.17.21
+    lottie-react: ^2.3.1
+    nanostores: ^0.5.12
+    parcel: ^2.7.0
+    process: ^0.11.10
+    querystring-es3: ^0.2.1
+    react-click-away-listener: ^2.0.5
+    react-error-boundary: ^3.1.4
+    react-router-dom: 6.3.0
+    react-tooltip: ^4.2.21
+    react-use: ^17.3.1
+    stream-http: ^3.2.0
+    ts-node: 10.9.1
+    url: ^0.11.0
+    use-constant: ^1.1.0
+  peerDependencies:
+    baseui: ^12.1.0
+    react: ^18.2.0
+    react-dom: ^18.2.0
+    styletron-engine-monolithic: 1.0.0
+    styletron-react: 6.1.0
+  languageName: unknown
+  linkType: soft
+
+"@web-media/atlas@workspace:packages/atlas":
+  version: 0.0.0-use.local
+  resolution: "@web-media/atlas@workspace:packages/atlas"
+  languageName: unknown
+  linkType: soft
+
+"@web-media/audio-station@^0.4.0, @web-media/audio-station@workspace:packages/audio-station":
+  version: 0.0.0-use.local
+  resolution: "@web-media/audio-station@workspace:packages/audio-station"
+  dependencies:
+    "@ungap/event-target": ^0.2.3
+    standardized-audio-context: ^25.3.28
+  languageName: unknown
+  linkType: soft
+
+"@web-media/capacitor-geckoview@workspace:packages/capacitor-geckoview":
+  version: 0.0.0-use.local
+  resolution: "@web-media/capacitor-geckoview@workspace:packages/capacitor-geckoview"
+  peerDependencies:
+    "@capacitor/core": ^4.6.2
+  languageName: unknown
+  linkType: soft
+
+"@web-media/client-sdk@^13.0.0, @web-media/client-sdk@workspace:packages/client-sdk":
+  version: 0.0.0-use.local
+  resolution: "@web-media/client-sdk@workspace:packages/client-sdk"
+  dependencies:
+    "@msgpack/msgpack": ^2.7.2
+    "@nanostores/react": ^0.1.5
+    "@paciolan/remote-module-loader": ^3.0.2
+    "@react-hookz/web": ^15.1.0
+    "@types/debug": ^4.1.7
+    "@web-media/act-player": ^0.5.19
+    "@web-media/act-protocol": ^0.2.11
+    "@web-media/core-manager": ^0.13.0
+    "@web-media/definitions": ^0.5.4
+    "@web-media/open-promise": ^0.3.0
+    "@web-media/smart-resource": ^0.2.1
+    "@web-media/ugly-json": "workspace:^"
+    classnames: ^2.3.1
+    debug: ^4.3.3
+    detect-gpu: ^4.0.43
+    i18next: ^22.0.5
+    lottie-react: ^2.3.1
+    nanoid: ^3.3.3
+    nanostores: ^0.5.10
+    react-i18next: ^12.0.0
+    react-slider: 2.0.1
+    react-use: ^17.3.2
+    use-constant: ^1.1.0
+  peerDependencies:
+    "@nanostores/react": ^0.1.5
+    "@paciolan/remote-module-loader": "*"
+    "@web-media/act-player": 0.5.19
+    "@web-media/act-protocol": "*"
+    "@web-media/core-manager": 0.13.0
+    "@web-media/smart-resource": "*"
+    baseui: ^12.1.0
+    classnames: "*"
+    lottie-react: "*"
+    nanostores: ^0.5.10
+    react: ^18.2.0
+    react-dom: ^18.2.0
+    react-slider: "*"
+    react-use: "*"
+    use-constant: "*"
+  languageName: unknown
+  linkType: soft
+
+"@web-media/core-manager@^0.13.0, @web-media/core-manager@workspace:packages/core-manager":
+  version: 0.0.0-use.local
+  resolution: "@web-media/core-manager@workspace:packages/core-manager"
+  dependencies:
+    "@nanostores/persistent": ^0.5.2
+    "@types/debug": ^4.1.7
+    "@ungap/event-target": ^0.2.3
+    "@web-media/act-protocol": ^0.2.11
+    "@web-media/audio-station": ^0.4.0
+    "@web-media/definitions": ^0.5.1
+    "@web-media/open-promise": ^0.3.0
+    "@web-media/phonograph": ^2.2.0
+    "@web-media/resource-loader": ^0.3.0
+    "@web-media/smart-resource": ^0.2.1
+    "@web-media/time-schedule": ^0.2.1
+    debug: ^4.3.3
+    nanoid: ^3.1.30
+    nanostores: ^0.5.10
+    object.entries: ^1.1.5
+    srt-parser-2: ^1.1.7
+  languageName: unknown
+  linkType: soft
+
+"@web-media/database@workspace:packages/database":
+  version: 0.0.0-use.local
+  resolution: "@web-media/database@workspace:packages/database"
+  dependencies:
+    "@faker-js/faker": ^7.5.0
+    "@types/tmp": ^0.2.3
+    "@ungap/event-target": ^0.2.3
+    "@web-media/lens": "workspace:^"
+    "@web-media/open-promise": "workspace:^"
+    tmp: ^0.2.1
+  languageName: unknown
+  linkType: soft
+
+"@web-media/definitions@^0.5.0, @web-media/definitions@^0.5.1, @web-media/definitions@^0.5.4, @web-media/definitions@workspace:packages/definitions":
+  version: 0.0.0-use.local
+  resolution: "@web-media/definitions@workspace:packages/definitions"
+  dependencies:
+    "@types/xxhashjs": ^0.2.2
+    xxhashjs: ^0.2.2
+  languageName: unknown
+  linkType: soft
+
+"@web-media/desktop-shell@workspace:packages/desktop-shell":
+  version: 0.0.0-use.local
+  resolution: "@web-media/desktop-shell@workspace:packages/desktop-shell"
+  dependencies:
+    "@electron-forge/cli": ^6.0.3
+    "@electron-forge/maker-zip": ^6.0.3
+    "@electron/universal": ^1.3.4
+    "@types/fs-extra": 9.0.13
+    async-call-rpc: ^6.1.5
+    electron: ^21.2.0
+    electron-is-dev: ^2.0.0
+    electron-squirrel-startup: ^1.0.0
+    fs-extra: 10.0.0
+    npm-run-all: ^4.1.5
+    react-scripts: 5.0.1
+    ts-node: 10.9.1
+  languageName: unknown
+  linkType: soft
+
+"@web-media/device-pressure-measurement-native-backend@workspace:packages/device-pressure-measurement-native-backend":
+  version: 0.0.0-use.local
+  resolution: "@web-media/device-pressure-measurement-native-backend@workspace:packages/device-pressure-measurement-native-backend"
+  dependencies:
+    "@capacitor/android": ^3.0.0
+    "@capacitor/core": ^3.0.0
+    "@capacitor/ios": ^3.0.0
+    "@ionic/eslint-config": ^0.3.0
+    "@ionic/prettier-config": ^1.0.1
+    "@ionic/swiftlint-config": ^1.1.2
+    prettier-plugin-java: ~1.0.0
+    swiftlint: ^1.0.1
+  peerDependencies:
+    "@capacitor/core": ^3.0.0
+  languageName: unknown
+  linkType: soft
+
+"@web-media/documents@workspace:packages/documents":
+  version: 0.0.0-use.local
+  resolution: "@web-media/documents@workspace:packages/documents"
+  dependencies:
+    "@docusaurus/core": ^2.2.0
+    "@docusaurus/module-type-aliases": ^2.2.0
+    "@docusaurus/preset-classic": ^2.2.0
+    "@mdx-js/react": ^1.6.22
+    "@tsconfig/docusaurus": ^1.0.6
+    clsx: ^1.2.1
+    docusaurus-plugin-typedoc-api: ^2.4.0
+    prism-react-renderer: ^1.3.5
+    react: 18.2.0
+    react-dom: 18.2.0
+    typedoc: 0.23.10
+    typedoc-plugin-markdown: ^3.13.4
+  languageName: unknown
+  linkType: soft
+
+"@web-media/event-target@workspace:packages/event-target":
+  version: 0.0.0-use.local
+  resolution: "@web-media/event-target@workspace:packages/event-target"
+  dependencies:
+    "@ungap/event-target": ^0.2.3
+  languageName: unknown
+  linkType: soft
+
+"@web-media/foundation@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "@web-media/foundation@workspace:."
+  dependencies:
+    "@changesets/cli": ^2.24.1
+    "@commitlint/cli": ^17.0.0
+    "@commitlint/config-conventional": ^17.0.0
+    "@nrwl/cli": 14.5.2
+    "@nrwl/eslint-plugin-nx": 14.5.2
+    "@nrwl/jest": 14.5.2
+    "@nrwl/js": 14.5.2
+    "@nrwl/linter": 14.5.2
+    "@nrwl/node": ^14.5.2
+    "@nrwl/nx-cloud": latest
+    "@nrwl/web": ^14.5.2
+    "@nrwl/workspace": ^14.5.2
+    "@parcel/packager-ts": ^2.7.0
+    "@parcel/transformer-typescript-types": ^2.7.0
+    "@rollup/plugin-commonjs": 22.0.2
+    "@rollup/plugin-node-resolve": 15.0.1
+    "@rollup/plugin-sucrase": 5.0.1
+    "@types/jest": ^28.1.8
+    "@types/node": ^18.7.15
+    "@types/react": ^18.0.18
+    "@types/react-dom": ^18.0.6
+    "@types/rollup-plugin-peer-deps-external": ^2.2.1
+    "@types/styletron-engine-monolithic": ^0.0.0
+    "@types/styletron-react": ^5.0.3
+    "@types/styletron-standard": ^2.0.2
+    "@typescript-eslint/eslint-plugin": 5.36.1
+    "@typescript-eslint/parser": 5.36.1
+    archiver: ^5.3.1
+    baseui: 12.1.2
+    cross-env: ^7.0.3
+    eslint: 8.23.0
+    eslint-config-airbnb-base: 15.0.0
+    eslint-config-airbnb-typescript: 17.0.0
+    eslint-config-prettier: ^8.5.0
+    eslint-plugin-import: 2.26.0
+    eslint-plugin-jsx-a11y: 6.6.1
+    eslint-plugin-react: 7.30.1
+    eslint-plugin-react-hooks: 4.6.0
+    husky: ^8.0.0
+    jest: 27.5.1
+    npm-run-all: ^4.1.5
+    nx: 14.5.2
+    prettier: ^2.7.1
+    prettier-eslint: ^15.0.1
+    rimraf: ^3.0.2
+    rollup: ^2.79.0
+    rollup-plugin-dts: ^4.2.2
+    rollup-plugin-peer-deps-external: ^2.2.4
+    rollup-plugin-polyfill-node: ^0.10.2
+    styletron-engine-monolithic: 1.0.0
+    styletron-react: 6.1.0
+    ts-jest: 27.1.4
+    ts-node: 10.9.1
+    tslib: ^2.3.0
+    typescript: 4.9.3
+  languageName: unknown
+  linkType: soft
+
+"@web-media/lens@workspace:^, @web-media/lens@workspace:packages/lens":
+  version: 0.0.0-use.local
+  resolution: "@web-media/lens@workspace:packages/lens"
+  languageName: unknown
+  linkType: soft
+
+"@web-media/mobile-shell@workspace:packages/mobile-shell":
+  version: 0.0.0-use.local
+  resolution: "@web-media/mobile-shell@workspace:packages/mobile-shell"
+  dependencies:
+    "@awesome-cordova-plugins/android-full-screen": ^5.45.0
+    "@awesome-cordova-plugins/core": ^5.45.0
+    "@awesome-cordova-plugins/screen-orientation": ^5.45.0
+    "@capacitor/android": 3.8.0
+    "@capacitor/app": ^4.0.1
+    "@capacitor/cli": 3.5.1
+    "@capacitor/core": 3.8.0
+    "@capacitor/ios": 3.8.0
+    "@craco/craco": ^6.4.3
+    "@ionic/cli": "patch:@ionic/cli@npm:6.20.1#../../.yarn/patches/@ionic-cli-npm-6.20.1-53fb01ed2a.patch"
+    "@ionic/react": ^6.0.0
+    "@ionic/react-router": ^6.0.0
+    "@paciolan/remote-module-loader": ^3.0.2
+    "@types/craco__craco": ^6.4.0
+    "@types/fs-extra": ^9.0.13
+    "@types/path-browserify": ^1.0.0
+    "@web-media/act-player": ^0.5.18
+    "@web-media/client-sdk": ^13.0.0
+    "@welldone-software/why-did-you-render": ^7.0.1
+    cordova-plugin-fullscreen: ^1.3.0
+    cordova-plugin-screen-orientation: ^3.0.2
+    cordova-res: ^0.15.4
+    cpx: ^1.5.0
+    cross-env: ^7.0.3
+    debug: ^4.3.3
+    es6-promise-plugin: ^4.2.2
+    fs-extra: ^10.1.0
+    path-browserify: ^1.0.1
+    react-router: ^6.3.0
+    react-router-dom: ^6.3.0
+    react-scripts: 5.0.1
+    ts-node: 10.9.1
+    vconsole: 3.14.6
+    web-vitals: ^0.2.4
+    workbox-background-sync: ^5.1.4
+    workbox-broadcast-update: ^5.1.4
+    workbox-cacheable-response: ^5.1.4
+    workbox-core: ^5.1.4
+    workbox-expiration: ^5.1.4
+    workbox-google-analytics: ^5.1.4
+    workbox-navigation-preload: ^5.1.4
+    workbox-precaching: ^5.1.4
+    workbox-range-requests: ^5.1.4
+    workbox-routing: ^5.1.4
+    workbox-strategies: ^5.1.4
+    workbox-streams: ^5.1.4
+  peerDependencies:
+    baseui: ^12.1.0
+    react: ^18.2.0
+    react-dom: ^18.2.0
+    styletron-engine-monolithic: 1.0.0
+    styletron-react: 6.1.0
+  languageName: unknown
+  linkType: soft
+
+"@web-media/open-promise@^0.3.0, @web-media/open-promise@workspace:^, @web-media/open-promise@workspace:packages/open-promise":
+  version: 0.0.0-use.local
+  resolution: "@web-media/open-promise@workspace:packages/open-promise"
+  dependencies:
+    "@types/debug": ^4.1.7
+    "@ungap/event-target": ^0.2.3
+    debug: ^4.3.4
+  languageName: unknown
+  linkType: soft
+
+"@web-media/phonograph@^2.2.0, @web-media/phonograph@workspace:packages/phonograph":
+  version: 0.0.0-use.local
+  resolution: "@web-media/phonograph@workspace:packages/phonograph"
+  dependencies:
+    serve: ^10.1.1
+    standardized-audio-context: ^25.3.29
+  languageName: unknown
+  linkType: soft
+
+"@web-media/resource-bridge@^0.2.6, @web-media/resource-bridge@workspace:packages/resource-bridge":
+  version: 0.0.0-use.local
+  resolution: "@web-media/resource-bridge@workspace:packages/resource-bridge"
+  dependencies:
+    "@types/debug": ^4.1.7
+    "@web-media/act-protocol": ^0.2.9
+    "@web-media/definitions": ^0.5.0
+    "@web-media/open-promise": ^0.3.0
+    async-call-rpc: 6.1.2
+    buffer: ^6.0.3
+    debug: ^4.3.3
+    nanoid: ^3.1.30
+    process: ^0.11.10
+  languageName: unknown
+  linkType: soft
+
+"@web-media/resource-loader-native-backend@workspace:packages/resource-loader-native-backend":
+  version: 0.0.0-use.local
+  resolution: "@web-media/resource-loader-native-backend@workspace:packages/resource-loader-native-backend"
+  dependencies:
+    "@capacitor/android": ^3.0.0
+    "@capacitor/core": ^3.0.0
+    "@capacitor/ios": ^3.0.0
+    "@ionic/eslint-config": ^0.3.0
+    "@ionic/prettier-config": ^1.0.1
+    "@ionic/swiftlint-config": ^1.1.2
+    prettier-plugin-java: ~1.0.0
+    swiftlint: ^1.0.1
+  peerDependencies:
+    "@capacitor/core": ^3.0.0
+  languageName: unknown
+  linkType: soft
+
+"@web-media/resource-loader@^0.3.0, @web-media/resource-loader@workspace:packages/resource-loader":
+  version: 0.0.0-use.local
+  resolution: "@web-media/resource-loader@workspace:packages/resource-loader"
+  dependencies:
+    "@web-media/definitions": ^0.5.0
+    "@web-media/open-promise": ^0.3.0
+    idb-keyval: ^6.0.3
+  languageName: unknown
+  linkType: soft
+
+"@web-media/smart-resource@^0.2.0, @web-media/smart-resource@^0.2.1, @web-media/smart-resource@workspace:packages/smart-resource":
+  version: 0.0.0-use.local
+  resolution: "@web-media/smart-resource@workspace:packages/smart-resource"
+  dependencies:
+    "@types/debug": ^4.1.7
+    debug: ^4.3.4
+  languageName: unknown
+  linkType: soft
+
+"@web-media/think-data-native-backend@workspace:packages/think-data-native-backend":
+  version: 0.0.0-use.local
+  resolution: "@web-media/think-data-native-backend@workspace:packages/think-data-native-backend"
+  dependencies:
+    "@capacitor/android": ^3.0.0
+    "@capacitor/cli": ^3.5.1
+    "@capacitor/core": ^3.0.0
+    "@capacitor/ios": ^3.0.0
+    "@ionic/eslint-config": ^0.3.0
+    "@ionic/prettier-config": ^1.0.1
+    "@ionic/swiftlint-config": ^1.1.2
+    prettier-plugin-java: ~1.0.0
+    swiftlint: ^1.0.1
+  peerDependencies:
+    "@capacitor/core": ^3.0.0
+  languageName: unknown
+  linkType: soft
+
+"@web-media/time-schedule@^0.2.1, @web-media/time-schedule@workspace:packages/time-schedule":
+  version: 0.0.0-use.local
+  resolution: "@web-media/time-schedule@workspace:packages/time-schedule"
+  dependencies:
+    "@web-media/audio-station": ^0.4.0
+  languageName: unknown
+  linkType: soft
+
+"@web-media/ugly-json@workspace:^, @web-media/ugly-json@workspace:packages/ugly-json":
+  version: 0.0.0-use.local
+  resolution: "@web-media/ugly-json@workspace:packages/ugly-json"
+  languageName: unknown
+  linkType: soft
+
+"@web-media/video-renderer-native-backend@workspace:packages/video-renderer-native-backend":
+  version: 0.0.0-use.local
+  resolution: "@web-media/video-renderer-native-backend@workspace:packages/video-renderer-native-backend"
+  dependencies:
+    "@capacitor/android": ^3.0.0
+    "@capacitor/core": ^3.0.0
+    "@capacitor/ios": ^3.0.0
+    "@ionic/eslint-config": ^0.3.0
+    "@ionic/prettier-config": ^1.0.1
+    "@ionic/swiftlint-config": ^1.1.2
+    prettier-plugin-java: ~1.0.0
+    swiftlint: ^1.0.1
+  peerDependencies:
+    "@capacitor/core": ^3.0.0
+  languageName: unknown
+  linkType: soft
+
+"@web-media/web-shell@workspace:packages/web-shell":
+  version: 0.0.0-use.local
+  resolution: "@web-media/web-shell@workspace:packages/web-shell"
+  dependencies:
+    "@react-hookz/web": ^15.1.0
+    "@web-media/act-player": "workspace:^"
+    http: "npm:stream-http@^3.2.0"
+    https: "npm:https-browserify@^1.0.0"
+    react: 18.2.0
+    react-dom: 18.2.0
+    react-router: ^6.3.0
+    react-router-dom: ^6.3.0
+    react-scripts: 5.0.1
+    rimraf: ^3.0.2
+    ts-node: ^10.9.1
+  peerDependencies:
+    baseui: ^12.1.0
+    react: ^18.2.0
+    react-dom: ^18.2.0
+    styletron-engine-monolithic: 1.0.0
+    styletron-react: 6.1.0
+  languageName: unknown
+  linkType: soft
 
 "@webassemblyjs/ast@npm:1.11.1":
   version: 1.11.1

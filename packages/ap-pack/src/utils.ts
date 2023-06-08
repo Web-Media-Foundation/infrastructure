@@ -18,8 +18,8 @@ export const getProjectMetadata = (logError: Logger = console.error) => {
   const index = path.resolve(
     root,
     show
-      ? require.resolve('@recative/ap-preview/src/web.tsx')
-      : require.resolve('@recative/ap-pack/src/empty.ts'),
+      ? require.resolve('@web-media/ap-preview/src/web.tsx')
+      : require.resolve('@web-media/ap-pack/src/empty.ts'),
   );
   const episodesPath = path.resolve(root, 'src/episodes');
   if (!fs.existsSync(episodesPath)) {

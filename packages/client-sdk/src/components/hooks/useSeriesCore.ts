@@ -4,14 +4,14 @@ import debug from 'debug';
 import useConstant from 'use-constant';
 import { useStore } from '@nanostores/react';
 
-import { IInitialAssetStatus, SeriesCore } from '@recative/core-manager';
-import type { RawUserImplementedFunctions } from '@recative/definitions';
+import { IInitialAssetStatus, SeriesCore } from '@web-media/core-manager';
+import type { RawUserImplementedFunctions } from '@web-media/definitions';
 import type {
   EpisodeCore,
   IEpisodeMetadata,
   ISeriesCoreConfig,
   IUserRelatedEnvVariable,
-} from '@recative/core-manager';
+} from '@web-media/core-manager';
 
 import { useDataFetcher } from './useDataFetcher';
 import { useSdkConfig } from '../../external';

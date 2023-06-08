@@ -25,7 +25,7 @@ const containsN = (n: number) => (string: string, contains: string) => {
 
 const contains2 = containsN(2);
 
-export const getRecativeConfigurations = () => {
+export const getWebMediaFoundationConfigurations = () => {
   const result = new Map<string, Map<string, Map<string, string>>>();
 
   const keys = new Set();

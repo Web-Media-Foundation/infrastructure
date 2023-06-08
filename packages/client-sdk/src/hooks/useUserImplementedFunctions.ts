@@ -2,7 +2,7 @@
 import React from 'react';
 import debug from 'debug';
 
-import type { IEpisode, IAssetForClient, UserImplementedFunctions } from '@recative/definitions';
+import type { IEpisode, IAssetForClient, UserImplementedFunctions } from '@web-media/definitions';
 
 import { useSdkConfig } from './useSdkConfig';
 import type { IRpcFunction } from '../types/IRpcFunction';

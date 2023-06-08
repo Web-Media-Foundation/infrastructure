@@ -1,5 +1,5 @@
-import { getGlobalAudioStation } from '@recative/audio-station';
-import type { AudioClip } from '@recative/audio-station';
+import { getGlobalAudioStation } from '@web-media/audio-station';
+import type { AudioClip } from '@web-media/audio-station';
 
 export interface RawAudioClipResponse {
   url: string;

@@ -1,8 +1,8 @@
 import type {
   ContentFunctions,
   DialogActionTriggerResponse,
-} from '@recative/act-protocol';
-import { OpenPromise } from '@recative/open-promise';
+} from '@web-media/act-protocol';
+import { OpenPromise } from '@web-media/open-promise';
 
 import { logProtocol } from '../utils/log';
 
@@ -127,7 +127,7 @@ export const connectToHost = (context: IComponentContext) => {
         context.eventTarget.fire(DESTROY);
       },
       play() {
-        if (localStorage.getItem('@recative/ap-pack/debug-lifecycle')) {
+        if (localStorage.getItem('@web-media/ap-pack/debug-lifecycle')) {
           document
             .querySelector('#overlay')
             ?.classList.remove('recative-not-ready');
@@ -146,7 +146,7 @@ export const connectToHost = (context: IComponentContext) => {
         context.eventTarget.fire(PLAY);
       },
       pause() {
-        if (localStorage.getItem('@recative/ap-pack/debug-lifecycle')) {
+        if (localStorage.getItem('@web-media/ap-pack/debug-lifecycle')) {
           document
             .querySelector('#overlay')
             ?.classList.remove('recative-not-ready');

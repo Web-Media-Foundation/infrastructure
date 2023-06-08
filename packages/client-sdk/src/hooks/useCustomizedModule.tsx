@@ -10,8 +10,8 @@ import {
   PanicLayer,
   Controller,
   LoadingLayer,
-} from '@recative/act-player';
-import type { InterfaceExtensionComponent } from '@recative/act-player';
+} from '@web-media/act-player';
+import type { InterfaceExtensionComponent } from '@web-media/act-player';
 
 import { loadCustomizedModule } from '../utils/loadCustomizedModule';
 import { useSdkConfig } from './useSdkConfig';

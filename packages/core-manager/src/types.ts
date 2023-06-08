@@ -5,15 +5,15 @@ import type {
   ResourceDialogMessage,
   AdditionalSubtitleDefine,
   DialogActionTriggerResponse,
-} from '@recative/act-protocol';
+} from '@web-media/act-protocol';
 import type {
   ContentSpec,
   IAssetForClient,
   ManagedCoreState,
   IResourceItemForClient,
   ManagerCoreStateTrigger,
-} from '@recative/definitions';
-import { ResourceEntry } from '@recative/smart-resource';
+} from '@web-media/definitions';
+import { ResourceEntry } from '@web-media/smart-resource';
 import { AudioElementInit } from './audio/audioElement';
 
 import type { EpisodeCore } from './episodeCore';

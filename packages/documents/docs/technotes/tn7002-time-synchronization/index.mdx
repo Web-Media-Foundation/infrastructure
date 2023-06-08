@@ -6,13 +6,13 @@ sidebar_position: 7002
 
 ## Introduction
 
-For video playback, Recative System split the video file into two different
+For video playback, Web Media Foundation split the video file into two different
 file: the muted video file and the audio file. For most browsers:
 
 - Muted video files can be played automatically without users' interaction.
 
 - By interactive the page once (click or tap), the `AudioContext` could be
-  activated, then Recative System could play any audio files without any
+  activated, then Web Media Foundation could play any audio files without any
   limitation.
 
 So we can achieve unlimited auto play by playing muted video and its sound in
@@ -22,7 +22,7 @@ Since they are played with two different Web API, the time of two different
 files could be uncoordinated. So we need a tool to synchronize the time of
 different channel.
 
-This is managed by the [`@recative/time-schedule`](/api/time-schedule).
+This is managed by the [`@web-media/time-schedule`](/api/time-schedule).
 
 ## Architecture
 
@@ -41,7 +41,7 @@ all type of asset, there is a monitor track:
   for most cases, audio tracks would not be synchronized.
 
 - **RemoteTrack**: Remote track will handle general progress management logic
-  for the logic which is hard to abstract, Recative System use Remote Track to
+  for the logic which is hard to abstract, Web Media Foundation use Remote Track to
   manage the progress of video playback and animation of act point.
 
 - **MonitorTrack**: Monitor track do not report any progress, but trigger events
@@ -59,27 +59,27 @@ tracks appear uncoordinated.
 
 ## Integration
 
-Each [`ContentInstance`](https://github.com/recative/recative-system/blob/dbbd9e210a7dae7d73961ded36f4595866e7b815/packages/core-manager/src/instance.ts#L60)
-have a member called [`timeline`](https://github.com/recative/recative-system/blob/dbbd9e210a7dae7d73961ded36f4595866e7b815/packages/core-manager/src/instance.ts#L84)
+Each [`ContentInstance`](https://github.com/Web-Media-Foundation/infrastructure/blob/dbbd9e210a7dae7d73961ded36f4595866e7b815/packages/core-manager/src/instance.ts#L60)
+have a member called [`timeline`](https://github.com/Web-Media-Foundation/infrastructure/blob/dbbd9e210a7dae7d73961ded36f4595866e7b815/packages/core-manager/src/instance.ts#L84)
 
-Most tracks will [be added to the timeline](https://github.com/recative/recative-system/blob/dbbd9e210a7dae7d73961ded36f4595866e7b815/packages/core-manager/src/instance.ts#L159-L168)
-while the asset is initialized, but some track [could be added later](https://github.com/recative/recative-system/blob/dbbd9e210a7dae7d73961ded36f4595866e7b815/packages/core-manager/src/instance.ts#L263).
+Most tracks will [be added to the timeline](https://github.com/Web-Media-Foundation/infrastructure/blob/dbbd9e210a7dae7d73961ded36f4595866e7b815/packages/core-manager/src/instance.ts#L159-L168)
+while the asset is initialized, but some track [could be added later](https://github.com/Web-Media-Foundation/infrastructure/blob/dbbd9e210a7dae7d73961ded36f4595866e7b815/packages/core-manager/src/instance.ts#L263).
 
-- **AudioTrack**: Audio track [will be initialized within the constructor of `ContentInstance`](https://github.com/recative/recative-system/blob/dbbd9e210a7dae7d73961ded36f4595866e7b815/packages/core-manager/src/instance.ts#L103).
-  Then [act player](/api/act-player) will [notify](https://github.com/recative/recative-system/blob/dbbd9e210a7dae7d73961ded36f4595866e7b815/packages/act-player/src/components/Stage/Video.tsx#L242)
+- **AudioTrack**: Audio track [will be initialized within the constructor of `ContentInstance`](https://github.com/Web-Media-Foundation/infrastructure/blob/dbbd9e210a7dae7d73961ded36f4595866e7b815/packages/core-manager/src/instance.ts#L103).
+  Then [act player](/api/act-player) will [notify](https://github.com/Web-Media-Foundation/infrastructure/blob/dbbd9e210a7dae7d73961ded36f4595866e7b815/packages/act-player/src/components/Stage/Video.tsx#L242)
   the track about the URL and backend of the audio resource by passing the
   [definition](/api/definitions/interface/IResourceFile) of the file.
 
 - **MonitorTrack**: Monitor track will also be added while the `ContentInstance`
-  is [initializing](https://github.com/recative/recative-system/blob/dbbd9e210a7dae7d73961ded36f4595866e7b815/packages/core-manager/src/instance.ts#L161-L164),
+  is [initializing](https://github.com/Web-Media-Foundation/infrastructure/blob/dbbd9e210a7dae7d73961ded36f4595866e7b815/packages/core-manager/src/instance.ts#L161-L164),
   all event listeners about the `stuck` and time `update` event will be bind
   here.
 
-- **RemoteTrack**: [The remote track](https://github.com/recative/recative-system/blob/dbbd9e210a7dae7d73961ded36f4595866e7b815/packages/core-manager/src/instance.ts#L263)
+- **RemoteTrack**: [The remote track](https://github.com/Web-Media-Foundation/infrastructure/blob/dbbd9e210a7dae7d73961ded36f4595866e7b815/packages/core-manager/src/instance.ts#L263)
   will manage the progress of the video channel and the act point. It is added
   while the [state](/docs/technotes/tn9002-episode-core#lifecycle) of the asset
-  turns to `preloading`. Then the `Video` React component will [report stuck](https://github.com/recative/recative-system/blob/dbbd9e210a7dae7d73961ded36f4595866e7b815/packages/act-player/src/components/Stage/Video.tsx#L117),
-  [unstuck](https://github.com/recative/recative-system/blob/dbbd9e210a7dae7d73961ded36f4595866e7b815/packages/act-player/src/components/Stage/Video.tsx#L101)
-  [progress and state](https://github.com/recative/recative-system/blob/dbbd9e210a7dae7d73961ded36f4595866e7b815/packages/act-player/src/components/Stage/Video.tsx#L327-L328)
-  via the [`functionForComponents`](https://github.com/recative/recative-system/blob/dbbd9e210a7dae7d73961ded36f4595866e7b815/packages/core-manager/src/episodeCore.ts#L558)
+  turns to `preloading`. Then the `Video` React component will [report stuck](https://github.com/Web-Media-Foundation/infrastructure/blob/dbbd9e210a7dae7d73961ded36f4595866e7b815/packages/act-player/src/components/Stage/Video.tsx#L117),
+  [unstuck](https://github.com/Web-Media-Foundation/infrastructure/blob/dbbd9e210a7dae7d73961ded36f4595866e7b815/packages/act-player/src/components/Stage/Video.tsx#L101)
+  [progress and state](https://github.com/Web-Media-Foundation/infrastructure/blob/dbbd9e210a7dae7d73961ded36f4595866e7b815/packages/act-player/src/components/Stage/Video.tsx#L327-L328)
+  via the [`functionForComponents`](https://github.com/Web-Media-Foundation/infrastructure/blob/dbbd9e210a7dae7d73961ded36f4595866e7b815/packages/core-manager/src/episodeCore.ts#L558)
   for [interface components](/docs/technotes/tn8001-act-player#:~:text=interface%20implementation).

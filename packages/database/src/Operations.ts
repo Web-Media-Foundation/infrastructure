@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { isDotNotation } from '@recative/lens';
+import { isDotNotation } from '@web-media/lens';
 
 import * as Comparators from './Comparators';
 

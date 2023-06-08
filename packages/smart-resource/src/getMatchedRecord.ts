@@ -59,7 +59,7 @@ export const getMatchedResource = <T>(
       trueWeights,
     ));
 
-  if (localStorage.getItem('@recative/smart-resource/report-match-score')) {
+  if (localStorage.getItem('@web-media/smart-resource/report-match-score')) {
     const scoreTable = resources
       .map((x, i) => ({ ...x, score: assetScores[i] }))
       .sort((a, b) => b.score - a.score)

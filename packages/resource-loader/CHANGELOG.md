@@ -11,7 +11,7 @@
 - Updated dependencies [156055e]
 - Updated dependencies [0b36c02]
 - Updated dependencies [156055e]
-  - @recative/open-promise@0.3.0
+  - @web-media/open-promise@0.3.0
 
 ## 0.2.3
 
@@ -19,21 +19,21 @@
 
 - Updated dependencies [94ada38]
 - Updated dependencies [c0142d7]
-  - @recative/definitions@0.5.0
+  - @web-media/definitions@0.5.0
 
 ## 0.2.2
 
 ### Patch Changes
 
 - Updated dependencies
-  - @recative/definitions@0.4.0
+  - @web-media/definitions@0.4.0
 
 ## 0.2.1
 
 ### Patch Changes
 
 - Updated dependencies
-  - @recative/definitions@0.3.0
+  - @web-media/definitions@0.3.0
 
 ## 0.2.0
 
@@ -44,8 +44,8 @@
 ### Patch Changes
 
 - Updated dependencies
-  - @recative/definitions@0.2.0
-  - @recative/open-promise@0.2.0
+  - @web-media/definitions@0.2.0
+  - @web-media/open-promise@0.2.0
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
@@ -53,4 +53,4 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 
 ### Features
 
-- Configure deploy tool ([9bb27cb](https://github.com/recative/recative-system/commit/9bb27cb7512d097b7d4e385876db3e90a8da24ec))
+- Configure deploy tool ([9bb27cb](https://github.com/Web-Media-Foundation/infrastructure/commit/9bb27cb7512d097b7d4e385876db3e90a8da24ec))

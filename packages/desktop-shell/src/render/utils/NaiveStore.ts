@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 
-const SECURE_STORE_KEY_PREFIX = '@recative/naive-store';
+const SECURE_STORE_KEY_PREFIX = '@web-media/naive-store';
 
 /**
  * A naive store implementation that compatible with ionic's secureStore

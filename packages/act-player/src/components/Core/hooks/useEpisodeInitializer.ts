@@ -3,11 +3,11 @@ import * as React from 'react';
 import type {
   EpisodeCore,
   InternalEpisodeData,
-} from '@recative/core-manager';
+} from '@web-media/core-manager';
 import type {
   IAssetForClient,
   IResourceItemForClient,
-} from '@recative/definitions';
+} from '@web-media/definitions';
 
 export interface PlayerAssetProp extends Omit<IAssetForClient, 'duration'> {
   duration: number | null;

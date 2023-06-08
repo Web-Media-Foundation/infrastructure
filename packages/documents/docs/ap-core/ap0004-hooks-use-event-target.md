@@ -13,7 +13,7 @@ it and handle its own logic separately.
 Like store definition, we need to define a new event type:
 
 ```ts
-import { EventDefinition } from '@recative/ap-core'
+import { EventDefinition } from '@web-media/ap-core'
 
 const START_RUNNING_TASK_EVENT = EventDefinition<{ taskName: string }>()
 ```
@@ -24,7 +24,7 @@ the event.
 Then we need to get the event pivot from your component.
 
 ```ts
-import { useStore } from '@recative/ap-core'
+import { useStore } from '@web-media/ap-core'
 import { TextureButton } from '@paperclip/ap-components'
 
 export const StartButton = () => {

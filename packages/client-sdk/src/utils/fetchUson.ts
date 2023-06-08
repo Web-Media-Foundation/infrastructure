@@ -1,5 +1,5 @@
 import debug from 'debug';
-import { parse } from '@recative/ugly-json';
+import { parse } from '@web-media/ugly-json';
 
 import { ClientSideRequestError } from './ClientSideRequestError';
 

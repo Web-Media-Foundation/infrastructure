@@ -1,11 +1,11 @@
-# @recative/database
+# @web-media/database
 
 ## 0.0.4
 
 ### Patch Changes
 
 - Updated dependencies [ad40709]
-  - @recative/open-promise@0.3.1
+  - @web-media/open-promise@0.3.1
 
 ## 0.0.3
 
@@ -14,11 +14,11 @@
 - Updated dependencies [156055e]
 - Updated dependencies [0b36c02]
 - Updated dependencies [156055e]
-  - @recative/open-promise@0.3.0
+  - @web-media/open-promise@0.3.0
 
 ## 0.0.2
 
 ### Patch Changes
 
 - Updated dependencies
-  - @recative/open-promise@0.2.4
+  - @web-media/open-promise@0.2.4

@@ -3,14 +3,14 @@ import { useParams, useNavigate } from 'react-router-dom';
 
 import * as app from '@capacitor/app';
 
-import { useDataFetcher } from '@recative/client-sdk';
+import { useDataFetcher } from '@web-media/client-sdk';
 
 import { Block } from 'baseui/block';
 import {
   useSdkConfig,
   useEpisodeDetail,
   ContentModuleFactory,
-} from '@recative/client-sdk';
+} from '@web-media/client-sdk';
 
 import { preferredUploaders, trustedUploaders } from './constants/configurations';
 

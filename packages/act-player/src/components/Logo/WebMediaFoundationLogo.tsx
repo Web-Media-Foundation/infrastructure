@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { SVGProps } from 'react';
 
-export const RecativeLogo = React.memo((props: SVGProps<SVGSVGElement>) => (
+export const WebMediaFoundationLogo = React.memo((props: SVGProps<SVGSVGElement>) => (
   <svg
     viewBox="0 0 860 200"
     fillRule='evenodd'

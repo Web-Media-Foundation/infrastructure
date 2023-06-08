@@ -5,8 +5,8 @@ import {
   ValidDotNotation,
   ValidSimpleLensField,
   DotNotation,
-} from '@recative/lens';
-import { Target } from '@recative/event-target';
+} from '@web-media/lens';
+import { Target } from '@web-media/event-target';
 
 import * as Comparators from './Comparators';
 

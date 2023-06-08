@@ -1,4 +1,4 @@
-# @recative/mobile-shell
+# @web-media/mobile-shell
 
 ## 0.2.5
 
@@ -6,15 +6,15 @@
 
 - 64b0c01: chore: Supports fetching version number
 - Updated dependencies [4c56c57]
-  - @recative/act-player@0.5.18
-  - @recative/client-sdk@13.0.0
+  - @web-media/act-player@0.5.18
+  - @web-media/client-sdk@13.0.0
 
 ## 0.2.4
 
 ### Patch Changes
 
-- @recative/act-player@0.5.16
-- @recative/client-sdk@12.0.0
+- @web-media/act-player@0.5.16
+- @web-media/client-sdk@12.0.0
 
 ## 0.2.3
 
@@ -26,16 +26,16 @@
 
 ### Patch Changes
 
-- @recative/act-player@0.5.3
-- @recative/client-sdk@11.0.0
+- @web-media/act-player@0.5.3
+- @web-media/client-sdk@11.0.0
 
 ## 0.2.1
 
 ### Patch Changes
 
 - Updated dependencies [fc982ac]
-  - @recative/client-sdk@10.0.0
-  - @recative/act-player@0.5.1
+  - @web-media/client-sdk@10.0.0
+  - @web-media/act-player@0.5.1
 
 ## 0.2.0
 
@@ -48,24 +48,24 @@
 - Updated dependencies [b252f5f]
 - Updated dependencies [1c27eb0]
 - Updated dependencies [7cc61a1]
-  - @recative/act-player@0.5.0
-  - @recative/client-sdk@9.0.0
+  - @web-media/act-player@0.5.0
+  - @web-media/client-sdk@9.0.0
 
 ## 0.1.3
 
 ### Patch Changes
 
 - Updated dependencies [db4ecee]
-  - @recative/client-sdk@8.0.0
-  - @recative/act-player@0.4.2
+  - @web-media/client-sdk@8.0.0
+  - @web-media/act-player@0.4.2
 
 ## 0.1.2
 
 ### Patch Changes
 
 - Updated dependencies [2e6adbd]
-  - @recative/client-sdk@7.0.0
-  - @recative/act-player@0.4.1
+  - @web-media/client-sdk@7.0.0
+  - @web-media/act-player@0.4.1
 
 ## 0.1.1
 
@@ -73,5 +73,5 @@
 
 - Updated dependencies [24bc81c]
 - Updated dependencies [15109d5]
-  - @recative/client-sdk@6.0.0
-  - @recative/act-player@0.4.0
+  - @web-media/client-sdk@6.0.0
+  - @web-media/act-player@0.4.0

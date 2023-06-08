@@ -1,4 +1,4 @@
-import { TimeSlicingQueue } from '@recative/open-promise';
+import { TimeSlicingQueue } from '@web-media/open-promise';
 
 import { TimeMagic } from './TimeMagic';
 import { AtomStore } from './AtomStore';

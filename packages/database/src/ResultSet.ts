@@ -4,7 +4,7 @@ import {
   lens,
   LensResult,
   ValidSimpleLensField,
-} from '@recative/lens';
+} from '@web-media/lens';
 
 import { Operators } from './Operations';
 // eslint-disable-next-line import/no-cycle

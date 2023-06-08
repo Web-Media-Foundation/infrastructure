@@ -1,4 +1,4 @@
-# @recative/ap-core
+# @web-media/ap-core
 
 ## 0.7.5
 
@@ -7,8 +7,8 @@
 - Updated dependencies [156055e]
 - Updated dependencies [0b36c02]
 - Updated dependencies [156055e]
-  - @recative/open-promise@0.3.0
-  - @recative/resource-bridge@0.2.6
+  - @web-media/open-promise@0.3.0
+  - @web-media/resource-bridge@0.2.6
 
 ## 0.7.4
 
@@ -17,7 +17,7 @@
 - d42ea97: feat: Add life cycle related function to the protocol
 - 3031e60: feat: Add additional page status check
 - Updated dependencies [d42ea97]
-  - @recative/act-protocol@0.2.11
+  - @web-media/act-protocol@0.2.11
 
 ## 0.7.3
 
@@ -37,7 +37,7 @@
 
 - 07dc4e0: feat: Add a life cycle debugging flag
 - Updated dependencies [07dc4e0]
-  - @recative/act-protocol@0.2.10
+  - @web-media/act-protocol@0.2.10
 
 ## 0.7.0
 
@@ -55,9 +55,9 @@
 
 - Updated dependencies [94ada38]
 - Updated dependencies [c0142d7]
-  - @recative/definitions@0.5.0
-  - @recative/act-protocol@0.2.9
-  - @recative/resource-bridge@0.2.5
+  - @web-media/definitions@0.5.0
+  - @web-media/act-protocol@0.2.9
+  - @web-media/resource-bridge@0.2.5
 
 ## 0.5.1
 
@@ -75,7 +75,7 @@
 ### Patch Changes
 
 - Updated dependencies [148013b]
-  - @recative/act-protocol@0.2.8
+  - @web-media/act-protocol@0.2.8
 
 ## 0.4.2
 
@@ -83,7 +83,7 @@
 
 - 297df61: fix: Emit textureupdate only when the texture is actual ready
 - Updated dependencies [9ced044]
-  - @recative/open-promise@0.2.3
+  - @web-media/open-promise@0.2.3
 
 ## 0.4.1
 
@@ -103,7 +103,7 @@
 
 - db60c3b: fix: remove frameRateLevel when animation was paused
 - Updated dependencies [bda3138]
-  - @recative/definitions@0.4.2
+  - @web-media/definitions@0.4.2
 
 ## 0.3.1-beta.0
 
@@ -146,9 +146,9 @@
 ### Patch Changes
 
 - Updated dependencies
-  - @recative/definitions@0.4.0
-  - @recative/act-protocol@0.2.7
-  - @recative/resource-bridge@0.2.3
+  - @web-media/definitions@0.4.0
+  - @web-media/act-protocol@0.2.7
+  - @web-media/resource-bridge@0.2.3
 
 ## 0.1.0
 
@@ -185,9 +185,9 @@
 ### Patch Changes
 
 - Updated dependencies
-  - @recative/definitions@0.3.0
-  - @recative/act-protocol@0.2.6
-  - @recative/resource-bridge@0.2.2
+  - @web-media/definitions@0.3.0
+  - @web-media/act-protocol@0.2.6
+  - @web-media/resource-bridge@0.2.2
 
 ## 0.0.2
 
@@ -204,7 +204,7 @@
 - chore: Disable service worker by default since it caused atlas not working correctly
 - chore: Performance improvement by batch RPC requests
 - Updated dependencies
-  - @recative/act-protocol@0.2.1
+  - @web-media/act-protocol@0.2.1
 
 ## 0.0.0
 
@@ -215,8 +215,8 @@
 ### Patch Changes
 
 - Updated dependencies
-  - @recative/act-protocol@0.2.0
-  - @recative/definitions@0.2.0
-  - @recative/open-promise@0.2.0
-  - @recative/resource-bridge@0.2.0
-  - @recative/smart-resource@0.2.0
+  - @web-media/act-protocol@0.2.0
+  - @web-media/definitions@0.2.0
+  - @web-media/open-promise@0.2.0
+  - @web-media/resource-bridge@0.2.0
+  - @web-media/smart-resource@0.2.0

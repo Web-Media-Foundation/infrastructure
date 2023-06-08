@@ -1,5 +1,5 @@
-import type { IEpisode } from '@recative/definitions';
-import type { IInitialAssetStatus } from '@recative/core-manager';
+import type { IEpisode } from '@web-media/definitions';
+import type { IInitialAssetStatus } from '@web-media/core-manager';
 
 import { NetworkRequestStatus } from '../constant/NetworkRequestStatus';
 

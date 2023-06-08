@@ -1,11 +1,11 @@
 {
-  "name": "@recative/lens",
+  "name": "@web-media/lens",
   "version": "0.0.1",
   "source": "src/index.ts",
   "main": "dist/main.js",
   "module": "dist/module.js",
   "types": "dist/types.d.ts",
-  "repository": "https://github.com/recative/recative-system",
+  "repository": "https://github.com/Web-Media-Foundation/infrastructure",
   "scripts": {
     "clean": "rimraf ./dist",
     "watch": "rollup -c -w",

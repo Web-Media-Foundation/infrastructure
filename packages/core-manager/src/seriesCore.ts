@@ -2,9 +2,9 @@ import EventTarget from '@ungap/event-target';
 import debug from 'debug';
 
 import { atom } from 'nanostores';
-import type { RawUserImplementedFunctions } from '@recative/definitions';
+import type { RawUserImplementedFunctions } from '@web-media/definitions';
 
-import { OpenPromise } from '@recative/open-promise';
+import { OpenPromise } from '@web-media/open-promise';
 import { EpisodeCore } from './episodeCore';
 import { readonlyAtom } from './utils/nanostore';
 import type { IInitialAssetStatus } from './sequence';

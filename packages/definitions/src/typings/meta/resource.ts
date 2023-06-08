@@ -16,13 +16,13 @@ export interface IResourceCommonFields {
    * each episode or resource group.
    *
    * Please notice if there is a resource group and a resource file with the
-   * same label, Recative System selects resource groups over resource files in
+   * same label, Web Media Foundation selects resource groups over resource files in
    * preference.
    */
   label: string;
   /**
-   * If the file is soft removed, Recative System do not remove files even if
-   * developers removed the file in the Recative Studio since the resource
+   * If the file is soft removed, Web Media Foundation do not remove files even if
+   * developers removed the file in the Web Media Foundation Studio since the resource
    * is possible to be published in production, remove the record of these
    * resource is not safe.
    */
@@ -36,9 +36,9 @@ export interface IResourceCommonFields {
    */
   readonly importTime: number;
   /**
-   * The URL of the thumbnail image, this field is only used in the Recative
+   * The URL of the thumbnail image, this field is only used in the Web Media Foundation
    * Studio, would not be uploaded to the CDN, and would not be used by any
-   * part of the Recative System.
+   * part of the Web Media Foundation.
    */
   readonly thumbnailSrc: string | null;
 }
@@ -60,11 +60,11 @@ export interface IResourceFile extends IResourceCommonFields {
    * A managed file means all managed fields will be locked, should never be
    * changed manually.
    *
-   * For Recative Studio, while the target file changes, extension configuration
+   * For Web Media Foundation Studio, while the target file changes, extension configuration
    * not marked as `nonMergeableResourceExtensionConfiguration` and tags not end
    * with `!` will be applied to managed files.
    *
-   * Mergeable field is defined in the resource processor extension of Recative
+   * Mergeable field is defined in the resource processor extension of Web Media Foundation
    * Studio.
    */
   managedBy: string | null;
@@ -75,9 +75,9 @@ export interface IResourceFile extends IResourceCommonFields {
    * `application/octet-stream`, and provide [codec information](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types#audio_and_video_types)
    * to this field or Safari may failed to play these media.
    *
-   * Recative Studio will automatically detect the type and codec of the media
+   * Web Media Foundation Studio will automatically detect the type and codec of the media
    * files, for developers that manually filling these fields, it is recommend
-   * to use [this script](https://github.com/recative/studio/blob/acecdbb2444330f1504a690b7a5c45466169919d/packages/extension-sdk/src/detectVideoMime.ts)
+   * to use [this script](https://github.com/Web-Media-Foundation/studio/blob/acecdbb2444330f1504a690b7a5c45466169919d/packages/extension-sdk/src/detectVideoMime.ts)
    * to generate the MIME type with codec information for the media file.
    */
   readonly mimeType: string;
@@ -85,9 +85,9 @@ export interface IResourceFile extends IResourceCommonFields {
    * The [xxHash](https://www.npmjs.com/package/xxhashjs) value of the file
    * while importing.
    *
-   * **This field is considered legacy**. In earlier versions of Recative
+   * **This field is considered legacy**. In earlier versions of Web Media Foundation
    * Studio, files might be imported with some pre-processing process, this
-   * field can help Recative System determine whether a particular file has been
+   * field can help Web Media Foundation determine whether a particular file has been
    * imported even after the file is converted. But this mechanism is considered
    * to be harmful. We now process the files through an extension system. The
    * converted files are stored in the database as a new file, and the original
@@ -96,7 +96,7 @@ export interface IResourceFile extends IResourceCommonFields {
    */
   readonly originalHash: string;
   /**
-   * The hash value of the file, Recative System provides two different hash
+   * The hash value of the file, Web Media Foundation provides two different hash
    * for different use cases, [xxHash](https://cyan4973.github.io/xxHash/) is a
    * faster hashing algorithm but [MD5](https://www.ietf.org/rfc/rfc1321.txt)
    * has a better compatibility since many battery-included languages have a
@@ -149,7 +149,7 @@ export interface IResourceFile extends IResourceCommonFields {
    *
    * This is a bi-directional field, developers should maintain this field and
    * the `files` field of the resource group. Or the resource querying may not
-   * working correctly, Recative Studio did this automatically but if you are
+   * working correctly, Web Media Foundation Studio did this automatically but if you are
    * writing resource definition manually, please be careful.
    */
   resourceGroupId: string;
@@ -163,7 +163,7 @@ export interface IResourceFile extends IResourceCommonFields {
    */
   tags: IResourceTag['id'][];
   /**
-   * All configuration generated by Recative Studio, could be used by the player
+   * All configuration generated by Web Media Foundation Studio, could be used by the player
    * or [interface components](/docs/technotes/tn9001-project-model#:~:text=by%20building%20an-,interface%20component,-%2D%20an%20ESM%20module),
    * like the [audio backend](/docs/technotes/tn7001-audio-management) or the
    * atlas dimension information.
@@ -183,7 +183,7 @@ export interface IResourceGroup extends IResourceCommonFields {
    */
   resourceGroupId?: never;
   /**
-   * The type of this resource, this is mainly for Recative Studio to filter
+   * The type of this resource, this is mainly for Web Media Foundation Studio to filter
    * different resource in the Resource view, not used in other places.
    */
   tags: IGroupTypeResourceTag['id'][];
@@ -192,7 +192,7 @@ export interface IResourceGroup extends IResourceCommonFields {
    *
    * This is a bi-directional field, developers should maintain this field and
    * the `files` field of the resource group. Or the resource querying may not
-   * working correctly, Recative Studio did this automatically but if you are
+   * working correctly, Web Media Foundation Studio did this automatically but if you are
    * writing resource definition manually, please be careful.
    */
   files: string[];

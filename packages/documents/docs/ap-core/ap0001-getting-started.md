@@ -14,7 +14,7 @@ are using is <span translate="no">Yarn 2</span>.
 Install via <span translate="no">Yarn 2</span>:
 
 ```shell
-yarn add @recative/ap-core
+yarn add @web-media/ap-core
 ```
 
 You may also want to install a CLI tool to make sure the project directory 

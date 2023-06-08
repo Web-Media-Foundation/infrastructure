@@ -1,9 +1,9 @@
-import { getMatchedResource } from '@recative/smart-resource';
-import type { ResourceEntry } from '@recative/smart-resource';
+import { getMatchedResource } from '@web-media/smart-resource';
+import type { ResourceEntry } from '@web-media/smart-resource';
 import type {
   IResourceItemForClient,
   IDetailedResourceItemForClient,
-} from '@recative/definitions';
+} from '@web-media/definitions';
 
 import { useHostFunctions } from './hostFunctionsHooks';
 import { defaultQueryFn, useQuery } from './fetchDataHooks';

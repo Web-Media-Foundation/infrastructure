@@ -1,6 +1,6 @@
 import * as React from 'react';
-import type { EpisodeCore } from '@recative/core-manager';
-import type { ContentSpec } from '@recative/definitions';
+import type { EpisodeCore } from '@web-media/core-manager';
+import type { ContentSpec } from '@web-media/definitions';
 
 export type InterfaceExtensionComponent = React.FC<{
   core: EpisodeCore;

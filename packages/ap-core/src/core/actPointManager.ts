@@ -1,5 +1,5 @@
 import { v4 as uuidV4 } from 'uuid';
-import { OpenPromise } from '@recative/open-promise';
+import { OpenPromise } from '@web-media/open-promise';
 
 import { PIXI_APP_INSTANCE_TYPE } from './pixiApp';
 import type { IPixiApp } from './pixiApp';

@@ -16,7 +16,7 @@
     "@capacitor/core": "latest",
     "@capacitor/camera": "latest",
     "@capacitor/splash-screen": "latest",
-    "@recative/video-renderer-native-backend": "file:.."
+    "@web-media/video-renderer-native-backend": "file:.."
   },
   "devDependencies": {
     "@capacitor/cli": "latest"

@@ -1,4 +1,4 @@
-import { DotNotation, DotNotationValue } from '@recative/lens';
+import { DotNotation, DotNotationValue } from '@web-media/lens';
 import type { Operator, QueryEntry } from './Operations';
 
 export type IQuery<Document> = Partial<{
