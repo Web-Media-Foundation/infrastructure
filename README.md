@@ -1,5 +1,5 @@
 <div>
-  <img alt="Web Media Foundation" width="100%" src="https://raw.githubusercontent.com/Web-Media-Foundation/infrastructure/05a199e188eecf9b10cbb0225a478463d0a878d7/assets/title.svg" />
+  <img alt="Web Media Foundation" width="100%" src="https://raw.githubusercontent.com/Web-Media-Foundation/infrastructure/master/assets/title.svg" />
 </div>
 
 Web Media Foundation is a comprehensive system to help creators to build interactive media for the modern web platform. The Web Media Foundation aims to allow creators to build their dreaming interactive content without bothering with trivial troubles of the performance issue, compatibility, etc.
