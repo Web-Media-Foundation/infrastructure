@@ -32,7 +32,7 @@ export default class Chunk<Metadata> {
 
   private _firstByte: number;
 
-  private callbacks: Record<string, Array<(data?: any) => void>> = {};
+  private callbacks: Record<string, Array<(data?: unknown) => void>> = {};
 
   constructor({
     clip,
@@ -45,7 +45,7 @@ export default class Chunk<Metadata> {
     clip: Clip<Metadata>;
     raw: Uint8Array;
     onready: (() => void) | null;
-    onerror: (error: Error) => void;
+    onerror: (error: unknown) => void;
     adapter: IAdapter<Metadata>;
     chunkIndex: number;
   }) {
@@ -70,13 +70,13 @@ export default class Chunk<Metadata> {
 
     this._firstByte = 0;
 
-    const decode = (callback: () => void, errback: (err: Error) => void) => {
+    const decode = (callback: () => void, onError: (err: Error) => void) => {
       const buffer = slice(raw, this._firstByte, raw.length);
       const bufferWithId3Header = this.adapter.wrapChunk(buffer).buffer;
 
       this.context.decodeAudioData(bufferWithId3Header, callback, (err) => {
         if (err) {
-          return errback(err);
+          return onError(err);
         }
 
         this._firstByte += 1;
@@ -85,11 +85,11 @@ export default class Chunk<Metadata> {
         // Thanks Safari developers, you absolute numpties
         for (; this._firstByte < raw.length - 1; this._firstByte += 1) {
           if (this.adapter.validateChunk(raw, this._firstByte)) {
-            return decode(callback, errback);
+            return decode(callback, onError);
           }
         }
 
-        errback(new Error(`Could not decode audio buffer`));
+        onError(new Error(`Could not decode audio buffer`));
       });
     };
 
@@ -127,7 +127,7 @@ export default class Chunk<Metadata> {
     );
   }
 
-  off(eventName: string, cb: (data?: any) => void) {
+  off(eventName: string, cb: (data?: unknown) => void) {
     const callbacks = this.callbacks[eventName];
     if (!callbacks) return;
 
@@ -135,7 +135,7 @@ export default class Chunk<Metadata> {
     if (~index) callbacks.splice(index, 1);
   }
 
-  on(eventName: string, cb: (data?: any) => void) {
+  on(eventName: string, cb: (data?: unknown) => void) {
     const callbacks =
       this.callbacks[eventName] || (this.callbacks[eventName] = []);
     callbacks.push(cb);
@@ -145,8 +145,8 @@ export default class Chunk<Metadata> {
     };
   }
 
-  once(eventName: string, cb: (data?: any) => void) {
-    const _cb = (data?: any) => {
+  once(eventName: string, cb: (data?: unknown) => void) {
+    const _cb = (data?: unknown) => {
       cb(data);
       this.off(eventName, _cb);
     };
@@ -154,7 +154,7 @@ export default class Chunk<Metadata> {
     return this.on(eventName, _cb);
   }
 
-  private _fire(eventName: string, data?: any) {
+  private _fire(eventName: string, data?: unknown) {
     const callbacks = this.callbacks[eventName];
     if (!callbacks) return;
 
@@ -170,9 +170,9 @@ export default class Chunk<Metadata> {
 
   createBufferCallback(
     callback: (buffer: IAudioBuffer) => void,
-    errback: (error: Error) => void
+    onError: (error: Error) => void
   ) {
-    this.createBuffer().then(callback, errback);
+    this.createBuffer().then(callback, onError);
   }
 
   createBuffer(): Promise<IAudioBuffer> {
