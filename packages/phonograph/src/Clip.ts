@@ -149,7 +149,7 @@ export default class Clip<Metadata> {
     this.loop = loop || false;
     this.adapter = adapter;
 
-    this.loader = new ((window as any).fetch ? FetchLoader : XhrLoader)(url);
+    this.loader = new ('fetch' in window ? FetchLoader : XhrLoader)(url);
 
     this.fadeTarget = volume || 1;
     this._gain = this.context.createGain();
@@ -220,10 +220,15 @@ export default class Clip<Metadata> {
             }
             this.trySetupAudioBufferCache();
           },
-          onerror: (error: any) => {
-            error.url = this.url;
-            error.phonographCode = 'COULD_NOT_DECODE';
-            this._fire('loaderror', error);
+          onerror: (error: unknown) => {
+            const clonedError =
+              typeof error === 'object' && error !== null
+                ? (error as Record<string, unknown>)
+                : ({ error } as Record<string, unknown>);
+
+            clonedError.url = this.url;
+            clonedError.phonographCode = 'COULD_NOT_DECODE';
+            this._fire('loaderror', clonedError);
           },
           adapter: this.adapter,
         });
@@ -308,10 +313,15 @@ export default class Clip<Metadata> {
           }
         },
 
-        onerror: (error: any) => {
-          error.url = this.url;
-          error.phonographCode = 'COULD_NOT_LOAD';
-          this._fire('loaderror', error);
+        onerror: (error: unknown) => {
+          const clonedError =
+            typeof error === 'object' && error !== null
+              ? (error as Record<string, unknown>)
+              : ({ error } as Record<string, unknown>);
+
+          clonedError.url = this.url;
+          clonedError.phonographCode = 'COULD_NOT_LOAD';
+          this._fire('loaderror', clonedError);
           this._loadStarted = false;
         },
       });
@@ -386,7 +396,7 @@ export default class Clip<Metadata> {
     this._fire('dispose');
   }
 
-  off(eventName: string, cb: (data?: any) => void) {
+  off(eventName: string, cb: (data?: unknown) => void) {
     const callbacks = this.callbacks[eventName];
     if (!callbacks) return;
 
@@ -394,7 +404,7 @@ export default class Clip<Metadata> {
     if (~index) callbacks.splice(index, 1);
   }
 
-  on(eventName: string, cb: (data?: any) => void) {
+  on(eventName: string, cb: (data?: unknown) => void) {
     const callbacks =
       this.callbacks[eventName] || (this.callbacks[eventName] = []);
     callbacks.push(cb);
@@ -404,8 +414,8 @@ export default class Clip<Metadata> {
     };
   }
 
-  once(eventName: string, cb: (data?: any) => void) {
-    const _cb = (data?: any) => {
+  once(eventName: string, cb: (data?: unknown) => void) {
+    const _cb = (data?: unknown) => {
       cb(data);
       this.off(eventName, _cb);
     };
@@ -530,7 +540,7 @@ export default class Clip<Metadata> {
     this._gain!.gain.value = this.fadeTarget;
   }
 
-  private _fire(eventName: string, data?: any) {
+  private _fire(eventName: string, data?: unknown) {
     const callbacks = this.callbacks[eventName];
     if (!callbacks) return;
 
