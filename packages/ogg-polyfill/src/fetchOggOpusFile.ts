@@ -1,9 +1,9 @@
-import { IOggTags, IOggHeader, OggPage } from "./OggPage";
+import { IOggTags, IOggHeader, OggPage } from './OggPage';
 import {
   IOpusPacket,
   OpusParseError,
   parseOpusPacket,
-} from "./parseOpusPacket";
+} from './parseOpusPacket';
 
 export interface IOggParseResult<Type extends string, T> {
   type: Type;
@@ -12,15 +12,15 @@ export interface IOggParseResult<Type extends string, T> {
 }
 
 export interface IOggHeaderParseResult
-  extends IOggParseResult<"header", IOggHeader> {}
+  extends IOggParseResult<'header', IOggHeader> {}
 
 export interface IOggTagsParseResult
-  extends IOggParseResult<"tags", IOggTags> {}
+  extends IOggParseResult<'tags', IOggTags> {}
 
 export interface IOggPacketsParseResult
-  extends IOggParseResult<"packets", IOpusPacket[]> {}
+  extends IOggParseResult<'packets', IOpusPacket[]> {}
 
-export const fetchOggOpusFile = async function* (url: string) {
+export async function* fetchOggOpusFile(url: string) {
   const request = await fetch(url);
   const reader = request.body?.getReader();
 
@@ -38,14 +38,16 @@ export const fetchOggOpusFile = async function* (url: string) {
     if (!buffer && value) {
       buffer = value;
     } else if (buffer && value) {
-      const nextBuffer = new Uint8Array(buffer.length + value.length);
+      const nextBuffer: Uint8Array = new Uint8Array(
+        buffer.length + value.length
+      );
       nextBuffer.set(buffer);
       nextBuffer.set(value, buffer.length);
       buffer = nextBuffer;
     }
 
     if (!buffer) {
-      throw new Error("Buffer not ready");
+      throw new Error('Buffer not ready');
     }
 
     const page = new OggPage(buffer);
@@ -62,7 +64,7 @@ export const fetchOggOpusFile = async function* (url: string) {
 
     if (page.pageSequenceNumber === 0) {
       const result: IOggHeaderParseResult = {
-        type: "header",
+        type: 'header',
         page,
         data: page.getOggHeader(),
       };
@@ -72,7 +74,7 @@ export const fetchOggOpusFile = async function* (url: string) {
 
     if (page.pageSequenceNumber === 1) {
       const result: IOggTagsParseResult = {
-        type: "tags",
+        type: 'tags',
         page,
         data: page.getOggTags(),
       };
@@ -84,7 +86,7 @@ export const fetchOggOpusFile = async function* (url: string) {
       const packets = page.mapSegments(parseOpusPacket);
 
       const result: IOggPacketsParseResult = {
-        type: "packets",
+        type: 'packets',
         page,
         data: packets,
       };
@@ -96,4 +98,4 @@ export const fetchOggOpusFile = async function* (url: string) {
   }
 
   return null;
-};
+}

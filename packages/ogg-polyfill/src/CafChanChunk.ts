@@ -1,4 +1,4 @@
-import { CafChunkStore } from "./CafChunk";
+import { CafChunkStore } from './CafChunk';
 
 export interface ICAFChannelDescription {
   channelLabel: number;
@@ -15,11 +15,14 @@ export interface ICAFChannelLayout {
 
 export class CafChanChunk {
   channelLayoutTag: number;
+
   channelBitmap: number;
+
   numberChannelDescriptions: number;
+
   channelDescriptions: ICAFChannelDescription[];
 
-  readonly type = "chan";
+  readonly type = 'chan';
 
   constructor(x: ICAFChannelLayout) {
     this.channelLayoutTag = x.channelLayoutTag;
@@ -31,7 +34,7 @@ export class CafChanChunk {
   static from = (data: Uint8Array) => {
     const chunkStore = new CafChunkStore(data);
 
-    if (chunkStore.type !== "chan") {
+    if (chunkStore.type !== 'chan') {
       throw new TypeError(`Not a channel chunk`);
     }
 
@@ -43,7 +46,7 @@ export class CafChanChunk {
 
     const channelDescriptions: ICAFChannelDescription[] = [];
 
-    for (let i = 0; i < numberChannelDescriptions; i++) {
+    for (let i = 0; i < numberChannelDescriptions; i += 1) {
       const channelLabel = dataView.getUint32(12 + i * 12, false);
       const channelFlags = dataView.getUint32(16 + i * 12, false);
 
@@ -69,8 +72,11 @@ export class CafChanChunk {
   };
 
   get byteLength() {
-    return CafChunkStore.headerSize + 12 +
+    return (
+      CafChunkStore.headerSize +
+      12 +
       this.numberChannelDescriptions * (this.channelDescriptions.length * 32)
+    );
   }
 
   encode = () => {
@@ -86,7 +92,7 @@ export class CafChanChunk {
     dataView.setUint32(h + 4, this.channelBitmap, false);
     dataView.setUint32(h + 8, this.numberChannelDescriptions, false);
 
-    for (let i = 0; i < this.numberChannelDescriptions; i++) {
+    for (let i = 0; i < this.numberChannelDescriptions; i += 1) {
       const channelDescription = this.channelDescriptions[i];
 
       dataView.setUint32(
@@ -100,7 +106,7 @@ export class CafChanChunk {
         false
       );
 
-      for (let j = 0; j < channelDescription.coordinates.length; j++) {
+      for (let j = 0; j < channelDescription.coordinates.length; j += 1) {
         dataView.setFloat64(
           h + 20 + i * 12 + j * 8,
           channelDescription.coordinates[j],

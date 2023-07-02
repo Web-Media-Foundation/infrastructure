@@ -6,7 +6,9 @@ export interface ICAFFileHeader {
 
 export class CafHeaderChunk {
   readonly fileType: string;
+
   readonly fileVersion: number;
+
   readonly fileFlags: number;
 
   constructor(x: ICAFFileHeader) {
@@ -25,6 +27,7 @@ export class CafHeaderChunk {
     });
   };
 
+  // eslint-disable-next-line class-methods-use-this
   get byteLength() {
     return 8;
   }

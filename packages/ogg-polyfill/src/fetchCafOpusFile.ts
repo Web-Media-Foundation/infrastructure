@@ -1,10 +1,10 @@
-import { CafChanChunk } from "./CafChanChunk";
-import { CafDataChunk } from "./CafDataChunk";
-import { CafDescChunk } from "./CafDescChunk";
-import { CafPaktChunk } from "./CafPaktChunk";
-import { CafChunkStore } from "./CafChunk";
-import { CafHeaderChunk } from "./CafHeaderChunk";
-import { ICAFChunkHeader, readCafChunkHeader } from "./readCafChunkHeader";
+import { CafChanChunk } from './CafChanChunk';
+import { CafDataChunk } from './CafDataChunk';
+import { CafDescChunk } from './CafDescChunk';
+import { CafPaktChunk } from './CafPaktChunk';
+import { CafChunkStore } from './CafChunk';
+import { CafHeaderChunk } from './CafHeaderChunk';
+import { ICAFChunkHeader, readCafChunkHeader } from './readCafChunkHeader';
 
 export type CafChunk =
   | CafChanChunk
@@ -21,11 +21,11 @@ interface ITestModeResult {
 }
 
 const CAF_HEADER_CHUNK_HEADER = {
-  chunkType: "#header",
+  chunkType: '#header',
   chunkSize: 8n,
 };
 
-export const fetchCafOpusFile = async function* <TestMode extends boolean>(
+export async function* fetchCafOpusFile<TestMode extends boolean>(
   url: string,
   testMode: TestMode
 ): AsyncGenerator<
@@ -53,14 +53,16 @@ export const fetchCafOpusFile = async function* <TestMode extends boolean>(
     if (!buffer && value) {
       buffer = value;
     } else if (buffer && value) {
-      const nextBuffer = new Uint8Array(buffer.length + value.length);
+      const nextBuffer: Uint8Array = new Uint8Array(
+        buffer.length + value.length
+      );
       nextBuffer.set(buffer);
       nextBuffer.set(value, buffer.length);
       buffer = nextBuffer;
     }
 
     if (!buffer) {
-      throw new Error("Buffer not ready");
+      throw new Error('Buffer not ready');
     }
 
     if (!headerParsed) {
@@ -105,16 +107,16 @@ export const fetchCafOpusFile = async function* <TestMode extends boolean>(
     };
 
     switch (header.chunkType) {
-      case "desc":
+      case 'desc':
         yield wrapResult(CafDescChunk.from(raw));
         break;
-      case "chan":
+      case 'chan':
         yield wrapResult(CafChanChunk.from(raw));
         break;
-      case "data":
+      case 'data':
         yield wrapResult(CafDataChunk.from(raw));
         break;
-      case "pakt":
+      case 'pakt':
         yield wrapResult(CafPaktChunk.from(raw));
         break;
       default:
@@ -123,4 +125,4 @@ export const fetchCafOpusFile = async function* <TestMode extends boolean>(
   }
 
   return null;
-};
+}

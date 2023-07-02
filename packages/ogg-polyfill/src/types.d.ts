@@ -1,9 +1,9 @@
-declare module "*.ogg" {
+declare module '*.ogg' {
   const value: string;
   export default value;
 }
 
-declare module "*.caf" {
+declare module '*.caf' {
   const value: string;
   export default value;
 }

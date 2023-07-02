@@ -1,9 +1,12 @@
 export class CafChunkStore {
   readonly type: string;
+
   readonly size: bigint;
+
   readonly sizeWithHeader: bigint;
 
   body: Uint8Array;
+
   header: Uint8Array;
 
   static headerSize = 12;

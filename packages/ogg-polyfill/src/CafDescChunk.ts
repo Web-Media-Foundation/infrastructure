@@ -1,4 +1,4 @@
-import { CafChunkStore } from "./CafChunk";
+import { CafChunkStore } from './CafChunk';
 
 export interface ICAFDescriptionChunk {
   sampleRate: number;
@@ -12,14 +12,20 @@ export interface ICAFDescriptionChunk {
 
 export class CafDescChunk {
   sampleRate: number;
+
   formatID: string;
+
   formatFlags: number;
+
   bytesPerPacket: number;
+
   framesPerPacket: number;
+
   channelsPerFrame: number;
+
   bitsPerChannel: number;
 
-  readonly type = "desc";
+  readonly type = 'desc';
 
   constructor(x: ICAFDescriptionChunk) {
     this.sampleRate = x.sampleRate;
@@ -34,7 +40,7 @@ export class CafDescChunk {
   static from = (data: Uint8Array) => {
     const chunkStore = new CafChunkStore(data);
 
-    if (chunkStore.type !== "desc") {
+    if (chunkStore.type !== 'desc') {
       throw new TypeError(`Not a description chunk`);
     }
 
@@ -59,6 +65,7 @@ export class CafDescChunk {
     });
   };
 
+  // eslint-disable-next-line class-methods-use-this
   get byteLength() {
     return 44;
   }

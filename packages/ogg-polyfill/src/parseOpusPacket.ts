@@ -230,11 +230,7 @@ export enum Channel {
   Stereo = 1,
 }
 
-export class OpusParseError extends Error {
-  constructor(message: string) {
-    super(message);
-  }
-}
+export class OpusParseError extends Error {}
 
 const parseDoubleByteFrameLength = (byte1: number, byte2: number) => {
   return byte2 * 4 + byte1;

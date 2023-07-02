@@ -1,4 +1,4 @@
-import { CafChunkStore } from "./CafChunk";
+import { CafChunkStore } from './CafChunk';
 
 interface ICAFData {
   editCount: number;
@@ -7,9 +7,10 @@ interface ICAFData {
 
 export class CafDataChunk {
   readonly editCount: number;
+
   readonly data: Uint8Array;
 
-  readonly type = "data";
+  readonly type = 'data';
 
   constructor({ editCount, data }: ICAFData) {
     this.editCount = editCount;
@@ -19,7 +20,7 @@ export class CafDataChunk {
   static from = (data: Uint8Array) => {
     const chunkStore = new CafChunkStore(data);
 
-    if (chunkStore.type !== "data") {
+    if (chunkStore.type !== 'data') {
       throw new TypeError(`Not a data chunk`);
     }
 

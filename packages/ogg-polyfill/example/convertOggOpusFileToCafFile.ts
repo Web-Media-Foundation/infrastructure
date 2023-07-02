@@ -1,13 +1,13 @@
-import { fetchOggOpusFile } from "../src/fetchOggOpusFile";
-import { oggOpusToCaf } from "../src/oggOpusToCaf";
-import { oggExample } from "./@example";
+import { fetchOggOpusFile } from '../src/fetchOggOpusFile';
+import { oggOpusToCaf } from '../src/oggOpusToCaf';
+import { oggExample } from './@example';
 
 (async () => {
   const x = fetchOggOpusFile(oggExample);
   const caf = oggOpusToCaf(x, true);
 
   let done = false;
-  let data: Uint8Array[] = [];
+  const data: Uint8Array[] = [];
 
   while (!done) {
     const { done: d, value: v } = await caf.next();
@@ -24,19 +24,20 @@ import { oggExample } from "./@example";
 
   let offset = 0;
 
-  for (const chunk of data) {
+  for (let i = 0, l = data.length; i < l; i += 1) {
+    const chunk = data[i];
     cafBinaryData.set(chunk, offset);
     offset += chunk.byteLength;
   }
 
   const blob = new Blob([cafBinaryData], {
-    type: "audio/x-caf",
+    type: 'audio/x-caf',
   });
   const url = window.URL.createObjectURL(blob);
 
-  const $a = document.createElement("a");
+  const $a = document.createElement('a');
   $a.href = url;
-  $a.download = "repacked.caf";
-  $a.innerText = "Download parsed file";
+  $a.download = 'repacked.caf';
+  $a.innerText = 'Download parsed file';
   document.body.appendChild($a);
 })();

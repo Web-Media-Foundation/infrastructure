@@ -1,4 +1,4 @@
-import { CafChunkStore } from "./CafChunk";
+import { CafChunkStore } from './CafChunk';
 
 interface ICAFPacketTableHeader {
   numberPackets: bigint;
@@ -14,9 +14,10 @@ interface ICafPaktChunk {
 
 export class CafPaktChunk {
   readonly header: ICAFPacketTableHeader;
+
   readonly body: number[];
 
-  readonly type = "pakt";
+  readonly type = 'pakt';
 
   constructor({ header, body }: ICafPaktChunk) {
     this.header = header;
@@ -27,7 +28,7 @@ export class CafPaktChunk {
     const numbers: number[] = [];
     let currentNumber = 0;
 
-    for (let i = 0; i < data.length; i++) {
+    for (let i = 0; i < data.length; i += 1) {
       const byte = data[i];
       currentNumber = (currentNumber << 7) | (byte & 0x7f);
 
@@ -43,7 +44,7 @@ export class CafPaktChunk {
   static constructPacketsTable = (numbers: number[]) => {
     const data: number[] = [];
 
-    for (let i = 0; i < numbers.length; i++) {
+    for (let i = 0; i < numbers.length; i += 1) {
       const encodedNumber: number[] = [];
       let number = numbers[i];
 
@@ -53,9 +54,9 @@ export class CafPaktChunk {
         number = Math.floor(number / 128);
       }
       encodedNumber.unshift(number);
-    
-      for (let i = 0, l = encodedNumber.length; i < l - 1; i += 1) {
-        encodedNumber[i] = encodedNumber[i] | 128;
+
+      for (let j = 0, l = encodedNumber.length; j < l - 1; j += 1) {
+        encodedNumber[j] = encodedNumber[j] | 128;
       }
 
       data.push(...encodedNumber);
@@ -100,7 +101,7 @@ export class CafPaktChunk {
   static from = (data: Uint8Array) => {
     const chunkStore = new CafChunkStore(data);
 
-    if (chunkStore.type !== "pakt") {
+    if (chunkStore.type !== 'pakt') {
       throw new TypeError(`Not a packet chunk`);
     }
 

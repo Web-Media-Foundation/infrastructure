@@ -4,11 +4,7 @@ const opusCommentMagicSignature = [
   0x4f, 0x70, 0x75, 0x73, 0x54, 0x61, 0x67, 0x73,
 ];
 
-export class OggFormatError extends Error {
-  constructor(message: string) {
-    super(message);
-  }
-}
+export class OggFormatError extends Error {}
 
 export interface IOpusChannelMapping {
   streamCount: number;
@@ -33,30 +29,38 @@ export interface IOggTags {
 
 export class OggPage {
   ready = false;
+
   structureVersion: number;
+
   headerType: number;
+
   isFreshPacket: boolean;
+
   isBos: boolean;
+
   isBoe: boolean;
+
   absoluteGranulePosition: bigint;
+
   streamSerialNumber: number;
+
   pageSequenceNumber: number;
+
   pageChecksum: number;
+
   pageSegments: number;
+
   segmentTable: Uint8Array;
+
   parsedSegmentTable: number[];
+
   dataView: DataView;
+
   pageSize: number;
 
   constructor(readonly buffer: Uint8Array) {
     const { dataView, pageSize, pageSegmentsCount } =
       OggPage.validatePage(buffer);
-
-    let accumulatedPageSegmentSize = 0;
-    for (let i = 0; i < pageSegmentsCount; i += 1) {
-      const segmentLength = dataView.getUint8(29 + i);
-      accumulatedPageSegmentSize += segmentLength;
-    }
 
     this.dataView = dataView;
     this.structureVersion = dataView.getUint8(4);
@@ -82,7 +86,9 @@ export class OggPage {
 
     // RFC3533 Page 7
     let accumulatedSize = 0;
-    for (const segmentSize of this.segmentTable) {
+    for (let i = 0, l = this.segmentTable.length; i < l; i += 1) {
+      const segmentSize = this.segmentTable[i];
+
       if (segmentSize === 255) {
         accumulatedSize += segmentSize;
 
@@ -96,7 +102,7 @@ export class OggPage {
 
         continue;
       }
-      
+
       if (segmentSize !== 0) {
         this.parsedSegmentTable.push(segmentSize);
       }
@@ -141,20 +147,20 @@ export class OggPage {
   static validatePage(buffer: Uint8Array) {
     for (let i = 0; i < oggMagicSignature.length; i += 1) {
       if (buffer[i] !== oggMagicSignature[i]) {
-        throw new OggFormatError("Invalid OGG magic signature");
+        throw new OggFormatError('Invalid OGG magic signature');
       }
     }
 
     // OGG page header incomplete
     if (buffer.length < 27) {
-      throw new OggFormatError("Incomplete buffer length");
+      throw new OggFormatError('Incomplete buffer length');
     }
     const dataView = new DataView(buffer.buffer);
 
     const pageSegmentsCount = dataView.getUint8(26);
     // OGG segment table incomplete
     if (buffer.length < 27 + pageSegmentsCount) {
-      throw new OggFormatError("Incomplete segment table");
+      throw new OggFormatError('Incomplete segment table');
     }
 
     let pageBodySize = 0;
@@ -166,7 +172,7 @@ export class OggPage {
     const pageSize = 27 + pageSegmentsCount + pageBodySize;
     // OGG content not loaded completely
     if (buffer.length < pageSize) {
-      throw new OggFormatError("Insufficient page size");
+      throw new OggFormatError('Insufficient page size');
     }
 
     return { dataView, pageBodySize, pageSize, pageSegmentsCount };
@@ -178,7 +184,7 @@ export class OggPage {
 
     for (let i = 0; i < opusHeadMagicSignature.length; i += 1) {
       if (array[i] !== opusHeadMagicSignature[i]) {
-        throw new OggFormatError("Invalid magic signature");
+        throw new OggFormatError('Invalid magic signature');
       }
     }
 
@@ -225,7 +231,7 @@ export class OggPage {
 
     for (let i = 0; i < opusCommentMagicSignature.length; i += 1) {
       if (array[i] !== opusCommentMagicSignature[i]) {
-        throw new Error("Invalid magic signature.");
+        throw new Error('Invalid magic signature.');
       }
     }
 

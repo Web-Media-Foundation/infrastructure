@@ -1,16 +1,14 @@
-import { CafDataChunk } from "./CafDataChunk";
-import { CafDescChunk } from "./CafDescChunk";
-import { CafPaktChunk } from "./CafPaktChunk";
-import { CafHeaderChunk } from "./CafHeaderChunk";
+import { CafDataChunk } from './CafDataChunk';
+import { CafDescChunk } from './CafDescChunk';
+import { CafPaktChunk } from './CafPaktChunk';
+import { CafHeaderChunk } from './CafHeaderChunk';
 import {
+  IOggTagsParseResult,
   IOggHeaderParseResult,
   IOggPacketsParseResult,
-  IOggParseResult,
-  IOggTagsParseResult,
-} from "./fetchOggOpusFile";
-import { CafChanChunk } from "./CafChanChunk";
-import { CafChunk } from "./fetchCafOpusFile";
-import { IOggHeader } from "./OggPage";
+} from './fetchOggOpusFile';
+import { CafChanChunk } from './CafChanChunk';
+import { CafChunk } from './fetchCafOpusFile';
 
 const OGG_CHANNEL_COUNT_TO_CAF_CHANNEL_LAYOUT_TAG = [
   (100 << 16) | 1, // kCAFChannelLayoutTag_Mono
@@ -25,7 +23,7 @@ interface ITestModeResult {
   raw: Uint8Array;
 }
 
-export const oggOpusToCaf = async function* <TestMode extends boolean>(
+export async function* oggOpusToCaf<TestMode extends boolean>(
   x: AsyncGenerator<
     IOggHeaderParseResult | IOggTagsParseResult | IOggPacketsParseResult,
     null
@@ -38,13 +36,13 @@ export const oggOpusToCaf = async function* <TestMode extends boolean>(
 > {
   type R = TestMode extends true ? ITestModeResult : CafChunk;
 
-  const wrapResult = (x: CafChunk): R => {
-    return testMode ? ({ chunk: x, raw: x.encode() } as R) : (x as R);
+  const wrapResult = (c: CafChunk): R => {
+    return testMode ? ({ chunk: c, raw: c.encode() } as R) : (c as R);
   };
 
   yield wrapResult(
     new CafHeaderChunk({
-      fileType: "caff",
+      fileType: 'caff',
       fileVersion: 1,
       fileFlags: 0,
     })
@@ -60,8 +58,6 @@ export const oggOpusToCaf = async function* <TestMode extends boolean>(
   const packetsParseResults: IOggPacketsParseResult[] = [];
   let sampleRate = -1;
 
-  let headerParsedResult: IOggParseResult<"header", IOggHeader> | null = null;
-
   while (!done) {
     const { done: d, value: v } = await x.next();
 
@@ -70,13 +66,13 @@ export const oggOpusToCaf = async function* <TestMode extends boolean>(
 
     if (!value) continue;
 
-    if (value.type === "header") {
+    if (value.type === 'header') {
       sampleRate = value.data.inputSampleRate;
 
       yield wrapResult(
         new CafDescChunk({
           sampleRate: value.data.inputSampleRate,
-          formatID: "opus",
+          formatID: 'opus',
           formatFlags: 0,
           bytesPerPacket: 0,
           framesPerPacket: 0,
@@ -98,13 +94,13 @@ export const oggOpusToCaf = async function* <TestMode extends boolean>(
       );
     }
 
-    if (value.type === "packets") {
+    if (value.type === 'packets') {
       packetsParseResults.push(value);
     }
   }
 
   const totalDataSize = packetsParseResults
-    .flatMap((x) => x.page.parsedSegmentTable)
+    .flatMap((y) => y.page.parsedSegmentTable)
     .reduce((a, b) => a + b, 0);
 
   const dataChunk = new CafDataChunk({
@@ -113,10 +109,13 @@ export const oggOpusToCaf = async function* <TestMode extends boolean>(
   });
 
   let offset = 0;
-  for (const packetsParseResult of packetsParseResults) {
-    const page = packetsParseResult.page;
-    for (let i = 0, l = page.parsedSegmentTable.length; i < l; i += 1) {
-      const chunkData = page.getPageSegment(i);
+  for (let i = 0, l = packetsParseResults.length; i < l; i += 1) {
+    const packetsParseResult = packetsParseResults[i];
+
+    const { page } = packetsParseResult;
+
+    for (let j = 0, ll = page.parsedSegmentTable.length; j < ll; j += 1) {
+      const chunkData = page.getPageSegment(j);
       dataChunk.data.set(chunkData, offset);
       offset += chunkData.length;
     }
@@ -125,22 +124,22 @@ export const oggOpusToCaf = async function* <TestMode extends boolean>(
   yield wrapResult(dataChunk);
 
   const numberPackets = packetsParseResults
-    .map((x) => x.page.parsedSegmentTable.length)
+    .map((y) => y.page.parsedSegmentTable.length)
     .reduce((a, b) => a + b, 0);
 
   if (sampleRate === -1) {
     throw new Error(
-      "Sample rate not found in header, unable to calculate numberValidFrames"
+      'Sample rate not found in header, unable to calculate numberValidFrames'
     );
   }
 
   const numberValidFrames = packetsParseResults
-    .flatMap((x) => x.data.map((x) => (x.config.frameSize * sampleRate) / 1000))
+    .flatMap((y) => y.data.map((z) => (z.config.frameSize * sampleRate) / 1000))
     .reduce((a, b) => a + b, 0);
 
-  const body = packetsParseResults.flatMap((x) =>
-    x.page.parsedSegmentTable.flatMap((packetSize, index) => {
-      const opusPage = x.data[index];
+  const body = packetsParseResults.flatMap((y) =>
+    y.page.parsedSegmentTable.flatMap((packetSize, index) => {
+      const opusPage = y.data[index];
       const numberOfFrames =
         (opusPage.frameByteLengths.length *
           opusPage.config.frameSize *
@@ -163,4 +162,4 @@ export const oggOpusToCaf = async function* <TestMode extends boolean>(
       body,
     })
   );
-};
+}
