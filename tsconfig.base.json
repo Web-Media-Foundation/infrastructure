@@ -34,6 +34,7 @@
       "@web-media/time-schedule": ["packages/time-schedule/src/index.ts"],
       "@web-media/database": ["packages/database/src/index.ts"],
       "@web-media/ugly-json": ["packages/ugly-json/src/index.ts"],
+      "@web-media/ogg-polyfill": ["packages/ogg-polyfill/src/index.ts"],
       "@web-media/event-target": ["packages/event-target/src/index.ts"],
       "@web-media/desktop-shell": ["packages/desktop-shell/src/index.ts"],
       "@web-media/lens": ["packages/lens/src/index.ts"],

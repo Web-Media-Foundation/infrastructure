@@ -9014,6 +9014,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@web-media/ogg-polyfill@workspace:packages/ogg-polyfill":
+  version: 0.0.0-use.local
+  resolution: "@web-media/ogg-polyfill@workspace:packages/ogg-polyfill"
+  languageName: unknown
+  linkType: soft
+
 "@web-media/open-promise@^0.3.0, @web-media/open-promise@workspace:^, @web-media/open-promise@workspace:packages/open-promise":
   version: 0.0.0-use.local
   resolution: "@web-media/open-promise@workspace:packages/open-promise"
