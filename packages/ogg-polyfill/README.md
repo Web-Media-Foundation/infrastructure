@@ -1,5 +1,9 @@
 # @web-media/ogg-polyfill
 
+[![GitHub](https://img.shields.io/github/license/web-media-foundation/infrastructure)](https://github.com/Web-Media-Foundation/infrastructure)
+[![npm](https://img.shields.io/npm/v/%40web-media%2Fogg-polyfill)](https://www.npmjs.com/package/@web-media/ogg-polyfill)
+[![Static Badge](https://img.shields.io/badge/demo-blue?logo=CodeSandbox&label=CSB)](https://codesandbox.io/s/web-media-ogg-polyfill-demo-8x5wk8)
+
 `@web-media/ogg-polyfill` is a web infrastructure project that provides Ogg
 format support for Safari.
 
@@ -28,7 +32,7 @@ the Ogg files, a process so fast that it's hardly noticeable to our users.
 Currently, our implementation does not automatically replace all Ogg media
 requests. Please use this API to perform the operation.
 
-```
+```typescript
 const x = fetchOggOpusFile(oggExample);
 const caf = oggOpusToCaf(x, true);
 

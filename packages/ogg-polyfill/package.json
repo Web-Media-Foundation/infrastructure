@@ -6,6 +6,7 @@
   "module": "dist/module.js",
   "types": "dist/types.d.ts",
   "repository": "https://github.com/Web-Media-Foundation/infrastructure",
+  "license": "MIT",
   "scripts": {
     "clean": "rimraf ./dist",
     "watch": "rollup -c -w",
