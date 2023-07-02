@@ -2,7 +2,11 @@
   "name": "@web-media/ap-preview",
   "version": "0.4.10",
   "source": "src/index.html",
-  "repository": "https://github.com/Web-Media-Foundation/infrastructure",
+  "homepage": "https://github.com/Web-Media-Foundation/infrastructure#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Web-Media-Foundation/infrastructure.git"
+  },
   "scripts": {
     "prepack": "yarn clean && yarn build",
     "clean": "rimraf ./dist",

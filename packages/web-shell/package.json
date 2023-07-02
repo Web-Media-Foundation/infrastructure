@@ -2,7 +2,11 @@
   "name": "@web-media/web-shell",
   "version": "0.4.4",
   "private": true,
-  "homepage": "./",
+  "homepage": "https://github.com/Web-Media-Foundation/infrastructure#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Web-Media-Foundation/infrastructure.git"
+  },
   "dependencies": {
     "@react-hookz/web": "^15.1.0",
     "@web-media/act-player": "workspace:^",
