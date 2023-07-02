@@ -3,12 +3,14 @@ import { CafDescChunk } from './CafDescChunk';
 import { CafPaktChunk } from './CafPaktChunk';
 import { CafHeaderChunk } from './CafHeaderChunk';
 import {
-  IOggTagsParseResult,
   IOggHeaderParseResult,
   IOggPacketsParseResult,
+  IOggParseResult,
+  IOggTagsParseResult,
 } from './fetchOggOpusFile';
 import { CafChanChunk } from './CafChanChunk';
 import { CafChunk } from './fetchCafOpusFile';
+import { IOggHeader } from './OggPage';
 
 const OGG_CHANNEL_COUNT_TO_CAF_CHANNEL_LAYOUT_TAG = [
   (100 << 16) | 1, // kCAFChannelLayoutTag_Mono
@@ -58,6 +60,8 @@ export async function* oggOpusToCaf<TestMode extends boolean>(
   const packetsParseResults: IOggPacketsParseResult[] = [];
   let sampleRate = -1;
 
+  let header: IOggParseResult<'header', IOggHeader> | null = null;
+
   while (!done) {
     const { done: d, value: v } = await x.next();
 
@@ -67,36 +71,45 @@ export async function* oggOpusToCaf<TestMode extends boolean>(
     if (!value) continue;
 
     if (value.type === 'header') {
-      sampleRate = value.data.inputSampleRate;
-
-      yield wrapResult(
-        new CafDescChunk({
-          sampleRate: value.data.inputSampleRate,
-          formatID: 'opus',
-          formatFlags: 0,
-          bytesPerPacket: 0,
-          framesPerPacket: 0,
-          channelsPerFrame: value.data.channelCount,
-          bitsPerChannel: 0,
-        })
-      );
-
-      yield wrapResult(
-        new CafChanChunk({
-          channelLayoutTag:
-            OGG_CHANNEL_COUNT_TO_CAF_CHANNEL_LAYOUT_TAG[
-              value.data.channelCount - 1
-            ],
-          channelBitmap: 0,
-          numberChannelDescriptions: 0,
-          channelDescriptions: [],
-        })
-      );
+      header = value;
+      continue;
     }
 
     if (value.type === 'packets') {
       packetsParseResults.push(value);
     }
+  }
+
+  if (header && packetsParseResults.length) {
+    const firstPacket = packetsParseResults[0];
+
+    sampleRate = header.data.inputSampleRate;
+
+    yield wrapResult(
+      new CafDescChunk({
+        sampleRate: header.data.inputSampleRate,
+        formatID: 'opus',
+        formatFlags: 0,
+        bytesPerPacket: 0,
+        framesPerPacket:
+          (firstPacket.data[0].config.frameSize * header.data.inputSampleRate) /
+          1000,
+        channelsPerFrame: header.data.channelCount,
+        bitsPerChannel: 0,
+      })
+    );
+
+    yield wrapResult(
+      new CafChanChunk({
+        channelLayoutTag:
+          OGG_CHANNEL_COUNT_TO_CAF_CHANNEL_LAYOUT_TAG[
+            header.data.channelCount - 1
+          ],
+        channelBitmap: 0,
+        numberChannelDescriptions: 0,
+        channelDescriptions: [],
+      })
+    );
   }
 
   const totalDataSize = packetsParseResults
@@ -111,9 +124,7 @@ export async function* oggOpusToCaf<TestMode extends boolean>(
   let offset = 0;
   for (let i = 0, l = packetsParseResults.length; i < l; i += 1) {
     const packetsParseResult = packetsParseResults[i];
-
     const { page } = packetsParseResult;
-
     for (let j = 0, ll = page.parsedSegmentTable.length; j < ll; j += 1) {
       const chunkData = page.getPageSegment(j);
       dataChunk.data.set(chunkData, offset);
@@ -138,15 +149,8 @@ export async function* oggOpusToCaf<TestMode extends boolean>(
     .reduce((a, b) => a + b, 0);
 
   const body = packetsParseResults.flatMap((y) =>
-    y.page.parsedSegmentTable.flatMap((packetSize, index) => {
-      const opusPage = y.data[index];
-      const numberOfFrames =
-        (opusPage.frameByteLengths.length *
-          opusPage.config.frameSize *
-          sampleRate) /
-        1000;
-
-      return [packetSize, numberOfFrames];
+    y.page.parsedSegmentTable.flatMap((packetSize) => {
+      return [packetSize];
     })
   );
 
