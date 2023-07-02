@@ -1,7 +1,11 @@
 {
   "name": "@web-media/capacitor-geckoview",
   "version": "2.0.0",
-  "repository": "https://github.com/Web-Media-Foundation/infrastructure",
+  "homepage": "https://github.com/Web-Media-Foundation/infrastructure#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Web-Media-Foundation/infrastructure.git"
+  },
   "scripts": {
     "verify": "./gradlew clean lint build test -b capacitor/build.gradle"
   },

@@ -5,7 +5,11 @@
   "main": "dist/main.js",
   "module": "dist/module.js",
   "types": "dist/types.d.ts",
-  "repository": "https://github.com/Web-Media-Foundation/infrastructure",
+  "homepage": "https://github.com/Web-Media-Foundation/infrastructure#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Web-Media-Foundation/infrastructure.git"
+  },
   "scripts": {
     "start:docs": "serve ./docs",
     "prepack": "yarn clean && yarn build",

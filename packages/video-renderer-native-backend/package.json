@@ -17,6 +17,7 @@
   ],
   "author": "WindFi",
   "license": "GPL-3.0",
+  "homepage": "https://github.com/Web-Media-Foundation/infrastructure#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Web-Media-Foundation/infrastructure.git"
