@@ -1,6 +1,6 @@
 {
   "name": "@web-media/core-manager",
-  "version": "0.13.0",
+  "version": "0.13.1",
   "source": "src/index.ts",
   "main": "dist/main.js",
   "module": "dist/module.js",

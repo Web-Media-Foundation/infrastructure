@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.13.1
+
+### Patch Changes
+
+- 2871eae: docs: Add more documents to the package
+
 ## 0.13.0
 
 ### Minor Changes

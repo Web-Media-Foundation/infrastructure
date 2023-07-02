@@ -1,5 +1,13 @@
 # Changelog
 
+## 13.0.2
+
+### Patch Changes
+
+- 2871eae: docs: Add more documents to the package
+- Updated dependencies [2871eae]
+  - @web-media/core-manager@0.13.1
+
 ## 13.0.1
 
 ### Patch Changes
