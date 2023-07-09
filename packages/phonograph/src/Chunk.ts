@@ -32,8 +32,6 @@ export default class Chunk<FileMetadata, ChunkMetadata> extends EventTarget {
 
   extended: Uint8Array | null;
 
-  extendedWithHeader: Uint8Array | null;
-
   ready = new OpenPromise<boolean>();
 
   next: Chunk<FileMetadata, ChunkMetadata> | null = null;
@@ -64,7 +62,6 @@ export default class Chunk<FileMetadata, ChunkMetadata> extends EventTarget {
 
     this.chunk = chunk;
     this.extended = null;
-    this.extendedWithHeader = null;
 
     this.adapter = adapter;
 
@@ -77,23 +74,10 @@ export default class Chunk<FileMetadata, ChunkMetadata> extends EventTarget {
     this.once('error', onerror);
 
     const decode = (callback: () => void, onError: (err: Error) => void) => {
-      const raw = this.chunk.wrappedData;
-      const { buffer } = raw;
+      const { wrappedData } = this.chunk;
 
-      this.context.decodeAudioData(buffer, callback, (err) => {
-        if (err) {
-          return onError(err);
-        }
-
-        // filthy hack taken from http://stackoverflow.com/questions/10365335/decodeaudiodata-returning-a-null-error
-        // Thanks Safari developers, you absolute numpties
-        // for (; this._firstByte < raw.length - 1; this._firstByte += 1) {
-        //   if (this.adapter.validateChunk(raw, this._firstByte)) {
-        //     return decode(callback, onError);
-        //   }
-        // }
-
-        onError(new Error(`Could not decode audio buffer`));
+      this.context.decodeAudioData(wrappedData.buffer, callback, (error) => {
+        return onError(error ?? new Error(`Could not decode audio buffer`));
       });
     };
 
@@ -129,9 +113,7 @@ export default class Chunk<FileMetadata, ChunkMetadata> extends EventTarget {
         'Something went wrong! Chunk was not ready in time for playback'
       );
     }
-    return this.context.decodeAudioData(
-      this.extendedWithHeader!.slice(0).buffer
-    );
+    return this.context.decodeAudioData(this.extended!.slice(0).buffer);
   }
 
   private _ready() {
@@ -143,28 +125,26 @@ export default class Chunk<FileMetadata, ChunkMetadata> extends EventTarget {
       const thisChunkData = this.chunk.wrappedData;
 
       if (this.next) {
-        const nextChunkData = this.next.chunk.wrappedData;
+        const nextChunkData = this.next.chunk.rawData;
 
-        const rawLen = thisChunkData.length;
-        const nextLen = nextChunkData.length >> 1; // we don't need the whole thing
+        const rawLength = thisChunkData.length;
+        // we don't need the whole thing
+        const nextLength = nextChunkData.length >> 1;
 
-        this.extended = new Uint8Array(rawLen + nextLen);
+        this.extended = new Uint8Array(rawLength + nextLength);
 
         let p = 0;
 
-        for (let i = 0; i < rawLen; i += 1) {
-          // eslint-disable-next-line no-plusplus
-          this.extended[p++] = thisChunkData[i];
+        for (let i = 0; i < rawLength; i += 1, p += 1) {
+          this.extended[p] = thisChunkData[i];
         }
 
-        for (let i = 0; i < nextLen; i += 1) {
-          // eslint-disable-next-line no-plusplus
-          this.extended[p++] = thisChunkData[i];
+        for (let i = 0; i < nextLength; i += 1, p += 1) {
+          this.extended[p] = nextChunkData[i];
         }
       } else {
         this.extended = thisChunkData;
       }
-      this.extendedWithHeader = this.extended;
 
       this.dispatchEvent(new ReadyEvent());
     }

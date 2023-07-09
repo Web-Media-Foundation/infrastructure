@@ -40,6 +40,7 @@ const channelModeLookup: Record<string, string> = {
   3: 'mono',
 };
 
+// You should see [73, 68, 51, 4, 0, 0, 0, 0, 0, 0] in your debugger.
 const id3Header = new Uint8Array([
   0x49, 0x44, 0x33, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 ]);

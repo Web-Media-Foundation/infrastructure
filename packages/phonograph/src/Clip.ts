@@ -318,11 +318,12 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
         this.dispatchEvent(new LoadEvent());
       });
     } catch (error) {
-      console.error(error);
       this.dispatchEvent(
         new LoadErrorEvent(this.url, 'COULD_NOT_DECODE', error)
       );
       this._loadStarted = false;
+
+      throw error;
     }
   }
 
@@ -395,10 +396,12 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
     });
 
     if (this.playing) {
+      // eslint-disable-next-line no-console
       console.warn(
         `clip.play() was called on a clip that was already playing (${this.url})`
       );
     } else if (!this.canPlayThough.resolvedValue) {
+      // eslint-disable-next-line no-console
       console.warn(
         `clip.play() was called before clip.canplaythrough === true (${this.url})`
       );
@@ -413,6 +416,7 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
 
   pause() {
     if (!this.playing) {
+      // eslint-disable-next-line no-console
       console.warn(
         `clip.pause() was called on a clip that was already paused (${this.url})`
       );
