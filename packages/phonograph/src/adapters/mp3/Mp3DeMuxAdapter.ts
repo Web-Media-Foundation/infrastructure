@@ -16,6 +16,11 @@ export interface ParsedMetadata {
   channelMode: string;
 }
 
+export interface SeekableParsedMetadata extends ParsedMetadata {
+  start: number;
+  end: number;
+}
+
 const mpegVersionLookup: Record<string, number> = {
   0: 2,
   1: 1,
@@ -57,10 +62,16 @@ const bitrateLookup: Record<string, (number | null)[]> = {
 // eslint-disable-next-line prefer-destructuring
 bitrateLookup[23] = bitrateLookup[22];
 
-export class Mp3DeMuxAdapter extends MediaDeMuxAdapter<{}, ParsedMetadata> {
+export class Mp3DeMuxAdapter extends MediaDeMuxAdapter<
+  {},
+  SeekableParsedMetadata[]
+> {
   metadata = {};
 
   appendData = (value: Uint8Array, isLastChunk: boolean) => {
+    let lastHeaderPosition: number | undefined | null = null;
+    const frameMetadataSequence: SeekableParsedMetadata[] = [];
+
     for (let i = 0; i < value.length; i += 1) {
       const headerValidate = Mp3DeMuxAdapter.validateHeader(value, i);
 
@@ -77,45 +88,52 @@ export class Mp3DeMuxAdapter extends MediaDeMuxAdapter<{}, ParsedMetadata> {
         this.metadata = metadata;
       }
 
-      let nextHeaderPosition: number | undefined = 0;
-
       for (let j = i + 4; j < value.length; j += 1) {
         const nextHeaderValidate = Mp3DeMuxAdapter.validateHeader(value, j);
 
         if (nextHeaderValidate) {
-          nextHeaderPosition = j;
-          break;
+          frameMetadataSequence.push({
+            ...metadata,
+            start: lastHeaderPosition === null ? i : lastHeaderPosition,
+            end: j,
+          });
+
+          lastHeaderPosition = j;
         }
       }
 
-      if (!nextHeaderPosition) {
-        if (!isLastChunk) {
-          return null;
-        }
-
-        nextHeaderPosition = undefined;
+      if (!frameMetadataSequence.length) {
+        return null;
       }
-
-      const newFrame = value.slice(i, nextHeaderPosition);
-
-      const newChunk = {
-        rawData: newFrame,
-        metadata,
-        duration: 1152 / metadata.sampleRate,
-        frames: 1,
-        get wrappedData() {
-          return Mp3DeMuxAdapter.wrapChunk(this.rawData);
-        },
-      };
-
-      return {
-        skipped: i,
-        consumed: i + newFrame.length,
-        data: newChunk,
-      };
     }
 
-    return null;
+    const { start } = frameMetadataSequence[0];
+    let { end } = frameMetadataSequence[frameMetadataSequence.length - 1];
+
+    if (isLastChunk) {
+      end = value.length;
+    }
+
+    const rawChunkData = value.slice(start, end);
+
+    const newChunk = {
+      rawData: rawChunkData,
+      metadata: frameMetadataSequence,
+      duration: frameMetadataSequence.reduce(
+        (a, x) => 1152 / x.sampleRate + a,
+        0
+      ),
+      frames: frameMetadataSequence.length,
+      get wrappedData() {
+        return Mp3DeMuxAdapter.wrapChunk(this.rawData);
+      },
+    };
+
+    return {
+      skipped: start,
+      consumed: start + rawChunkData.length,
+      data: newChunk,
+    };
   };
 
   static validateHeader = (data: Uint8Array, i = 0) => {
