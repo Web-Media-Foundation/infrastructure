@@ -127,15 +127,15 @@ export default class Chunk<FileMetadata, ChunkMetadata> extends EventTarget {
       if (this.next) {
         const nextChunkData = this.next.chunk.rawData;
 
-        const rawLength = thisChunkData.length;
+        const thisLength = thisChunkData.length;
         // we don't need the whole thing
         const nextLength = nextChunkData.length >> 1;
 
-        this.extended = new Uint8Array(rawLength + nextLength);
+        this.extended = new Uint8Array(thisLength + nextLength);
 
         let p = 0;
 
-        for (let i = 0; i < rawLength; i += 1, p += 1) {
+        for (let i = 0; i < thisLength; i += 1, p += 1) {
           this.extended[p] = thisChunkData[i];
         }
 
