@@ -83,13 +83,13 @@ export class Mp3DeMuxAdapter extends MediaDeMuxAdapter<
     }
 
     // We found a valid header now
-    const frameHeader = Mp3DeMuxAdapter.processFrameHeader(value, skip);
-    const metadata = Mp3DeMuxAdapter.parseMetadata(frameHeader);
+    const fileFrameHeader = Mp3DeMuxAdapter.processFrameHeader(value, skip);
+    const fileMetadata = Mp3DeMuxAdapter.parseMetadata(fileFrameHeader);
 
     if (!this.metadata) {
       // Determine some facts about this mp3 file from the initial header
       // This is simply some random guess
-      this.metadata = metadata;
+      this.metadata = fileMetadata;
     }
 
     for (let j = skip + 4; j < value.length; j += 1) {
@@ -97,20 +97,32 @@ export class Mp3DeMuxAdapter extends MediaDeMuxAdapter<
 
       const start = lastHeaderPosition === null ? skip : lastHeaderPosition;
 
+      const frameFrameHeader = Mp3DeMuxAdapter.processFrameHeader(value, j);
+      const frameMetadata = Mp3DeMuxAdapter.parseMetadata(frameFrameHeader);
+
       if (j - start <= 4) continue;
 
       if (nextHeaderValidate) {
         frameMetadataSequence.push({
-          ...metadata,
+          ...frameMetadata,
           start,
           end: j,
         });
 
         lastHeaderPosition = j;
+
+        const frameLength = Mp3DeMuxAdapter.getFrameLength(
+          value,
+          j,
+          frameMetadata
+        );
+
+        j += frameLength;
+        j += 3;
       }
     }
 
-    if (!frameMetadataSequence.length) {
+    if (frameMetadataSequence.length < 4) {
       return null;
     }
 
@@ -208,6 +220,11 @@ export class Mp3DeMuxAdapter extends MediaDeMuxAdapter<
     return result;
   };
 
+  /**
+   * Frame length is length of a frame when compressed. It is calculated in
+   * slots. One slot is 4 bytes long for Layer I, and one byte long for Layer II
+   * and Layer III.
+   */
   static getFrameLength = (
     data: Uint8Array,
     i: number,
