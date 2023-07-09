@@ -37,6 +37,9 @@ init.addEventListener('click', () => {
     clip.on('error', (event) => {
       console.error(event);
     });
+    clip.on('loaderror', (event) => {
+      console.error(event);
+    });
 
     const loop = () => {
       updateProgress();

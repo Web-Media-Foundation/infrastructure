@@ -51,7 +51,12 @@ interface ILoadErrorEventDetail {
 }
 
 export class LoadErrorEvent extends CustomEvent<ILoadErrorEventDetail> {
-  constructor(url: string, phonographCode: string, error: unknown) {
+  constructor(
+    url: string,
+    phonographCode: string,
+    error: unknown,
+    public cause?: unknown
+  ) {
     super('loaderror', { detail: { url, phonographCode, error } });
   }
 }
@@ -296,10 +301,15 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
             this.trySetupAudioBufferCache();
           });
 
-          chunk.on('error', (({ detail }: CustomEvent<Error>) => {
-            this.dispatchEvent(
-              new LoadErrorEvent(this.url, 'COULD_NOT_DECODE', detail)
+          chunk.on('error', (({ detail, target }: CustomEvent<Error>) => {
+            const newEvent = new LoadErrorEvent(
+              this.url,
+              'COULD_NOT_DECODE',
+              detail,
+              target
             );
+
+            this.dispatchEvent(newEvent);
           }) as EventListenerOrEventListenerObject);
 
           const lastChunk = this._chunks[this._chunks.length - 1];
@@ -326,9 +336,8 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
         this.dispatchEvent(new LoadEvent());
       });
     } catch (error) {
-      this.dispatchEvent(
-        new LoadErrorEvent(this.url, 'COULD_NOT_DECODE', error)
-      );
+      const newEvent = new LoadErrorEvent(this.url, 'COULD_NOT_DECODE', error);
+      this.dispatchEvent(newEvent);
       this._loadStarted = false;
 
       throw error;

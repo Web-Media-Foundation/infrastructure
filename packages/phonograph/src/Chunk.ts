@@ -11,9 +11,9 @@ export class ReadyEvent extends CustomEvent<void> {
   }
 }
 
-export class ErrorEvent extends CustomEvent<void> {
+export class ErrorEvent extends CustomEvent<Error> {
   constructor(public error: Error) {
-    super('error');
+    super('error', { detail: error });
   }
 }
 
@@ -85,19 +85,13 @@ export default class Chunk<FileMetadata, ChunkMetadata> extends EventTarget {
     this._ready();
   }
 
-  createBufferCallback(
-    callback: (buffer: IAudioBuffer) => void,
-    onError: (error: Error) => void
-  ) {
-    this.createBuffer().then(callback, onError);
-  }
-
   createBuffer(): Promise<IAudioBuffer> {
     if (!this.ready) {
       throw new Error(
         'Something went wrong! Chunk was not ready in time for playback'
       );
     }
+
     return this.context.decodeAudioData(this.extended!.slice(0).buffer);
   }
 
