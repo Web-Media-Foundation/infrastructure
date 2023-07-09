@@ -43,15 +43,11 @@ export default class Chunk<FileMetadata, ChunkMetadata> extends EventTarget {
   constructor({
     clip,
     chunk,
-    onready,
-    onerror,
     adapter,
     chunkIndex,
   }: {
     clip: Clip<FileMetadata, ChunkMetadata>;
     chunk: IDataChunk<ChunkMetadata>;
-    onready: (() => void) | null;
-    onerror: (error: unknown) => void;
     adapter: MediaDeMuxAdapter<FileMetadata, ChunkMetadata>;
     chunkIndex: number;
   }) {
@@ -68,10 +64,6 @@ export default class Chunk<FileMetadata, ChunkMetadata> extends EventTarget {
     this.duration = null;
 
     this._attached = false;
-    if (onready !== null) {
-      this.once('ready', onready);
-    }
-    this.once('error', onerror);
 
     const decode = (callback: () => void, onError: (err: Error) => void) => {
       const { wrappedData } = this.chunk;

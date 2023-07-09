@@ -280,19 +280,21 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
             clip: this,
             chunkIndex: this.__chunks.length,
             chunk: data,
-            onready: () => {
-              if (!this.canPlayThough.resolvedValue) {
-                checkCanplaythrough();
-              }
-              this.trySetupAudioBufferCache();
-            },
-            onerror: (error: unknown) => {
-              this.dispatchEvent(
-                new LoadErrorEvent(this.url, 'COULD_NOT_DECODE', error)
-              );
-            },
             adapter: this.adapter,
           });
+
+          chunk.once('ready', () => {
+            if (!this.canPlayThough.resolvedValue) {
+              checkCanplaythrough();
+            }
+            this.trySetupAudioBufferCache();
+          });
+
+          chunk.once('error', (({ detail }: CustomEvent<Error>) => {
+            this.dispatchEvent(
+              new LoadErrorEvent(this.url, 'COULD_NOT_DECODE', detail)
+            );
+          }) as EventListenerOrEventListenerObject);
 
           const lastChunk = this._chunks[this._chunks.length - 1];
           if (lastChunk) lastChunk.attach(chunk);
