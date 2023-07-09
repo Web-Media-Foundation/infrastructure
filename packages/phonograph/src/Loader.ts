@@ -14,7 +14,11 @@ export class BinaryLoader {
 
   public progress = 0;
 
-  buffer: Uint8Array | null = null;
+  public buffer: Uint8Array | null = null;
+
+  consume = (size: number) => {
+    this.buffer = this.buffer?.slice(size) ?? null;
+  };
 
   async *fetch() {
     if (this.fetched) {

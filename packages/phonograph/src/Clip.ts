@@ -16,11 +16,9 @@ import { EventTarget } from '@web-media/event-target';
 import Chunk from './Chunk';
 import Clone from './Clone';
 import warn from './utils/warn';
-import { slice } from './utils/buffer';
-import { IAdapter } from './adapters/IAdapter';
 import { BinaryLoader } from './Loader';
+import { MediaDeMuxAdapter } from './adapters/MediaDeMuxAdapter';
 
-const CHUNK_SIZE = 64 * 1024;
 const OVERLAP = 0.2;
 
 class PhonographError extends Error {
@@ -99,20 +97,20 @@ export class EndedEvent extends CustomEvent<void> {
 }
 
 // A cache of audio buffers starting from current time
-interface AudioBufferCache<Metadata> {
+interface AudioBufferCache<FileMetadata, ChunkMetadata> {
   currentChunkStartTime: number;
-  currentChunk: Chunk<Metadata> | null;
+  currentChunk: Chunk<FileMetadata, ChunkMetadata> | null;
   currentBuffer: IAudioBuffer | null;
   nextBuffer: IAudioBuffer | null;
   pendingBuffer: IAudioBuffer | null;
 }
 
-export default class Clip<Metadata> extends EventTarget {
+export default class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
   url: string;
 
   loop: boolean;
 
-  readonly adapter: IAdapter<Metadata>;
+  readonly adapter: MediaDeMuxAdapter<FileMetadata, ChunkMetadata>;
 
   context: AudioContext;
 
@@ -128,8 +126,6 @@ export default class Clip<Metadata> extends EventTarget {
 
   loader: BinaryLoader;
 
-  metadata: Metadata | null = null;
-
   playing = false;
 
   ended = false;
@@ -138,13 +134,13 @@ export default class Clip<Metadata> extends EventTarget {
 
   private _currentTime = 0;
 
-  private __chunks: Chunk<Metadata>[] = [];
+  private __chunks: Chunk<FileMetadata, ChunkMetadata>[] = [];
 
-  public get _chunks(): Chunk<Metadata>[] {
+  public get _chunks(): Chunk<FileMetadata, ChunkMetadata>[] {
     return this.__chunks;
   }
 
-  public set _chunks(value: Chunk<Metadata>[]) {
+  public set _chunks(value: Chunk<FileMetadata, ChunkMetadata>[]) {
     this.__chunks = value;
   }
 
@@ -177,7 +173,10 @@ export default class Clip<Metadata> extends EventTarget {
 
   private _nextGain: IGainNode<AudioContext> | null = null;
 
-  private _audioBufferCache: AudioBufferCache<Metadata> | null = null;
+  private _audioBufferCache: AudioBufferCache<
+    FileMetadata,
+    ChunkMetadata
+  > | null = null;
 
   constructor({
     context,
@@ -190,7 +189,7 @@ export default class Clip<Metadata> extends EventTarget {
     url: string;
     loop?: boolean;
     volume?: number;
-    adapter: IAdapter<Metadata>;
+    adapter: MediaDeMuxAdapter<FileMetadata, ChunkMetadata>;
   }) {
     super();
 
@@ -214,11 +213,6 @@ export default class Clip<Metadata> extends EventTarget {
     if (!this._loadStarted) {
       this._loadStarted = true;
 
-      const tempBuffer = new Uint8Array(CHUNK_SIZE * 2);
-      let p = 0;
-      let processedBytes = 0;
-      let nextFrameStartBytes = 0;
-
       const loadStartTime = Date.now();
       let totalLoadedBytes = 0;
 
@@ -231,7 +225,7 @@ export default class Clip<Metadata> extends EventTarget {
         for (const chunk of this._chunks) {
           if (!chunk.duration) break;
           duration += chunk.duration;
-          bytes += chunk.raw.length;
+          bytes += chunk.chunk.data.length;
         }
 
         if (!duration) return;
@@ -255,37 +249,6 @@ export default class Clip<Metadata> extends EventTarget {
           this.canPlayThough.resolve(true);
           this.dispatchEvent(new CanPlayThroughEvent());
         }
-      };
-
-      const drainBuffer = () => {
-        const firstByte = 0;
-
-        const chunk = new Chunk<Metadata>({
-          clip: this,
-          chunkIndex: this.__chunks.length,
-          raw: slice(tempBuffer, firstByte, p),
-          onready: () => {
-            if (!this.canPlayThough.resolvedValue) {
-              checkCanplaythrough();
-            }
-            this.trySetupAudioBufferCache();
-          },
-          onerror: (error: unknown) => {
-            this.dispatchEvent(
-              new LoadErrorEvent(this.url, 'COULD_NOT_DECODE', error)
-            );
-          },
-          adapter: this.adapter,
-        });
-
-        const lastChunk = this._chunks[this._chunks.length - 1];
-        if (lastChunk) lastChunk.attach(chunk);
-
-        this._chunks.push(chunk);
-        processedBytes += p;
-        p = 0;
-
-        return chunk;
       };
 
       try {
@@ -315,49 +278,37 @@ export default class Clip<Metadata> extends EventTarget {
 
           if (!value) continue;
 
-          if (!this.metadata) {
-            for (let i = 0; i < value.length; i += 1) {
-              // determine some facts about this mp3 file from the initial header
-              if (this.adapter.validateChunk(value)) {
-                const metadata = this.adapter.getChunkMetadata(value);
-                this.metadata = metadata;
+          const parseResult = this.adapter.appendData(value);
 
-                break;
-              }
-            }
+          if (parseResult) {
+            const { consumed, data } = parseResult;
+
+            this.loader.consume(consumed);
+            const chunk = new Chunk<FileMetadata, ChunkMetadata>({
+              clip: this,
+              chunkIndex: this.__chunks.length,
+              chunk: data,
+              onready: () => {
+                if (!this.canPlayThough.resolvedValue) {
+                  checkCanplaythrough();
+                }
+                this.trySetupAudioBufferCache();
+              },
+              onerror: (error: unknown) => {
+                this.dispatchEvent(
+                  new LoadErrorEvent(this.url, 'COULD_NOT_DECODE', error)
+                );
+              },
+              adapter: this.adapter,
+            });
+
+            const lastChunk = this._chunks[this._chunks.length - 1];
+            if (lastChunk) lastChunk.attach(chunk);
+
+            this._chunks.push(chunk);
+
+            totalLoadedBytes += consumed;
           }
-
-          for (let i = 0; i < value.length; i += 1) {
-            // once the buffer is large enough, wait for
-            // the next frame header then drain it
-            // TODO: header detection may not works if the header is divided into two data segments.
-            if (
-              p + processedBytes >= nextFrameStartBytes &&
-              this.adapter.validateChunk(value, i)
-            ) {
-              const metadata = this.adapter.getChunkMetadata(value, i);
-              nextFrameStartBytes =
-                p +
-                processedBytes +
-                (this.adapter.getChunkLength(value, metadata, i) ?? 0);
-              if (p > CHUNK_SIZE + 4) {
-                drainBuffer();
-              }
-            }
-
-            // write new data to buffer
-            tempBuffer[p] = value[i];
-            p += 1;
-          }
-
-          totalLoadedBytes += value.length;
-        }
-
-        if (p) {
-          const lastChunk = drainBuffer();
-          lastChunk.attach(null);
-
-          totalLoadedBytes += p;
         }
 
         this._chunks[0].ready.then(() => {
@@ -380,7 +331,7 @@ export default class Clip<Metadata> extends EventTarget {
   }
 
   clone() {
-    return new Clone<Metadata>(this);
+    return new Clone<FileMetadata, ChunkMetadata>(this);
   }
 
   connect(
@@ -556,8 +507,9 @@ export default class Clip<Metadata> extends EventTarget {
     if (this._audioBufferCache !== null) {
       return;
     }
-    let lastChunk: Chunk<Metadata> | null = null;
-    let chunk: Chunk<Metadata> | null = this._chunks[0] ?? null;
+    let lastChunk: Chunk<FileMetadata, ChunkMetadata> | null = null;
+    let chunk: Chunk<FileMetadata, ChunkMetadata> | null =
+      this._chunks[0] ?? null;
     let time = 0;
     while (chunk !== null) {
       if (chunk.duration === null) {
@@ -783,7 +735,10 @@ export default class Clip<Metadata> extends EventTarget {
   };
 
   // Put audio buffer into AudioBufferCache when it is decoded
-  private onBufferDecoded(chunk: Chunk<Metadata>, buffer: IAudioBuffer) {
+  private onBufferDecoded(
+    chunk: Chunk<FileMetadata, ChunkMetadata>,
+    buffer: IAudioBuffer
+  ) {
     const audioBufferCache = this._audioBufferCache;
     if (audioBufferCache === null) {
       return;
@@ -807,7 +762,7 @@ export default class Clip<Metadata> extends EventTarget {
   }
 
   // Start chunk decode
-  private decodeChunk(chunk: Chunk<Metadata> | null) {
+  private decodeChunk(chunk: Chunk<FileMetadata, ChunkMetadata> | null) {
     if (chunk === null) {
       return;
     }

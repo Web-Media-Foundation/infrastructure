@@ -1,13 +1,12 @@
 import { OpenPromise } from '@web-media/open-promise';
 import { AudioContext, IAudioBuffer } from 'standardized-audio-context';
 
-import { slice } from './utils/buffer';
-import { IAdapter } from './adapters/IAdapter';
-
 import type Clip from './Clip';
+import { slice } from './utils/buffer';
+import { IDataChunk, MediaDeMuxAdapter } from './adapters/MediaDeMuxAdapter';
 
-export default class Chunk<Metadata> {
-  clip: Clip<Metadata>;
+export default class Chunk<FileMetadata, ChunkMetadata> {
+  clip: Clip<FileMetadata, ChunkMetadata>;
 
   context: AudioContext;
 
@@ -17,7 +16,7 @@ export default class Chunk<Metadata> {
 
   chunkIndex: number;
 
-  raw: Uint8Array;
+  chunk: IDataChunk<ChunkMetadata>;
 
   extended: Uint8Array | null;
 
@@ -25,36 +24,34 @@ export default class Chunk<Metadata> {
 
   ready = new OpenPromise<boolean>();
 
-  next: Chunk<Metadata> | null = null;
+  next: Chunk<FileMetadata, ChunkMetadata> | null = null;
 
-  readonly adapter: IAdapter<Metadata>;
+  readonly adapter: MediaDeMuxAdapter<FileMetadata, ChunkMetadata>;
 
   private _attached: boolean;
-
-  private _firstByte: number;
 
   private callbacks: Record<string, Array<(data?: unknown) => void>> = {};
 
   constructor({
     clip,
-    raw,
+    chunk,
     onready,
     onerror,
     adapter,
     chunkIndex,
   }: {
-    clip: Clip<Metadata>;
-    raw: Uint8Array;
+    clip: Clip<FileMetadata, ChunkMetadata>;
+    chunk: IDataChunk<ChunkMetadata>;
     onready: (() => void) | null;
     onerror: (error: unknown) => void;
-    adapter: IAdapter<Metadata>;
+    adapter: MediaDeMuxAdapter<FileMetadata, ChunkMetadata>;
     chunkIndex: number;
   }) {
     this.clip = clip;
     this.chunkIndex = chunkIndex;
     this.context = clip.context;
 
-    this.raw = raw;
+    this.chunk = chunk;
     this.extended = null;
     this.extendedWithHeader = null;
 
@@ -68,26 +65,22 @@ export default class Chunk<Metadata> {
     }
     this.once('error', onerror);
 
-    this._firstByte = 0;
-
     const decode = (callback: () => void, onError: (err: Error) => void) => {
-      const buffer = slice(raw, this._firstByte, raw.length);
-      const bufferWithId3Header = this.adapter.wrapChunk(buffer).buffer;
+      const raw = this.chunk.wrappedData;
+      const { buffer } = raw;
 
-      this.context.decodeAudioData(bufferWithId3Header, callback, (err) => {
+      this.context.decodeAudioData(buffer, callback, (err) => {
         if (err) {
           return onError(err);
         }
 
-        this._firstByte += 1;
-
         // filthy hack taken from http://stackoverflow.com/questions/10365335/decodeaudiodata-returning-a-null-error
         // Thanks Safari developers, you absolute numpties
-        for (; this._firstByte < raw.length - 1; this._firstByte += 1) {
-          if (this.adapter.validateChunk(raw, this._firstByte)) {
-            return decode(callback, onError);
-          }
-        }
+        // for (; this._firstByte < raw.length - 1; this._firstByte += 1) {
+        //   if (this.adapter.validateChunk(raw, this._firstByte)) {
+        //     return decode(callback, onError);
+        //   }
+        // }
 
         onError(new Error(`Could not decode audio buffer`));
       });
@@ -95,30 +88,8 @@ export default class Chunk<Metadata> {
 
     decode(
       () => {
-        let numFrames = 0;
-        let duration = 0;
-        let i = this._firstByte;
-
-        while (i < this.raw.length) {
-          if (this.adapter.validateChunk(this.raw, i)) {
-            const metadata = this.adapter.getChunkMetadata(this.raw, i);
-            numFrames += 1;
-
-            const frameLength = this.adapter.getChunkLength(
-              this.raw,
-              metadata,
-              i
-            );
-            i += Math.max(frameLength ?? 0, 4);
-            duration +=
-              this.adapter.getChunkDuration(this.raw, metadata, i) ?? 0;
-          } else {
-            i += 1;
-          }
-        }
-
-        this.duration = duration;
-        this.numFrames = numFrames;
+        this.duration = this.chunk.duration;
+        this.numFrames = this.chunk.frames;
         this._ready();
       },
       () => {
@@ -161,7 +132,7 @@ export default class Chunk<Metadata> {
     callbacks.slice().forEach((cb) => cb(data));
   }
 
-  attach(nextChunk: Chunk<Metadata> | null) {
+  attach(nextChunk: Chunk<FileMetadata, ChunkMetadata> | null) {
     this.next = nextChunk;
     this._attached = true;
 
@@ -192,30 +163,31 @@ export default class Chunk<Metadata> {
     if (this._attached && this.duration !== null) {
       this.ready.resolve(true);
 
+      const thisChunkData = this.chunk.wrappedData;
+
       if (this.next) {
-        const rawLen = this.raw.length;
-        const nextLen = this.next.raw.length >> 1; // we don't need the whole thing
+        const nextChunkData = this.next.chunk.wrappedData;
+
+        const rawLen = thisChunkData.length;
+        const nextLen = nextChunkData.length >> 1; // we don't need the whole thing
 
         this.extended = new Uint8Array(rawLen + nextLen);
 
         let p = 0;
 
-        for (let i = this._firstByte; i < rawLen; i += 1) {
+        for (let i = 0; i < rawLen; i += 1) {
           // eslint-disable-next-line no-plusplus
-          this.extended[p++] = this.raw[i];
+          this.extended[p++] = thisChunkData[i];
         }
 
         for (let i = 0; i < nextLen; i += 1) {
           // eslint-disable-next-line no-plusplus
-          this.extended[p++] = this.next.raw[i];
+          this.extended[p++] = thisChunkData[i];
         }
       } else {
-        this.extended =
-          this._firstByte > 0
-            ? slice(this.raw, this._firstByte, this.raw.length)
-            : this.raw;
+        this.extended = thisChunkData;
       }
-      this.extendedWithHeader = this.adapter.wrapChunk(this.extended);
+      this.extendedWithHeader = this.extended;
 
       this._fire('ready');
     }

@@ -1,0 +1,187 @@
+import { IDataChunk, MediaDeMuxAdapter } from '../MediaDeMuxAdapter';
+
+export interface RawMetadata {
+  mpegVersion: number;
+  mpegLayer: number;
+  sampleRate: number;
+  channelMode: number;
+}
+
+const mpegVersionLookup: Record<string, number> = {
+  0: 2,
+  1: 1,
+};
+
+const mpegLayerLookup: Record<string, number> = {
+  1: 3,
+  2: 2,
+  3: 1,
+};
+
+const sampleRateLookup: Record<string, number> = {
+  0: 44100,
+  1: 48000,
+  2: 32000,
+};
+
+const channelModeLookup: Record<string, string> = {
+  0: 'stereo',
+  1: 'joint stereo',
+  2: 'dual channel',
+  3: 'mono',
+};
+
+const id3Header = new Uint8Array([
+  0x49, 0x44, 0x33, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+]);
+
+// http://mpgedit.org/mpgedit/mpeg_format/mpeghdr.htm
+const bitrateLookup: Record<string, (number | null)[]> = {
+  11: [null, 32, 64, 96, 128, 160, 192, 224, 256, 288, 320, 352, 384, 416, 448],
+  12: [null, 32, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 384],
+  13: [null, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320],
+  21: [null, 32, 48, 56, 64, 80, 96, 112, 128, 144, 160, 176, 192, 224, 256],
+  22: [null, 8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 144, 160],
+};
+
+// eslint-disable-next-line prefer-destructuring
+bitrateLookup[23] = bitrateLookup[22];
+
+export class Mp3DeMuxAdapter extends MediaDeMuxAdapter<{}, RawMetadata> {
+  metadata = {};
+
+  dataChunks: IDataChunk<RawMetadata>[] = [];
+
+  appendData = (value: Uint8Array) => {
+    if (!this.metadata) {
+      for (let i = 0; i < value.length; i += 1) {
+        // Determine some facts about this mp3 file from the initial header
+        // This is simply some random guess
+        if (Mp3DeMuxAdapter.validateHeader(value, i)) {
+          const metadata = Mp3DeMuxAdapter.parseFrameHeader(value, i);
+          this.metadata = metadata;
+
+          break;
+        }
+      }
+    }
+
+    for (let i = 0; i < value.length; i += 1) {
+      // Once the buffer is large enough, wait for the next frame header then
+      // drain it
+
+      if (Mp3DeMuxAdapter.validateHeader(value, i)) {
+        const metadata = Mp3DeMuxAdapter.parseFrameHeader(value, i);
+        const frameLength =
+          Mp3DeMuxAdapter.getFrameLength(value, i, metadata) ?? 0;
+
+        if (value.length < frameLength + i) return null;
+
+        const newFrame = value.slice(i, frameLength + i);
+
+        const newChunk = {
+          data: newFrame,
+          metadata,
+          duration: 1152 / metadata.sampleRate,
+          frames: 1,
+          get wrappedData() {
+            return Mp3DeMuxAdapter.wrapChunk(this.data);
+          },
+        };
+
+        this.dataChunks.push(newChunk);
+
+        return {
+          consumed: i + frameLength,
+          data: newChunk,
+        };
+      }
+    }
+
+    return null;
+  };
+
+  static validateHeader = (data: Uint8Array, i = 0) => {
+    // First 11 bits should be set to 1, and the 12nd bit should be 1 if the audio is MPEG Version 1 or
+    // MPEG Version 2, this means MPEG Version 2.5 is not supported by this library.
+    if (data[i + 0] !== 0b11111111 || (data[i + 1] & 0b11110000) !== 0b11110000)
+      return false;
+
+    const valid =
+      // Layer Description should not be 00, since it is reserved
+      (data[i + 1] & 0b00000110) !== 0b00000000 &&
+      // Bitrate should not be 1111, since it is bad
+      (data[i + 2] & 0b11110000) !== 0b11110000 &&
+      // Sampling Rate Frequency should not be 11, the value is reserved
+      (data[i + 2] & 0b00001100) !== 0b00001100 &&
+      // Emphasis should not be 10, the value is reserved
+      (data[i + 2] & 0b00000011) !== 0b00000010;
+
+    return valid;
+  };
+
+  static parseFrameHeader = (data: Uint8Array, i = 0): RawMetadata =>
+    ({
+      mpegVersion: data[i + 1] & 0b00001000,
+      mpegLayer: data[i + 1] & 0b00000110,
+      sampleRate: data[i + 2] & 0b00001100,
+      channelMode: data[i + 3] & 0b11000000,
+    } as const);
+
+  static parseMetadata = (metadata: RawMetadata) => {
+    const mpegVersion = mpegVersionLookup[metadata.mpegVersion >> 3];
+
+    return {
+      mpegVersion,
+      mpegLayer: mpegLayerLookup[metadata.mpegLayer >> 1],
+      sampleRate: sampleRateLookup[metadata.sampleRate >> 2] / mpegVersion,
+      channelMode: channelModeLookup[metadata.channelMode >> 6],
+    };
+  };
+
+  static wrapChunk = (original: Uint8Array) => {
+    if (original.length >= 3) {
+      if (
+        original[0] === 0x49 &&
+        original[1] === 0x44 &&
+        original[2] === 0x33
+      ) {
+        // already has ID3 header
+        return original;
+      }
+    }
+
+    const result = new Uint8Array(id3Header.length + original.length);
+
+    for (let i = 0; i < id3Header.length; i += 1) {
+      result[i] = id3Header[i];
+    }
+
+    for (let i = 0; i < original.length; i += 1) {
+      result[i + id3Header.length] = original[i];
+    }
+
+    return result;
+  };
+
+  static getFrameLength = (
+    data: Uint8Array,
+    i: number,
+    metadata: RawMetadata
+  ) => {
+    const { mpegVersion } = metadata;
+    const { mpegLayer } = metadata;
+    const { sampleRate } = metadata;
+
+    const bitrateCode = (data[i + 2] & 0b11110000) >> 4;
+    const bitrate =
+      (bitrateLookup[`${mpegVersion}${mpegLayer}`][bitrateCode] ?? 0) * 1e3;
+    const padding = (data[i + 2] & 0b00000010) >> 1;
+
+    const length = ~~(mpegLayer === 1
+      ? ((12 * bitrate) / sampleRate + padding) * 4
+      : (144 * bitrate) / sampleRate + padding);
+
+    return length;
+  };
+}

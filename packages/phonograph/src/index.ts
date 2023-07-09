@@ -1,4 +1,4 @@
 import './Clone'; // need to import Clone before Clip
 
-export { mp3Adapter } from './adapters/mp3/mp3Adapter';
+export { Mp3DeMuxAdapter } from './adapters/mp3/Mp3DeMuxAdapter';
 export { default as Clip } from './Clip';

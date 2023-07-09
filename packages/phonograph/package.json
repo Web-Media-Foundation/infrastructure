@@ -30,17 +30,17 @@
     "url": "https://github.com/Web-Media-Foundation/infrastructure/issues"
   },
   "devDependencies": {
-    "@web-media/event-target": "workspace:^",
-    "serve": "^10.1.1"
+    "serve": "14.2.0"
   },
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -cw",
     "prepublish": "yarn build",
-    "test": "serve . & open http://localhost:5000/demo.html",
+    "test": "serve .",
     "pretest": "yarn build"
   },
   "dependencies": {
+    "@web-media/event-target": "workspace:^",
     "@web-media/open-promise": "workspace:^",
     "standardized-audio-context": "25.3.54"
   }

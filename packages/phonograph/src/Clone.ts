@@ -1,10 +1,13 @@
 // eslint-disable-next-line import/no-cycle
 import Clip from './Clip';
 
-export default class Clone<Metadata> extends Clip<Metadata> {
-  original: Clip<Metadata>;
+export default class Clone<FileMetadata, ChunkMetadata> extends Clip<
+  FileMetadata,
+  ChunkMetadata
+> {
+  original: Clip<FileMetadata, ChunkMetadata>;
 
-  constructor(original: Clip<Metadata>) {
+  constructor(original: Clip<FileMetadata, ChunkMetadata>) {
     super({
       context: original.context,
       url: original.url,
