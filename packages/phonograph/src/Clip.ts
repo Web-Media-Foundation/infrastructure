@@ -243,6 +243,7 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
         }
       }
     };
+
     try {
       const fetcher = this.loader.fetch();
       let done = false;
@@ -303,6 +304,7 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
 
           const lastChunk = this._chunks[this._chunks.length - 1];
           if (lastChunk) lastChunk.attach(chunk);
+
           this._chunks.push(chunk);
           totalLoadedBytes += consumed;
         }
@@ -401,18 +403,10 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
       });
     });
 
-    if (this.playing) {
-      // eslint-disable-next-line no-console
-      console.warn(
-        `clip.play() was called on a clip that was already playing (${this.url})`
-      );
-    } else if (!this.canPlayThough.resolvedValue) {
-      // eslint-disable-next-line no-console
-      console.warn(
-        `clip.play() was called before clip.canplaythrough === true (${this.url})`
-      );
+    if (!this.canPlayThough.resolvedValue) {
       this.buffer();
     }
+
     this.playing = true;
     this.ended = false;
     this.tryResumePlayback();
@@ -422,10 +416,6 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
 
   pause() {
     if (!this.playing) {
-      // eslint-disable-next-line no-console
-      console.warn(
-        `clip.pause() was called on a clip that was already paused (${this.url})`
-      );
       return this;
     }
 
