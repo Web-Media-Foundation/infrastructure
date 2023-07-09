@@ -1,10 +1,19 @@
-import { IDataChunk, MediaDeMuxAdapter } from '../MediaDeMuxAdapter';
+import { MediaDeMuxAdapter } from '../MediaDeMuxAdapter';
 
-export interface RawMetadata {
+export interface RawFrameHeader {
+  type: 'raw';
   mpegVersion: number;
   mpegLayer: number;
   sampleRate: number;
   channelMode: number;
+}
+
+export interface ParsedMetadata {
+  type: 'parsed';
+  mpegVersion: number;
+  mpegLayer: number;
+  sampleRate: number;
+  channelMode: string;
 }
 
 const mpegVersionLookup: Record<string, number> = {
@@ -47,55 +56,62 @@ const bitrateLookup: Record<string, (number | null)[]> = {
 // eslint-disable-next-line prefer-destructuring
 bitrateLookup[23] = bitrateLookup[22];
 
-export class Mp3DeMuxAdapter extends MediaDeMuxAdapter<{}, RawMetadata> {
+export class Mp3DeMuxAdapter extends MediaDeMuxAdapter<{}, ParsedMetadata> {
   metadata = {};
 
-  dataChunks: IDataChunk<RawMetadata>[] = [];
+  appendData = (value: Uint8Array, isLastChunk: boolean) => {
+    for (let i = 0; i < value.length; i += 1) {
+      const headerValidate = Mp3DeMuxAdapter.validateHeader(value, i);
 
-  appendData = (value: Uint8Array) => {
-    if (!this.metadata) {
-      for (let i = 0; i < value.length; i += 1) {
+      if (!headerValidate) continue;
+
+      // We found a valid header now
+
+      const frameHeader = Mp3DeMuxAdapter.processFrameHeader(value, i);
+      const metadata = Mp3DeMuxAdapter.parseMetadata(frameHeader);
+
+      if (!this.metadata) {
         // Determine some facts about this mp3 file from the initial header
         // This is simply some random guess
-        if (Mp3DeMuxAdapter.validateHeader(value, i)) {
-          const metadata = Mp3DeMuxAdapter.parseFrameHeader(value, i);
-          this.metadata = metadata;
+        this.metadata = metadata;
+      }
 
+      let nextHeaderPosition: number | undefined = 0;
+
+      for (let j = i + 4; j < value.length; j += 1) {
+        const nextHeaderValidate = Mp3DeMuxAdapter.validateHeader(value, j);
+
+        if (nextHeaderValidate) {
+          nextHeaderPosition = j;
           break;
         }
       }
-    }
 
-    for (let i = 0; i < value.length; i += 1) {
-      // Once the buffer is large enough, wait for the next frame header then
-      // drain it
+      if (!nextHeaderPosition) {
+        if (!isLastChunk) {
+          return null;
+        }
 
-      if (Mp3DeMuxAdapter.validateHeader(value, i)) {
-        const metadata = Mp3DeMuxAdapter.parseFrameHeader(value, i);
-        const frameLength =
-          Mp3DeMuxAdapter.getFrameLength(value, i, metadata) ?? 0;
-
-        if (value.length < frameLength + i) return null;
-
-        const newFrame = value.slice(i, frameLength + i);
-
-        const newChunk = {
-          data: newFrame,
-          metadata,
-          duration: 1152 / metadata.sampleRate,
-          frames: 1,
-          get wrappedData() {
-            return Mp3DeMuxAdapter.wrapChunk(this.data);
-          },
-        };
-
-        this.dataChunks.push(newChunk);
-
-        return {
-          consumed: i + frameLength,
-          data: newChunk,
-        };
+        nextHeaderPosition = undefined;
       }
+
+      const newFrame = value.slice(i, nextHeaderPosition);
+
+      const newChunk = {
+        rawData: newFrame,
+        metadata,
+        duration: 1152 / metadata.sampleRate,
+        frames: 1,
+        get wrappedData() {
+          return Mp3DeMuxAdapter.wrapChunk(this.rawData);
+        },
+      };
+
+      return {
+        skipped: i,
+        consumed: i + newFrame.length,
+        data: newChunk,
+      };
     }
 
     return null;
@@ -120,18 +136,20 @@ export class Mp3DeMuxAdapter extends MediaDeMuxAdapter<{}, RawMetadata> {
     return valid;
   };
 
-  static parseFrameHeader = (data: Uint8Array, i = 0): RawMetadata =>
+  static processFrameHeader = (data: Uint8Array, i = 0): RawFrameHeader =>
     ({
+      type: 'raw',
       mpegVersion: data[i + 1] & 0b00001000,
       mpegLayer: data[i + 1] & 0b00000110,
       sampleRate: data[i + 2] & 0b00001100,
       channelMode: data[i + 3] & 0b11000000,
     } as const);
 
-  static parseMetadata = (metadata: RawMetadata) => {
+  static parseMetadata = (metadata: RawFrameHeader): ParsedMetadata => {
     const mpegVersion = mpegVersionLookup[metadata.mpegVersion >> 3];
 
     return {
+      type: 'parsed',
       mpegVersion,
       mpegLayer: mpegLayerLookup[metadata.mpegLayer >> 1],
       sampleRate: sampleRateLookup[metadata.sampleRate >> 2] / mpegVersion,
@@ -167,13 +185,14 @@ export class Mp3DeMuxAdapter extends MediaDeMuxAdapter<{}, RawMetadata> {
   static getFrameLength = (
     data: Uint8Array,
     i: number,
-    metadata: RawMetadata
+    metadata: ParsedMetadata
   ) => {
     const { mpegVersion } = metadata;
     const { mpegLayer } = metadata;
     const { sampleRate } = metadata;
 
     const bitrateCode = (data[i + 2] & 0b11110000) >> 4;
+
     const bitrate =
       (bitrateLookup[`${mpegVersion}${mpegLayer}`][bitrateCode] ?? 0) * 1e3;
     const padding = (data[i + 2] & 0b00000010) >> 1;

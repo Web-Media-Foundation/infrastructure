@@ -14,7 +14,6 @@ import { OpenPromise } from '@web-media/open-promise';
 import { EventTarget } from '@web-media/event-target';
 
 import Chunk from './Chunk';
-import Clone from './Clone';
 import warn from './utils/warn';
 import { BinaryLoader } from './Loader';
 import { MediaDeMuxAdapter } from './adapters/MediaDeMuxAdapter';
@@ -105,7 +104,7 @@ interface AudioBufferCache<FileMetadata, ChunkMetadata> {
   pendingBuffer: IAudioBuffer | null;
 }
 
-export default class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
+export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
   url: string;
 
   loop: boolean;
@@ -210,128 +209,122 @@ export default class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
   }
 
   async buffer() {
-    if (!this._loadStarted) {
-      this._loadStarted = true;
+    if (this._loadStarted) return;
+    this._loadStarted = true;
+    const loadStartTime = Date.now();
+    let totalLoadedBytes = 0;
+    const checkCanplaythrough = () => {
+      if (this.canPlayThough.resolvedValue || !this.length) return;
+      let duration = 0;
+      let bytes = 0;
+      for (const chunk of this._chunks) {
+        if (!chunk.duration) break;
+        duration += chunk.duration;
+        bytes += chunk.chunk.rawData.length;
+      }
+      if (!duration) return;
+      const scale = this.length / bytes;
+      const estimatedDuration = duration * scale;
+      const timeNow = Date.now();
+      const elapsed = timeNow - loadStartTime;
+      const bitrate = totalLoadedBytes / elapsed;
+      const estimatedTimeToDownload =
+        (1.5 * (this.length - totalLoadedBytes)) / bitrate / 1e3;
+      // if we have enough audio that we can start playing now
+      // and finish downloading before we run out, we've
+      // reached canplaythrough
+      const availableAudio = (bytes / this.length) * estimatedDuration;
+      if (availableAudio > estimatedTimeToDownload) {
+        this.canPlayThough.resolve(true);
+        this.dispatchEvent(new CanPlayThroughEvent());
+      }
+    };
+    try {
+      const fetcher = this.loader.fetch();
+      let done = false;
+      let value: Uint8Array | null = null;
+      let finalized = false;
 
-      const loadStartTime = Date.now();
-      let totalLoadedBytes = 0;
+      while (!done || !finalized) {
+        this.controller.signal.throwIfAborted();
+        const { value: v, done: d } = await fetcher.next();
+        done = !!d;
 
-      const checkCanplaythrough = () => {
-        if (this.canPlayThough.resolvedValue || !this.length) return;
+        this.buffered = this.loader.downloadedSize;
+        this.length = this.loader.totalSize;
+        this.dispatchEvent(
+          new LoadProgressEvent(
+            this.loader.progress,
+            this.loader.downloadedSize,
+            this.loader.totalSize
+          )
+        );
 
-        let duration = 0;
-        let bytes = 0;
-
-        for (const chunk of this._chunks) {
-          if (!chunk.duration) break;
-          duration += chunk.duration;
-          bytes += chunk.chunk.data.length;
+        if (v) {
+          value = v;
         }
 
-        if (!duration) return;
+        while (value) {
+          const parseResult = this.adapter.appendData(value, done);
 
-        const scale = this.length / bytes;
-        const estimatedDuration = duration * scale;
+          if (done) {
+            finalized = true;
+          }
 
-        const timeNow = Date.now();
-        const elapsed = timeNow - loadStartTime;
+          if (!parseResult) break;
 
-        const bitrate = totalLoadedBytes / elapsed;
-        const estimatedTimeToDownload =
-          (1.5 * (this.length - totalLoadedBytes)) / bitrate / 1e3;
+          const { consumed, data } = parseResult;
 
-        // if we have enough audio that we can start playing now
-        // and finish downloading before we run out, we've
-        // reached canplaythrough
-        const availableAudio = (bytes / this.length) * estimatedDuration;
+          value = this.loader.consume(consumed);
 
-        if (availableAudio > estimatedTimeToDownload) {
+          const chunk = new Chunk<FileMetadata, ChunkMetadata>({
+            clip: this,
+            chunkIndex: this.__chunks.length,
+            chunk: data,
+            onready: () => {
+              if (!this.canPlayThough.resolvedValue) {
+                checkCanplaythrough();
+              }
+              this.trySetupAudioBufferCache();
+            },
+            onerror: (error: unknown) => {
+              this.dispatchEvent(
+                new LoadErrorEvent(this.url, 'COULD_NOT_DECODE', error)
+              );
+            },
+            adapter: this.adapter,
+          });
+
+          const lastChunk = this._chunks[this._chunks.length - 1];
+          if (lastChunk) lastChunk.attach(chunk);
+          this._chunks.push(chunk);
+          totalLoadedBytes += consumed;
+        }
+      }
+
+      const firstChunk = this._chunks[0];
+
+      if (!firstChunk) {
+        throw new TypeError(
+          `No first chunk found, this is not a valid MP3 file`
+        );
+      }
+
+      firstChunk.ready.then(() => {
+        if (!this.canPlayThough.resolvedValue) {
           this.canPlayThough.resolve(true);
           this.dispatchEvent(new CanPlayThroughEvent());
         }
-      };
-
-      try {
-        const fetcher = this.loader.fetch();
-
-        let done = false;
-
-        while (!done) {
-          this.controller.signal.throwIfAborted();
-
-          const { value, done: d } = await fetcher.next();
-
-          done = !!d;
-
-          this.buffered = this.loader.downloadedSize;
-          this.length = this.loader.totalSize;
-
-          this.dispatchEvent(
-            new LoadProgressEvent(
-              this.loader.progress,
-              this.loader.downloadedSize,
-              this.loader.totalSize
-            )
-          );
-
-          // Refactored from "onData"
-
-          if (!value) continue;
-
-          const parseResult = this.adapter.appendData(value);
-
-          if (parseResult) {
-            const { consumed, data } = parseResult;
-
-            this.loader.consume(consumed);
-            const chunk = new Chunk<FileMetadata, ChunkMetadata>({
-              clip: this,
-              chunkIndex: this.__chunks.length,
-              chunk: data,
-              onready: () => {
-                if (!this.canPlayThough.resolvedValue) {
-                  checkCanplaythrough();
-                }
-                this.trySetupAudioBufferCache();
-              },
-              onerror: (error: unknown) => {
-                this.dispatchEvent(
-                  new LoadErrorEvent(this.url, 'COULD_NOT_DECODE', error)
-                );
-              },
-              adapter: this.adapter,
-            });
-
-            const lastChunk = this._chunks[this._chunks.length - 1];
-            if (lastChunk) lastChunk.attach(chunk);
-
-            this._chunks.push(chunk);
-
-            totalLoadedBytes += consumed;
-          }
-        }
-
-        this._chunks[0].ready.then(() => {
-          if (!this.canPlayThough.resolvedValue) {
-            this.canPlayThough.resolve(true);
-            this.dispatchEvent(new CanPlayThroughEvent());
-          }
-
-          this.loaded.resolve(true);
-          this.dispatchEvent(new LoadEvent());
-        });
-      } catch (error) {
-        this.dispatchEvent(
-          new LoadErrorEvent(this.url, 'COULD_NOT_DECODE', error)
-        );
-
-        this._loadStarted = false;
-      }
+        this.loaded.resolve(true);
+        this.dispatchEvent(new LoadEvent());
+      });
+    } catch (error) {
+      console.error(error);
+      this.dispatchEvent(
+        new LoadErrorEvent(this.url, 'COULD_NOT_DECODE', error)
+      );
+      this._loadStarted = false;
     }
-  }
-
-  clone() {
-    return new Clone<FileMetadata, ChunkMetadata>(this);
   }
 
   connect(

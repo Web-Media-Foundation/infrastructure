@@ -1,7 +1,7 @@
 import { OpenPromise } from '@web-media/open-promise';
 import { AudioContext, IAudioBuffer } from 'standardized-audio-context';
 
-import type Clip from './Clip';
+import type { Clip } from './Clip';
 import { slice } from './utils/buffer';
 import { IDataChunk, MediaDeMuxAdapter } from './adapters/MediaDeMuxAdapter';
 

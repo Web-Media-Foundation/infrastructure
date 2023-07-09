@@ -1,6 +1,6 @@
 export interface IDataChunk<ChunkMetadata> {
   duration: number;
-  data: Uint8Array;
+  rawData: Uint8Array;
   metadata: ChunkMetadata;
   frames: number;
   readonly wrappedData: Uint8Array;
@@ -8,13 +8,18 @@ export interface IDataChunk<ChunkMetadata> {
 
 export interface IAppendDataResult<ChunkMetadata> {
   consumed: number;
+  /**
+   * This value is only for debug purpose.
+   */
+  skipped?: number;
   data: IDataChunk<ChunkMetadata>;
 }
 
 export abstract class MediaDeMuxAdapter<FileMetadata, ChunkMetadata> {
   abstract metadata: FileMetadata;
 
-  abstract dataChunks: IDataChunk<ChunkMetadata>[];
-
-  abstract appendData(x: Uint8Array): IAppendDataResult<ChunkMetadata> | null;
+  abstract appendData(
+    x: Uint8Array,
+    isLastChunk: boolean
+  ): IAppendDataResult<ChunkMetadata> | null;
 }

@@ -46,7 +46,6 @@ export class BinaryLoader {
     }
 
     let done = false;
-    let buffer: Uint8Array | null = null;
 
     while (!done) {
       if (this.abortSignal?.aborted) return;
@@ -59,20 +58,20 @@ export class BinaryLoader {
         this.progress = this.downloadedSize / this.totalSize;
       }
 
-      if (!buffer && value) {
-        buffer = value;
-      } else if (buffer && value) {
+      if (!this.buffer && value) {
+        this.buffer = value;
+      } else if (this.buffer && value) {
         const nextBuffer: Uint8Array = new Uint8Array(
-          buffer.length + value.length
+          this.buffer.length + value.length
         );
 
-        nextBuffer.set(buffer);
-        nextBuffer.set(value, buffer.length);
+        nextBuffer.set(this.buffer);
+        nextBuffer.set(value, this.buffer.length);
 
-        buffer = nextBuffer;
+        this.buffer = nextBuffer;
       }
 
-      yield buffer!;
+      yield this.buffer!;
     }
   }
 }
