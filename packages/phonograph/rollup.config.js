@@ -13,12 +13,12 @@ export default [
       {
         file: packageJson.main,
         format: "cjs",
-        sourcemap: true,
+        sourcemap: true
       },
       {
         file: packageJson.module,
         format: "esm",
-        sourcemap: true,
+        sourcemap: true
       },
     ],
     plugins: [
@@ -44,30 +44,6 @@ export default [
       },
     ],
     plugins: [dts()],
-  },
-  {
-    input: 'src/index.ts',
-    output: [
-      {
-        file: packageJson.browser,
-        format: 'umd',
-        name: 'Phonograph',
-        sourcemap: true
-      }
-    ],
-    plugins: [
-      external({
-        includeDependencies: true
-      }),
-      resolve({
-        extensions: ['.js', '.ts']
-      }),
-      cjs(),
-      sucrase({
-        exclude: ['node_modules/**'],
-        transforms: ['typescript']
-      }),
-    ]
   },
   {
     input: 'demo/main.ts',
