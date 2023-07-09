@@ -10,12 +10,15 @@ import {
   IAudioBufferSourceNode,
 } from 'standardized-audio-context';
 
+import { OpenPromise } from '@web-media/open-promise';
+import { EventTarget } from '@web-media/event-target';
+
 import Chunk from './Chunk';
 import Clone from './Clone';
 import warn from './utils/warn';
 import { slice } from './utils/buffer';
 import { IAdapter } from './adapters/IAdapter';
-import { Loader, FetchLoader, XhrLoader } from './Loader';
+import { BinaryLoader } from './Loader';
 
 const CHUNK_SIZE = 64 * 1024;
 const OVERLAP = 0.2;
@@ -33,6 +36,68 @@ class PhonographError extends Error {
   }
 }
 
+export class CanPlayThroughEvent extends CustomEvent<void> {
+  constructor() {
+    super('canplaythrough');
+  }
+}
+
+export class LoadEvent extends CustomEvent<void> {
+  constructor() {
+    super('load');
+  }
+}
+
+interface ILoadErrorEventDetail {
+  url: string;
+  phonographCode: string;
+  error: unknown;
+}
+
+export class LoadErrorEvent extends CustomEvent<ILoadErrorEventDetail> {
+  constructor(url: string, phonographCode: string, error: unknown) {
+    super('loaderror', { detail: { url, phonographCode, error } });
+  }
+}
+
+export class PlaybackErrorEvent extends CustomEvent<unknown> {
+  constructor(error: unknown) {
+    super('playbackerror', { detail: error });
+  }
+}
+
+interface LoadProgressEventDetail {
+  progress: number;
+  loaded: number;
+  total: number;
+}
+
+export class LoadProgressEvent extends CustomEvent<LoadProgressEventDetail> {
+  constructor(progress: number, loaded: number, total: number) {
+    super('loadprogress', {
+      detail: { progress, loaded, total },
+    });
+  }
+}
+
+export class DisposeEvent extends CustomEvent<void> {
+  constructor() {
+    super('dispose');
+  }
+}
+
+export class PauseEvent extends CustomEvent<void> {
+  constructor() {
+    super('pause');
+  }
+}
+
+export class EndedEvent extends CustomEvent<void> {
+  constructor() {
+    super('ended');
+  }
+}
+
 // A cache of audio buffers starting from current time
 interface AudioBufferCache<Metadata> {
   currentChunkStartTime: number;
@@ -42,15 +107,12 @@ interface AudioBufferCache<Metadata> {
   pendingBuffer: IAudioBuffer | null;
 }
 
-export default class Clip<Metadata> {
+export default class Clip<Metadata> extends EventTarget {
   url: string;
 
   loop: boolean;
 
   readonly adapter: IAdapter<Metadata>;
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private callbacks: Record<string, Array<(data?: any) => void>> = {};
 
   context: AudioContext;
 
@@ -58,27 +120,13 @@ export default class Clip<Metadata> {
 
   length = 0;
 
-  private _loaded = false;
+  loaded = new OpenPromise<boolean>();
 
-  public get loaded() {
-    return this._loaded;
-  }
+  canPlayThough = new OpenPromise<boolean>();
 
-  public set loaded(value) {
-    this._loaded = value;
-  }
+  controller = new AbortController();
 
-  private _canplaythrough = false;
-
-  public get canplaythrough() {
-    return this._canplaythrough;
-  }
-
-  public set canplaythrough(value) {
-    this._canplaythrough = value;
-  }
-
-  loader: Loader;
+  loader: BinaryLoader;
 
   metadata: Metadata | null = null;
 
@@ -144,12 +192,14 @@ export default class Clip<Metadata> {
     volume?: number;
     adapter: IAdapter<Metadata>;
   }) {
+    super();
+
     this.context = context || new AudioContext();
     this.url = url;
     this.loop = loop || false;
     this.adapter = adapter;
 
-    this.loader = new ('fetch' in window ? FetchLoader : XhrLoader)(url);
+    this.loader = new BinaryLoader(url, this.controller.signal);
 
     this.fadeTarget = volume || 1;
     this._gain = this.context.createGain();
@@ -160,7 +210,7 @@ export default class Clip<Metadata> {
     this._chunks = [];
   }
 
-  buffer(bufferToCompletion = false) {
+  async buffer() {
     if (!this._loadStarted) {
       this._loadStarted = true;
 
@@ -173,7 +223,7 @@ export default class Clip<Metadata> {
       let totalLoadedBytes = 0;
 
       const checkCanplaythrough = () => {
-        if (this.canplaythrough || !this.length) return;
+        if (this.canPlayThough.resolvedValue || !this.length) return;
 
         let duration = 0;
         let bytes = 0;
@@ -202,8 +252,8 @@ export default class Clip<Metadata> {
         const availableAudio = (bytes / this.length) * estimatedDuration;
 
         if (availableAudio > estimatedTimeToDownload) {
-          this.canplaythrough = true;
-          this._fire('canplaythrough');
+          this.canPlayThough.resolve(true);
+          this.dispatchEvent(new CanPlayThroughEvent());
         }
       };
 
@@ -215,20 +265,15 @@ export default class Clip<Metadata> {
           chunkIndex: this.__chunks.length,
           raw: slice(tempBuffer, firstByte, p),
           onready: () => {
-            if (!this.canplaythrough) {
+            if (!this.canPlayThough.resolvedValue) {
               checkCanplaythrough();
             }
             this.trySetupAudioBufferCache();
           },
           onerror: (error: unknown) => {
-            const clonedError =
-              typeof error === 'object' && error !== null
-                ? (error as Record<string, unknown>)
-                : ({ error } as Record<string, unknown>);
-
-            clonedError.url = this.url;
-            clonedError.phonographCode = 'COULD_NOT_DECODE';
-            this._fire('loaderror', clonedError);
+            this.dispatchEvent(
+              new LoadErrorEvent(this.url, 'COULD_NOT_DECODE', error)
+            );
           },
           adapter: this.adapter,
         });
@@ -243,19 +288,38 @@ export default class Clip<Metadata> {
         return chunk;
       };
 
-      this.loader.load({
-        onprogress: (progress: number, length: number, total: number) => {
-          this.buffered = length;
-          this.length = total;
-          this._fire('loadprogress', { progress, length, total });
-        },
+      try {
+        const fetcher = this.loader.fetch();
 
-        ondata: (uint8Array: Uint8Array) => {
+        let done = false;
+
+        while (!done) {
+          this.controller.signal.throwIfAborted();
+
+          const { value, done: d } = await fetcher.next();
+
+          done = !!d;
+
+          this.buffered = this.loader.downloadedSize;
+          this.length = this.loader.totalSize;
+
+          this.dispatchEvent(
+            new LoadProgressEvent(
+              this.loader.progress,
+              this.loader.downloadedSize,
+              this.loader.totalSize
+            )
+          );
+
+          // Refactored from "onData"
+
+          if (!value) continue;
+
           if (!this.metadata) {
-            for (let i = 0; i < uint8Array.length; i += 1) {
+            for (let i = 0; i < value.length; i += 1) {
               // determine some facts about this mp3 file from the initial header
-              if (this.adapter.validateChunk(uint8Array)) {
-                const metadata = this.adapter.getChunkMetadata(uint8Array);
+              if (this.adapter.validateChunk(value)) {
+                const metadata = this.adapter.getChunkMetadata(value);
                 this.metadata = metadata;
 
                 break;
@@ -263,83 +327,56 @@ export default class Clip<Metadata> {
             }
           }
 
-          for (let i = 0; i < uint8Array.length; i += 1) {
+          for (let i = 0; i < value.length; i += 1) {
             // once the buffer is large enough, wait for
             // the next frame header then drain it
             // TODO: header detection may not works if the header is divided into two data segments.
             if (
               p + processedBytes >= nextFrameStartBytes &&
-              this.adapter.validateChunk(uint8Array, i)
+              this.adapter.validateChunk(value, i)
             ) {
-              const metadata = this.adapter.getChunkMetadata(uint8Array, i);
+              const metadata = this.adapter.getChunkMetadata(value, i);
               nextFrameStartBytes =
                 p +
                 processedBytes +
-                (this.adapter.getChunkLength(uint8Array, metadata, i) ?? 0);
+                (this.adapter.getChunkLength(value, metadata, i) ?? 0);
               if (p > CHUNK_SIZE + 4) {
                 drainBuffer();
               }
             }
 
             // write new data to buffer
-            tempBuffer[p] = uint8Array[i];
+            tempBuffer[p] = value[i];
             p += 1;
           }
 
-          totalLoadedBytes += uint8Array.length;
-        },
+          totalLoadedBytes += value.length;
+        }
 
-        onload: () => {
-          if (p) {
-            const lastChunk = drainBuffer();
-            lastChunk.attach(null);
+        if (p) {
+          const lastChunk = drainBuffer();
+          lastChunk.attach(null);
 
-            totalLoadedBytes += p;
+          totalLoadedBytes += p;
+        }
+
+        this._chunks[0].ready.then(() => {
+          if (!this.canPlayThough.resolvedValue) {
+            this.canPlayThough.resolve(true);
+            this.dispatchEvent(new CanPlayThroughEvent());
           }
 
-          const actualLoad = () => {
-            if (!this.canplaythrough) {
-              this.canplaythrough = true;
-              this._fire('canplaythrough');
-            }
-
-            this.loaded = true;
-            this._fire('load');
-          };
-          if (this._chunks[0].ready) {
-            actualLoad();
-          } else {
-            this._chunks[0].once('ready', actualLoad);
-          }
-        },
-
-        onerror: (error: unknown) => {
-          const clonedError =
-            typeof error === 'object' && error !== null
-              ? (error as Record<string, unknown>)
-              : ({ error } as Record<string, unknown>);
-
-          clonedError.url = this.url;
-          clonedError.phonographCode = 'COULD_NOT_LOAD';
-          this._fire('loaderror', clonedError);
-          this._loadStarted = false;
-        },
-      });
-    }
-
-    return new Promise<void>((fulfil, reject) => {
-      const ready = bufferToCompletion ? this.loaded : this.canplaythrough;
-
-      if (ready) {
-        fulfil();
-      } else {
-        this.once(bufferToCompletion ? 'load' : 'canplaythrough', () => {
-          fulfil();
+          this.loaded.resolve(true);
+          this.dispatchEvent(new LoadEvent());
         });
-        this.once('loaderror', reject);
-        this.once('dispose', reject);
+      } catch (error) {
+        this.dispatchEvent(
+          new LoadErrorEvent(this.url, 'COULD_NOT_DECODE', error)
+        );
+
+        this._loadStarted = false;
       }
-    });
+    }
   }
 
   clone() {
@@ -384,43 +421,16 @@ export default class Clip<Metadata> {
     if (this.playing) this.pause();
 
     if (this._loadStarted) {
-      this.loader.cancel();
+      this.controller.abort();
       this._loadStarted = false;
     }
 
     this._currentTime = 0;
-    this.loaded = false;
-    this.canplaythrough = false;
+    this.loaded = new OpenPromise<boolean>();
+    this.canPlayThough = new OpenPromise<boolean>();
     this._chunks = [];
 
-    this._fire('dispose');
-  }
-
-  off(eventName: string, cb: (data?: unknown) => void) {
-    const callbacks = this.callbacks[eventName];
-    if (!callbacks) return;
-
-    const index = callbacks.indexOf(cb);
-    if (~index) callbacks.splice(index, 1);
-  }
-
-  on(eventName: string, cb: (data?: unknown) => void) {
-    const callbacks =
-      this.callbacks[eventName] || (this.callbacks[eventName] = []);
-    callbacks.push(cb);
-
-    return {
-      cancel: () => this.off(eventName, cb),
-    };
-  }
-
-  once(eventName: string, cb: (data?: unknown) => void) {
-    const _cb = (data?: unknown) => {
-      cb(data);
-      this.off(eventName, _cb);
-    };
-
-    return this.on(eventName, _cb);
+    this.dispatchEvent(new DisposeEvent());
   }
 
   play() {
@@ -445,7 +455,7 @@ export default class Clip<Metadata> {
       warn(
         `clip.play() was called on a clip that was already playing (${this.url})`
       );
-    } else if (!this.canplaythrough) {
+    } else if (!this.canPlayThough.resolvedValue) {
       warn(
         `clip.play() was called before clip.canplaythrough === true (${this.url})`
       );
@@ -470,7 +480,7 @@ export default class Clip<Metadata> {
     this.stopFade();
     this.playing = false;
     this._actualPlaying = false;
-    this._fire('pause');
+    this.dispatchEvent(new PauseEvent());
 
     return this;
   }
@@ -538,13 +548,6 @@ export default class Clip<Metadata> {
     const now = this.context.currentTime;
     this._gain!.gain.cancelScheduledValues(now);
     this._gain!.gain.value = this.fadeTarget;
-  }
-
-  private _fire(eventName: string, data?: unknown) {
-    const callbacks = this.callbacks[eventName];
-    if (!callbacks) return;
-
-    callbacks.slice().forEach((cb) => cb(data));
   }
 
   // Attempt to setup AudioBufferCache if it is not setup
@@ -687,7 +690,7 @@ export default class Clip<Metadata> {
         this.play();
       } else {
         this.ended = true;
-        this._fire('ended');
+        this.dispatchEvent(new EndedEvent());
       }
     }
   }
@@ -728,7 +731,7 @@ export default class Clip<Metadata> {
         this.play();
       } else {
         this.ended = true;
-        this._fire('ended');
+        this.dispatchEvent(new EndedEvent());
       }
     }
   }
@@ -808,13 +811,13 @@ export default class Clip<Metadata> {
     if (chunk === null) {
       return;
     }
-    if (chunk.ready) {
+    if (chunk.ready.resolvedValue) {
       chunk.createBuffer().then(
         (buffer) => {
           this.onBufferDecoded(chunk, buffer);
         },
         (err) => {
-          this._fire('playbackerror', err);
+          this.dispatchEvent(new PlaybackErrorEvent(err));
         }
       );
     } else {
@@ -824,7 +827,7 @@ export default class Clip<Metadata> {
             this.onBufferDecoded(chunk, buffer);
           },
           (err) => {
-            this._fire('playbackerror', err);
+            this.dispatchEvent(new PlaybackErrorEvent(err));
           }
         );
       });

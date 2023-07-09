@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-cycle
 import Clip from './Clip';
 
 export default class Clone<Metadata> extends Clip<Metadata> {
@@ -21,7 +22,7 @@ export default class Clone<Metadata> extends Clip<Metadata> {
   }
 
   get canplaythrough() {
-    return this.original.canplaythrough;
+    return this.original.canPlayThough.resolvedValue;
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -30,6 +31,7 @@ export default class Clone<Metadata> extends Clip<Metadata> {
     // noop
   }
 
+  // @ts-ignore
   get loaded() {
     return this.original.loaded;
   }

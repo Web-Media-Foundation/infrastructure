@@ -1905,12 +1905,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.19.0":
-  version: 7.19.0
-  resolution: "@babel/runtime@npm:7.19.0::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2F%40babel%2Fruntime%2F-%2Fruntime-7.19.0.tgz"
+"@babel/runtime@npm:^7.22.6":
+  version: 7.22.6
+  resolution: "@babel/runtime@npm:7.22.6"
   dependencies:
-    regenerator-runtime: ^0.13.4
-  checksum: fa69c351bb05e1db3ceb9a02fdcf620c234180af68cdda02152d3561015f6d55277265d3109815992f96d910f3db709458cae4f8df1c3def66f32e0867d82294
+    regenerator-runtime: ^0.13.11
+  checksum: e585338287c4514a713babf4fdb8fc2a67adcebab3e7723a739fc62c79cfda875b314c90fd25f827afb150d781af97bc16c85bfdbfa2889f06053879a1ddb597
   languageName: node
   linkType: hard
 
@@ -8879,7 +8879,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@web-media/event-target@workspace:packages/event-target":
+"@web-media/event-target@workspace:^, @web-media/event-target@workspace:packages/event-target":
   version: 0.0.0-use.local
   resolution: "@web-media/event-target@workspace:packages/event-target"
   languageName: unknown
@@ -9032,8 +9032,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@web-media/phonograph@workspace:packages/phonograph"
   dependencies:
+    "@web-media/event-target": "workspace:^"
+    "@web-media/open-promise": "workspace:^"
     serve: ^10.1.1
-    standardized-audio-context: ^25.3.29
+    standardized-audio-context: 25.3.54
   languageName: unknown
   linkType: soft
 
@@ -10183,13 +10185,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"automation-events@npm:^4.0.21":
-  version: 4.0.21
-  resolution: "automation-events@npm:4.0.21::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fautomation-events%2F-%2Fautomation-events-4.0.21.tgz"
+"automation-events@npm:^6.0.7":
+  version: 6.0.7
+  resolution: "automation-events@npm:6.0.7"
   dependencies:
-    "@babel/runtime": ^7.19.0
-    tslib: ^2.4.0
-  checksum: 836d2ae97a38e45c16fd908054bc5c3d6de5e294e75f0b7ab580137ac5c891cec7648461e220bbbb59daa6bb6e527f59a357280b716ca9db7a15abb4e864502d
+    "@babel/runtime": ^7.22.6
+    tslib: ^2.6.0
+  checksum: 1203b55e29ca416811466c5a875fa96315b2587dcdd1c36255becfcbae70894a7794381799d4fb623728e5d9c24b4a579e5b0a6300ca371ab6c08f4a09607eeb
   languageName: node
   linkType: hard
 
@@ -25323,7 +25325,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"regenerator-runtime@npm:^0.13.10":
+"regenerator-runtime@npm:^0.13.10, regenerator-runtime@npm:^0.13.11":
   version: 0.13.11
   resolution: "regenerator-runtime@npm:0.13.11"
   checksum: 27481628d22a1c4e3ff551096a683b424242a216fee44685467307f14d58020af1e19660bf2e26064de946bad7eff28950eae9f8209d55723e2d9351e632bbb4
@@ -27261,6 +27263,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"standardized-audio-context@npm:25.3.54":
+  version: 25.3.54
+  resolution: "standardized-audio-context@npm:25.3.54"
+  dependencies:
+    "@babel/runtime": ^7.22.6
+    automation-events: ^6.0.7
+    tslib: ^2.6.0
+  checksum: 53be7126a0526a3e9d61c11bf0cdf5941b8a35c5155bcbbbd30d82c6ffae3f0e74207721131a3e776b6a62bb7891cb0de51860262d5040885f2f5a8696041dc0
+  languageName: node
+  linkType: hard
+
 "standardized-audio-context@npm:^25.3.28":
   version: 25.3.29
   resolution: "standardized-audio-context@npm:25.3.29"
@@ -27269,17 +27282,6 @@ __metadata:
     automation-events: ^4.0.20
     tslib: ^2.4.0
   checksum: 28c0159b7502d5a163a082a85973a1b9028ced1f8c4f0cc777c094c79878e3babfe5e33ed8278ca1ab948b32f5f3132ead8406de1395fab04b5cb83d375477ed
-  languageName: node
-  linkType: hard
-
-"standardized-audio-context@npm:^25.3.29":
-  version: 25.3.30
-  resolution: "standardized-audio-context@npm:25.3.30::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fstandardized-audio-context%2F-%2Fstandardized-audio-context-25.3.30.tgz"
-  dependencies:
-    "@babel/runtime": ^7.19.0
-    automation-events: ^4.0.21
-    tslib: ^2.4.0
-  checksum: e5895fdb2e12c96d7995d7b57f16dd68fc74bd1714e7e345281dfbaea703721bccb56c063f2f0500706c5402edf679ab6fc8121745e0bd7e783eada54e691f8e
   languageName: node
   linkType: hard
 
@@ -28637,6 +28639,13 @@ __metadata:
   version: 1.14.1
   resolution: "tslib@npm:1.14.1"
   checksum: dbe628ef87f66691d5d2959b3e41b9ca0045c3ee3c7c7b906cc1e328b39f199bb1ad9e671c39025bd56122ac57dfbf7385a94843b1cc07c60a4db74795829acd
+  languageName: node
+  linkType: hard
+
+"tslib@npm:^2.6.0":
+  version: 2.6.0
+  resolution: "tslib@npm:2.6.0"
+  checksum: c01066038f950016a18106ddeca4649b4d76caa76ec5a31e2a26e10586a59fceb4ee45e96719bf6c715648e7c14085a81fee5c62f7e9ebee68e77a5396e5538f
   languageName: node
   linkType: hard
 

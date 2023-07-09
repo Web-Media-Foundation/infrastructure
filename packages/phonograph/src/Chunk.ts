@@ -1,3 +1,4 @@
+import { OpenPromise } from '@web-media/open-promise';
 import { AudioContext, IAudioBuffer } from 'standardized-audio-context';
 
 import { slice } from './utils/buffer';
@@ -22,7 +23,7 @@ export default class Chunk<Metadata> {
 
   extendedWithHeader: Uint8Array | null;
 
-  ready: boolean;
+  ready = new OpenPromise<boolean>();
 
   next: Chunk<Metadata> | null = null;
 
@@ -60,7 +61,6 @@ export default class Chunk<Metadata> {
     this.adapter = adapter;
 
     this.duration = null;
-    this.ready = false;
 
     this._attached = false;
     if (onready !== null) {
@@ -187,10 +187,10 @@ export default class Chunk<Metadata> {
   }
 
   private _ready() {
-    if (this.ready) return;
+    if (this.ready.resolvedValue) return;
 
     if (this._attached && this.duration !== null) {
-      this.ready = true;
+      this.ready.resolve(true);
 
       if (this.next) {
         const rawLen = this.raw.length;

@@ -1,167 +1,72 @@
-export interface Loader {
-  cancel(): void;
+class AudioFetcherError extends Error {}
 
-  load(opts: {
-    onprogress: (progress: number, length: number, total: number) => void;
-    ondata: (data: Uint8Array) => void;
-    onload: () => void;
-    onerror: (error: Error | ProgressEvent) => void;
-  }): void;
-}
+export class BinaryLoader {
+  constructor(
+    public readonly url: string,
+    public readonly abortSignal: AbortSignal
+  ) {}
 
-export class FetchLoader implements Loader {
-  url: string;
+  public fetched = false;
 
-  _cancelled: boolean;
+  public totalSize = 0;
 
-  constructor(url: string) {
-    this.url = url;
-    this._cancelled = false;
-  }
+  public downloadedSize = 0;
 
-  cancel() {
-    this._cancelled = true;
-  }
+  public progress = 0;
 
-  load({
-    onprogress,
-    ondata,
-    onload,
-    onerror,
-  }: {
-    onprogress: (progress: number, length: number, total: number) => void;
-    ondata: (data: Uint8Array) => void;
-    onload: () => void;
-    onerror: (error: Error) => void;
-  }) {
-    this._cancelled = false;
+  buffer: Uint8Array | null = null;
 
-    fetch(this.url)
-      .then((response) => {
-        if (this._cancelled) return;
-
-        if (!response.ok) {
-          onerror(
-            new Error(
-              `Bad response (${response.status} – ${response.statusText})`
-            )
-          );
-          return;
-        }
-
-        const total = +(response.headers.get('content-length') ?? 0) || 0;
-
-        let length = 0;
-        onprogress((total ? length : 0) / total, length, total);
-
-        if (response.body) {
-          const reader = response.body.getReader();
-
-          const read = () => {
-            if (this._cancelled) return;
-
-            reader
-              .read()
-              .then((chunk) => {
-                if (this._cancelled) return;
-
-                if (chunk.done) {
-                  onprogress(1, length, length);
-                  onload();
-                } else {
-                  length += chunk.value.length;
-                  ondata(chunk.value);
-                  onprogress((total ? length : 0) / total, length, total);
-
-                  read();
-                }
-              })
-              .catch(onerror);
-          };
-
-          read();
-        } else {
-          // Firefox doesn't yet implement streaming
-          response
-            .arrayBuffer()
-            .then((arrayBuffer) => {
-              if (this._cancelled) return;
-
-              const uint8Array = new Uint8Array(arrayBuffer);
-
-              ondata(uint8Array);
-              onprogress(1, uint8Array.length, uint8Array.length);
-              onload();
-            })
-            .catch(onerror);
-        }
-      })
-      .catch(onerror);
-  }
-}
-
-export class XhrLoader implements Loader {
-  url: string;
-
-  _cancelled: boolean;
-
-  _xhr: XMLHttpRequest | null;
-
-  constructor(url: string) {
-    this.url = url;
-
-    this._cancelled = false;
-    this._xhr = null;
-  }
-
-  cancel() {
-    if (this._cancelled) return;
-
-    this._cancelled = true;
-
-    if (this._xhr) {
-      this._xhr.abort();
-      this._xhr = null;
+  async *fetch() {
+    if (this.fetched) {
+      throw new AudioFetcherError(`The file is already fetched`);
     }
-  }
 
-  load({
-    onprogress,
-    ondata,
-    onload,
-    onerror,
-  }: {
-    onprogress: (progress: number, length: number, total: number) => void;
-    ondata: (data: Uint8Array) => void;
-    onload: () => void;
-    onerror: (error: ProgressEvent) => void;
-  }) {
-    this._cancelled = false;
+    this.fetched = true;
 
-    const xhr = new XMLHttpRequest();
-    xhr.responseType = 'arraybuffer';
+    const request = await fetch(this.url, { signal: this.abortSignal });
+    this.totalSize =
+      Number.parseFloat(request.headers.get('content-length') ?? '0') ?? 0;
 
-    xhr.onerror = onerror;
+    if (!request.ok) {
+      throw new AudioFetcherError(
+        `Failed to request the file, ${request.status}(${request.statusText})`
+      );
+    }
 
-    xhr.onload = (e: any) => {
-      if (this._cancelled) return;
+    const reader = request.body?.getReader();
 
-      onprogress(e.loaded / e.total, e.loaded, e.total);
-      ondata(new Uint8Array(xhr.response));
-      onload();
+    if (!reader) {
+      throw new TypeError(`Valid reader not found`);
+    }
 
-      this._xhr = null;
-    };
+    let done = false;
+    let buffer: Uint8Array | null = null;
 
-    xhr.onprogress = (e) => {
-      if (this._cancelled) return;
+    while (!done || (buffer && buffer.length)) {
+      if (this.abortSignal?.aborted) return;
 
-      onprogress(e.loaded / e.total, e.loaded, e.total);
-    };
+      const { value, done: d } = await reader.read();
+      done = d;
 
-    xhr.open('GET', this.url);
-    xhr.send();
+      if (value) {
+        this.downloadedSize += value.byteLength;
+        this.progress = this.downloadedSize / this.totalSize;
+      }
 
-    this._xhr = xhr;
+      if (!buffer && value) {
+        buffer = value;
+      } else if (buffer && value) {
+        const nextBuffer: Uint8Array = new Uint8Array(
+          buffer.length + value.length
+        );
+
+        nextBuffer.set(buffer);
+        nextBuffer.set(value, buffer.length);
+
+        buffer = nextBuffer;
+      }
+
+      yield buffer!;
+    }
   }
 }

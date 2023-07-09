@@ -332,7 +332,7 @@ export const selectUrlPhonographAudioElementInitPostProcess = async (
     );
 
     // wait for canplaythrough
-    await phonographClip.phonograph.buffer(true);
+    await phonographClip.phonograph.buffer();
 
     return { clip: phonographClip, backend: 'phonograph' };
   } catch (e) {

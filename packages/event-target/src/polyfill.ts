@@ -76,4 +76,15 @@ export class EventTargetPolyfill {
       }
     });
   };
+
+  on = this.addEventListener;
+
+  off = this.removeEventListener;
+
+  once = (
+    type: string,
+    callback: EventListenerOrEventListenerObject | null
+  ) => {
+    this.addEventListener(type, callback, { once: true });
+  };
 }
