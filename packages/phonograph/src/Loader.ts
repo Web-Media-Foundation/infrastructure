@@ -18,6 +18,8 @@ export class BinaryLoader {
 
   consume = (size: number) => {
     this.buffer = this.buffer?.slice(size) ?? null;
+
+    return this.buffer;
   };
 
   async *fetch() {
@@ -46,7 +48,7 @@ export class BinaryLoader {
     let done = false;
     let buffer: Uint8Array | null = null;
 
-    while (!done || (buffer && buffer.length)) {
+    while (!done) {
       if (this.abortSignal?.aborted) return;
 
       const { value, done: d } = await reader.read();
