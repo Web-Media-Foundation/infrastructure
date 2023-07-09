@@ -1,11 +1,23 @@
+import { EventTarget } from '@web-media/event-target';
 import { OpenPromise } from '@web-media/open-promise';
 import { AudioContext, IAudioBuffer } from 'standardized-audio-context';
 
 import type { Clip } from './Clip';
-import { slice } from './utils/buffer';
 import { IDataChunk, MediaDeMuxAdapter } from './adapters/MediaDeMuxAdapter';
 
-export default class Chunk<FileMetadata, ChunkMetadata> {
+export class ReadyEvent extends CustomEvent<void> {
+  constructor() {
+    super('ready');
+  }
+}
+
+export class ErrorEvent extends CustomEvent<void> {
+  constructor(public error: Error) {
+    super('error');
+  }
+}
+
+export default class Chunk<FileMetadata, ChunkMetadata> extends EventTarget {
   clip: Clip<FileMetadata, ChunkMetadata>;
 
   context: AudioContext;
@@ -30,8 +42,6 @@ export default class Chunk<FileMetadata, ChunkMetadata> {
 
   private _attached: boolean;
 
-  private callbacks: Record<string, Array<(data?: unknown) => void>> = {};
-
   constructor({
     clip,
     chunk,
@@ -47,6 +57,7 @@ export default class Chunk<FileMetadata, ChunkMetadata> {
     adapter: MediaDeMuxAdapter<FileMetadata, ChunkMetadata>;
     chunkIndex: number;
   }) {
+    super();
     this.clip = clip;
     this.chunkIndex = chunkIndex;
     this.context = clip.context;
@@ -92,44 +103,10 @@ export default class Chunk<FileMetadata, ChunkMetadata> {
         this.numFrames = this.chunk.frames;
         this._ready();
       },
-      () => {
-        this._fire('error', new Error(`Could not decode audio buffer`));
+      (error) => {
+        this.dispatchEvent(new ErrorEvent(error));
       }
     );
-  }
-
-  off(eventName: string, cb: (data?: unknown) => void) {
-    const callbacks = this.callbacks[eventName];
-    if (!callbacks) return;
-
-    const index = callbacks.indexOf(cb);
-    if (~index) callbacks.splice(index, 1);
-  }
-
-  on(eventName: string, cb: (data?: unknown) => void) {
-    const callbacks =
-      this.callbacks[eventName] || (this.callbacks[eventName] = []);
-    callbacks.push(cb);
-
-    return {
-      cancel: () => this.off(eventName, cb),
-    };
-  }
-
-  once(eventName: string, cb: (data?: unknown) => void) {
-    const _cb = (data?: unknown) => {
-      cb(data);
-      this.off(eventName, _cb);
-    };
-
-    return this.on(eventName, _cb);
-  }
-
-  private _fire(eventName: string, data?: unknown) {
-    const callbacks = this.callbacks[eventName];
-    if (!callbacks) return;
-
-    callbacks.slice().forEach((cb) => cb(data));
   }
 
   attach(nextChunk: Chunk<FileMetadata, ChunkMetadata> | null) {
@@ -153,7 +130,7 @@ export default class Chunk<FileMetadata, ChunkMetadata> {
       );
     }
     return this.context.decodeAudioData(
-      slice(this.extendedWithHeader!, 0, this.extendedWithHeader!.length).buffer
+      this.extendedWithHeader!.slice(0).buffer
     );
   }
 
@@ -189,7 +166,7 @@ export default class Chunk<FileMetadata, ChunkMetadata> {
       }
       this.extendedWithHeader = this.extended;
 
-      this._fire('ready');
+      this.dispatchEvent(new ReadyEvent());
     }
   }
 }

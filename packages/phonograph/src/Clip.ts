@@ -14,13 +14,12 @@ import { OpenPromise } from '@web-media/open-promise';
 import { EventTarget } from '@web-media/event-target';
 
 import Chunk from './Chunk';
-import warn from './utils/warn';
 import { BinaryLoader } from './Loader';
 import { MediaDeMuxAdapter } from './adapters/MediaDeMuxAdapter';
 
 const OVERLAP = 0.2;
 
-class PhonographError extends Error {
+class PhonographClipError extends Error {
   phonographCode: string;
 
   url: string;
@@ -387,7 +386,7 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
       this.once('dispose', () => {
         if (this.ended) return;
 
-        const err = new PhonographError('Clip was disposed', {
+        const err = new PhonographClipError('Clip was disposed', {
           phonographCode: 'CLIP_WAS_DISPOSED',
           url: this.url,
         });
@@ -396,11 +395,11 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
     });
 
     if (this.playing) {
-      warn(
+      console.warn(
         `clip.play() was called on a clip that was already playing (${this.url})`
       );
     } else if (!this.canPlayThough.resolvedValue) {
-      warn(
+      console.warn(
         `clip.play() was called before clip.canplaythrough === true (${this.url})`
       );
       this.buffer();
@@ -414,7 +413,7 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
 
   pause() {
     if (!this.playing) {
-      warn(
+      console.warn(
         `clip.pause() was called on a clip that was already paused (${this.url})`
       );
       return this;
