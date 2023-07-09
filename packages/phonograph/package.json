@@ -30,6 +30,7 @@
     "url": "https://github.com/Web-Media-Foundation/infrastructure/issues"
   },
   "devDependencies": {
+    "rollup-plugin-polyfill-node": "^0.12.0",
     "serve": "14.2.0"
   },
   "scripts": {

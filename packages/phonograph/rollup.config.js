@@ -3,6 +3,7 @@ import cjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 import sucrase from '@rollup/plugin-sucrase';
 import external from 'rollup-plugin-peer-deps-external';
+import nodePolyfills from 'rollup-plugin-polyfill-node';
 
 const packageJson = require("./package.json");
 
@@ -60,6 +61,7 @@ export default [
         preferBuiltins: false,
       }),
       cjs(),
+      nodePolyfills(),
       sucrase({
         transforms: ['typescript']
       }),
