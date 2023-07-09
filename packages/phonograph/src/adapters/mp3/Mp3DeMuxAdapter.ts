@@ -72,39 +72,42 @@ export class Mp3DeMuxAdapter extends MediaDeMuxAdapter<
     let lastHeaderPosition: number | undefined | null = null;
     const frameMetadataSequence: SeekableParsedMetadata[] = [];
 
+    let skip = 0;
     for (let i = 0; i < value.length; i += 1) {
       const headerValidate = Mp3DeMuxAdapter.validateHeader(value, i);
 
       if (!headerValidate) continue;
 
-      // We found a valid header now
+      skip = i;
+      break;
+    }
 
-      const frameHeader = Mp3DeMuxAdapter.processFrameHeader(value, i);
-      const metadata = Mp3DeMuxAdapter.parseMetadata(frameHeader);
+    // We found a valid header now
+    const frameHeader = Mp3DeMuxAdapter.processFrameHeader(value, skip);
+    const metadata = Mp3DeMuxAdapter.parseMetadata(frameHeader);
 
-      if (!this.metadata) {
-        // Determine some facts about this mp3 file from the initial header
-        // This is simply some random guess
-        this.metadata = metadata;
+    if (!this.metadata) {
+      // Determine some facts about this mp3 file from the initial header
+      // This is simply some random guess
+      this.metadata = metadata;
+    }
+
+    for (let j = skip + 4; j < value.length; j += 1) {
+      const nextHeaderValidate = Mp3DeMuxAdapter.validateHeader(value, j);
+
+      if (nextHeaderValidate) {
+        frameMetadataSequence.push({
+          ...metadata,
+          start: lastHeaderPosition === null ? skip : lastHeaderPosition,
+          end: j,
+        });
+
+        lastHeaderPosition = j;
       }
+    }
 
-      for (let j = i + 4; j < value.length; j += 1) {
-        const nextHeaderValidate = Mp3DeMuxAdapter.validateHeader(value, j);
-
-        if (nextHeaderValidate) {
-          frameMetadataSequence.push({
-            ...metadata,
-            start: lastHeaderPosition === null ? i : lastHeaderPosition,
-            end: j,
-          });
-
-          lastHeaderPosition = j;
-        }
-      }
-
-      if (!frameMetadataSequence.length) {
-        return null;
-      }
+    if (!frameMetadataSequence.length) {
+      return null;
     }
 
     const { start } = frameMetadataSequence[0];

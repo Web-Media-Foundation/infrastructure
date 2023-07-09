@@ -234,7 +234,9 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
       // reached canplaythrough
       const availableAudio = (bytes / this.length) * estimatedDuration;
       if (availableAudio > estimatedTimeToDownload) {
-        this.canPlayThough.resolve(true);
+        if (!this.canPlayThough.resolvedValue) {
+          this.canPlayThough.resolve(true);
+        }
         this.dispatchEvent(new CanPlayThroughEvent());
       }
     };
@@ -764,7 +766,8 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
     if (chunk === null) {
       return;
     }
-    if (chunk.ready.resolvedValue) {
+
+    chunk.ready.then(() => {
       chunk.createBuffer().then(
         (buffer) => {
           this.onBufferDecoded(chunk, buffer);
@@ -773,18 +776,7 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
           this.dispatchEvent(new PlaybackErrorEvent(err));
         }
       );
-    } else {
-      chunk.once('ready', () => {
-        chunk.createBuffer().then(
-          (buffer) => {
-            this.onBufferDecoded(chunk, buffer);
-          },
-          (err) => {
-            this.dispatchEvent(new PlaybackErrorEvent(err));
-          }
-        );
-      });
-    }
+    });
   }
 
   // Attempt to resume playback when not actual Playing

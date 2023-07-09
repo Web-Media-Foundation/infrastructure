@@ -24,8 +24,6 @@ export default class Chunk<FileMetadata, ChunkMetadata> extends EventTarget {
 
   duration: number | null = null;
 
-  numFrames: number | null = null;
-
   chunkIndex: number;
 
   chunk: IDataChunk<ChunkMetadata>;
@@ -65,22 +63,18 @@ export default class Chunk<FileMetadata, ChunkMetadata> extends EventTarget {
 
     this._attached = false;
 
-    const decode = (callback: () => void, onError: (err: Error) => void) => {
-      const { wrappedData } = this.chunk;
+    const { wrappedData } = this.chunk;
 
-      this.context.decodeAudioData(wrappedData.buffer, callback, (error) => {
-        return onError(error ?? new Error(`Could not decode audio buffer`));
-      });
-    };
-
-    decode(
+    this.context.decodeAudioData(
+      wrappedData.buffer,
       () => {
         this.duration = this.chunk.duration;
-        this.numFrames = this.chunk.frames;
         this._ready();
       },
       (error) => {
-        this.dispatchEvent(new ErrorEvent(error));
+        const warpedError = error ?? new Error(`Could not decode audio buffer`);
+
+        this.dispatchEvent(new ErrorEvent(warpedError));
       }
     );
   }
