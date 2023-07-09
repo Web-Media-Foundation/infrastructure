@@ -65,18 +65,17 @@ export default class Chunk<FileMetadata, ChunkMetadata> extends EventTarget {
 
     const { wrappedData } = this.chunk;
 
-    this.context.decodeAudioData(
-      wrappedData.buffer,
-      () => {
+    this.context
+      .decodeAudioData(wrappedData.buffer)
+      .then(() => {
         this.duration = this.chunk.duration;
         this._ready();
-      },
-      (error) => {
+      })
+      .catch((error) => {
         const warpedError = error ?? new Error(`Could not decode audio buffer`);
 
         this.dispatchEvent(new ErrorEvent(warpedError));
-      }
-    );
+      });
   }
 
   attach(nextChunk: Chunk<FileMetadata, ChunkMetadata> | null) {

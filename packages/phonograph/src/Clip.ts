@@ -760,14 +760,14 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
     }
 
     chunk.ready.then(() => {
-      chunk.createBuffer().then(
-        (buffer) => {
+      chunk
+        .createBuffer()
+        .then((buffer) => {
           this.onBufferDecoded(chunk, buffer);
-        },
-        (err) => {
-          this.dispatchEvent(new PlaybackErrorEvent(err));
-        }
-      );
+        })
+        .catch((error) => {
+          this.dispatchEvent(new PlaybackErrorEvent(error));
+        });
     });
   }
 
