@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import EventTarget from '@ungap/event-target';
+import { EventTargetPolyfill as EventTarget } from './polyfill';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export declare class EventName<T> extends String {}
@@ -55,3 +54,5 @@ export class Target<Events extends EventName<any>[]> {
 
   fire = this.dispatchEvent;
 }
+
+export { EventTargetPolyfill as EventTarget } from './polyfill';

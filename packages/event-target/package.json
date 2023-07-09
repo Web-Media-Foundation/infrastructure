@@ -21,8 +21,5 @@
   ],
   "browserslist": [
     "last 1 Chrome versions"
-  ],
-  "dependencies": {
-    "@ungap/event-target": "^0.2.3"
-  }
+  ]
 }

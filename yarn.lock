@@ -8744,7 +8744,7 @@ __metadata:
     "@types/debug": ^4.1.7
     "@web-media/act-player": ^0.5.19
     "@web-media/act-protocol": ^0.2.11
-    "@web-media/core-manager": ^0.13.0
+    "@web-media/core-manager": ^0.13.1
     "@web-media/definitions": ^0.5.4
     "@web-media/open-promise": ^0.3.0
     "@web-media/smart-resource": ^0.2.1
@@ -8765,7 +8765,7 @@ __metadata:
     "@paciolan/remote-module-loader": "*"
     "@web-media/act-player": 0.5.19
     "@web-media/act-protocol": "*"
-    "@web-media/core-manager": 0.13.0
+    "@web-media/core-manager": 0.13.1
     "@web-media/smart-resource": "*"
     baseui: ^12.1.0
     classnames: "*"
@@ -8779,7 +8779,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@web-media/core-manager@^0.13.0, @web-media/core-manager@workspace:packages/core-manager":
+"@web-media/core-manager@^0.13.0, @web-media/core-manager@^0.13.1, @web-media/core-manager@workspace:packages/core-manager":
   version: 0.0.0-use.local
   resolution: "@web-media/core-manager@workspace:packages/core-manager"
   dependencies:
@@ -8882,8 +8882,6 @@ __metadata:
 "@web-media/event-target@workspace:packages/event-target":
   version: 0.0.0-use.local
   resolution: "@web-media/event-target@workspace:packages/event-target"
-  dependencies:
-    "@ungap/event-target": ^0.2.3
   languageName: unknown
   linkType: soft
 
