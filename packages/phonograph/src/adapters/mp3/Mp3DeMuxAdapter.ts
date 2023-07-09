@@ -95,10 +95,14 @@ export class Mp3DeMuxAdapter extends MediaDeMuxAdapter<
     for (let j = skip + 4; j < value.length; j += 1) {
       const nextHeaderValidate = Mp3DeMuxAdapter.validateHeader(value, j);
 
+      const start = lastHeaderPosition === null ? skip : lastHeaderPosition;
+
+      if (j - start <= 4) continue;
+
       if (nextHeaderValidate) {
         frameMetadataSequence.push({
           ...metadata,
-          start: lastHeaderPosition === null ? skip : lastHeaderPosition,
+          start,
           end: j,
         });
 
