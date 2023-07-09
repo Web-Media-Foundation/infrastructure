@@ -205,6 +205,10 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
     this._gain.connect(this.context.destination);
 
     this._chunks = [];
+
+    this.canPlayThough.then(() => {
+      this.dispatchEvent(new CanPlayThroughEvent());
+    });
   }
 
   async buffer() {
@@ -237,7 +241,6 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
         if (!this.canPlayThough.resolvedValue) {
           this.canPlayThough.resolve(true);
         }
-        this.dispatchEvent(new CanPlayThroughEvent());
       }
     };
     try {
@@ -316,7 +319,6 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
       firstChunk.ready.then(() => {
         if (!this.canPlayThough.resolvedValue) {
           this.canPlayThough.resolve(true);
-          this.dispatchEvent(new CanPlayThroughEvent());
         }
         this.loaded.resolve(true);
         this.dispatchEvent(new LoadEvent());
