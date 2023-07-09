@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { Clip, Mp3DeMuxAdapter } from '../src/index';
 
 const clip = new Clip({
@@ -33,6 +34,9 @@ init.addEventListener('click', () => {
     clip.on('play', updateProgress);
     clip.on('pause', updateProgress);
     clip.on('ended', updateProgress);
+    clip.on('error', (event) => {
+      console.error(event);
+    });
 
     const loop = () => {
       updateProgress();
