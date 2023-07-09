@@ -296,7 +296,7 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
             this.trySetupAudioBufferCache();
           });
 
-          chunk.once('error', (({ detail }: CustomEvent<Error>) => {
+          chunk.on('error', (({ detail }: CustomEvent<Error>) => {
             this.dispatchEvent(
               new LoadErrorEvent(this.url, 'COULD_NOT_DECODE', detail)
             );
