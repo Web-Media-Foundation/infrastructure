@@ -26,8 +26,8 @@ the Ogg files, a process so fast that it's hardly noticeable to our users.
 - Lossless encoding is not supported. Typically, you can use the FLAC container
   to achieve the playback. Thus, we haven't seen a need to implement this
   feature. If you have such a requirement, please let us know!
-- Ogg files containing VBR Opus can be converted, but will not be playable
-  even on Safari 17.  Use CBR (not VBR, not CVBR) only.
+- Ogg files containing VBR Opus can be converted to a legal CAF, but the result is
+  unplayable even with Safari 17. Use CBR (not VBR, not CVBR) only.
 
 # Usage
 
