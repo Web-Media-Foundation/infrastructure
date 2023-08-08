@@ -1,3 +1,4 @@
+import { CustomEvent } from '@web-media/event-target';
 import { QueueUpdateAction } from './QueueUpdateAction';
 
 /**

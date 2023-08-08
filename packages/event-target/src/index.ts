@@ -55,4 +55,7 @@ export class Target<Events extends EventName<any>[]> {
   fire = this.dispatchEvent;
 }
 
-export { EventTargetPolyfill as EventTarget } from './polyfill';
+export {
+  EventTargetPolyfill as EventTarget,
+  CustomEventPolyfill as CustomEvent,
+} from './polyfill';

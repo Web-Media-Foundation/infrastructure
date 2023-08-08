@@ -88,3 +88,12 @@ export class EventTargetPolyfill {
     this.addEventListener(type, callback, { once: true });
   };
 }
+
+export class CustomEventPolyfill<T> extends Event {
+  detail: T;
+
+  constructor(message: string, data: EventInit & { detail: T }) {
+    super(message, data);
+    this.detail = data.detail;
+  }
+}
