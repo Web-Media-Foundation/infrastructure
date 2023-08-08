@@ -1,3 +1,5 @@
+[![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner2-direct.svg)](https://stand-with-ukraine.pp.ua)
+
 <div>
   <img alt="Web Media Foundation" width="100%" src="https://raw.githubusercontent.com/Web-Media-Foundation/infrastructure/master/assets/title.svg" />
 </div>
