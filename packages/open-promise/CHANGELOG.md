@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.2
+
+### Patch Changes
+
+- 42eb1ad: fix: Compatibility issue on Node.js
+
 ## 0.3.1
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # @web-media/ugly-json
 
+## 0.0.2
+
+### Patch Changes
+
+- 42eb1ad: fix: Compatibility issue on Node.js
+- 959eae2: feat: Implement EventTarget polyfill
+
 ## 0.0.1
 
 ### Patch Changes

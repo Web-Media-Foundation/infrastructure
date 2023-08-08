@@ -1,5 +1,12 @@
 # @web-media/database
 
+## 0.0.5
+
+### Patch Changes
+
+- Updated dependencies [42eb1ad]
+  - @web-media/open-promise@0.3.2
+
 ## 0.0.4
 
 ### Patch Changes

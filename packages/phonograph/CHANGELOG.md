@@ -1,5 +1,14 @@
 # phonograph changelog
 
+## 2.2.2
+
+### Patch Changes
+
+- Updated dependencies [42eb1ad]
+- Updated dependencies [959eae2]
+  - @web-media/event-target@0.0.2
+  - @web-media/open-promise@0.3.2
+
 ## 2.2.1
 
 ### Patch Changes
