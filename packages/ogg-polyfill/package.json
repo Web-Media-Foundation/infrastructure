@@ -15,6 +15,9 @@
     "clean": "rimraf ./dist",
     "watch": "rollup -c -w",
     "build": "yarn clean && rollup -c",
+    "demo:convert": "yarn run parcel ./example/convertOggOpusFileToCaf.html",
+    "demo:parse-ogg": "yarn run parcel ./example/parseOggOpusFile.html",
+    "demo:parse-caf": "yarn run parcel ./example/parseCafOpusFile.html",
     "test": "jest"
   },
   "files": [
@@ -22,5 +25,8 @@
   ],
   "browserslist": [
     "last 1 Chrome versions"
-  ]
+  ],
+  "devDependencies": {
+    "parcel": "^2.9.3"
+  }
 }
