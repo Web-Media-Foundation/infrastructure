@@ -17,7 +17,7 @@ import com.getcapacitor.Logger;
 import com.getcapacitor.PluginConfig;
 import com.getcapacitor.PluginHandle;
 import com.getcapacitor.WebViewLocalServer;
-import com.getcapacitor.android.BuildConfig;
+//import com.getcapacitor.android.BuildConfig;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

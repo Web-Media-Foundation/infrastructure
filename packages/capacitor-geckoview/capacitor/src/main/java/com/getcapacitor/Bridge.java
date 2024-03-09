@@ -39,6 +39,7 @@ import com.getcapacitor.cordova.MockCordovaInterfaceImpl;
 import com.getcapacitor.cordova.MockCordovaWebViewImpl;
 import com.getcapacitor.httpserver.SimpleHttpServer;
 import com.getcapacitor.util.HostMask;
+import com.getcapacitor.util.InternalUtils;
 import com.getcapacitor.util.PermissionHelper;
 import com.getcapacitor.util.WebColor;
 
@@ -55,7 +56,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
-
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.apache.cordova.ConfigXmlParser;
 import org.apache.cordova.CordovaPreferences;
 import org.apache.cordova.CordovaWebView;
@@ -108,6 +110,8 @@ public class Bridge implements IPostMessage {
 
     public static final int DEFAULT_ANDROID_WEBVIEW_VERSION = 60;
     public static final int MINIMUM_ANDROID_WEBVIEW_VERSION = 55;
+    public static final int DEFAULT_HUAWEI_WEBVIEW_VERSION = 10;
+    public static final int MINIMUM_HUAWEI_WEBVIEW_VERSION = 10;
 
     // Loaded Capacitor config
     private CapConfig config;
@@ -122,6 +126,7 @@ public class Bridge implements IPostMessage {
     private String appUrlConfig;
     private HostMask appAllowNavigationMask;
     private Set<String> allowedOriginRules = new HashSet<String>();
+    private ArrayList<String> authorities = new ArrayList<>();
     // A reference to the main WebView for the app
     private CordovaWebView cordovaWebView;
     private CordovaPreferences preferences;
@@ -234,7 +239,6 @@ public class Bridge implements IPostMessage {
         // Grab any intent info that our app was launched with
         Intent intent = context.getIntent();
         this.intentUri = intent.getData();
-
         // Register our core plugins
         this.registerAllPlugins();
 
@@ -257,7 +261,9 @@ public class Bridge implements IPostMessage {
                     allowedOriginRules.add(allowNavigation);
                 }
             }
+            authorities.addAll(Arrays.asList(appAllowNavigationConfig));
         }
+        this.appAllowNavigationMask = HostMask.Parser.parse(appAllowNavigationConfig);
     }
 
     public App getApp() {
@@ -349,7 +355,6 @@ public class Bridge implements IPostMessage {
                 setServerBasePath(path);
             }
         }
-
         if (!this.isMinimumWebViewInstalled()) {
             String errorUrl = this.getErrorUrl();
             if (errorUrl != null) {
@@ -394,9 +399,18 @@ public class Bridge implements IPostMessage {
         // Check getCurrentWebViewPackage() directly if above Android 8
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             PackageInfo info = WebView.getCurrentWebViewPackage();
-            String majorVersionStr = info.versionName.split("\\.")[0];
-            int majorVersion = Integer.parseInt(majorVersionStr);
-            return majorVersion >= config.getMinWebViewVersion();
+            Pattern pattern = Pattern.compile("(\\d+)");
+            Matcher matcher = pattern.matcher(info.versionName);
+            if (matcher.find()) {
+                String majorVersionStr = matcher.group(0);
+                int majorVersion = Integer.parseInt(majorVersionStr);
+                if (info.packageName.equals("com.huawei.webview")) {
+                    return majorVersion >= config.getMinHuaweiWebViewVersion();
+                }
+                return majorVersion >= config.getMinWebViewVersion();
+            } else {
+                return false;
+            }
         }
 
         // Otherwise manually check WebView versions
@@ -405,7 +419,7 @@ public class Bridge implements IPostMessage {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 webViewPackage = "com.android.chrome";
             }
-            PackageInfo info = pm.getPackageInfo(webViewPackage, 0);
+            PackageInfo info = InternalUtils.getPackageInfo(pm, webViewPackage);
             String majorVersionStr = info.versionName.split("\\.")[0];
             int majorVersion = Integer.parseInt(majorVersionStr);
             return majorVersion >= config.getMinWebViewVersion();
@@ -414,7 +428,7 @@ public class Bridge implements IPostMessage {
         }
 
         try {
-            PackageInfo info = pm.getPackageInfo("com.android.webview", 0);
+            PackageInfo info = InternalUtils.getPackageInfo(pm, "com.android.webview");
             String majorVersionStr = info.versionName.split("\\.")[0];
             int majorVersion = Integer.parseInt(majorVersionStr);
             return majorVersion >= config.getMinWebViewVersion();
@@ -422,8 +436,25 @@ public class Bridge implements IPostMessage {
             Logger.warn("Unable to get package info for 'com.android.webview'" + ex.toString());
         }
 
+        final int amazonFireMajorWebViewVersion = extractWebViewMajorVersion(pm, "com.amazon.webview.chromium");
+        if (amazonFireMajorWebViewVersion >= config.getMinWebViewVersion()) {
+            return true;
+        }
+
         // Could not detect any webview, return false
         return false;
+    }
+
+    private int extractWebViewMajorVersion(final PackageManager pm, final String webViewPackageName) {
+        try {
+            final PackageInfo info = InternalUtils.getPackageInfo(pm, webViewPackageName);
+            final String majorVersionStr = info.versionName.split("\\.")[0];
+            final int majorVersion = Integer.parseInt(majorVersionStr);
+            return majorVersion;
+        } catch (Exception ex) {
+            Logger.warn(String.format("Unable to get package info for '%s' with err '%s'", webViewPackageName, ex));
+        }
+        return 0;
     }
 
     public boolean launchIntent(Uri url) {
@@ -440,7 +471,15 @@ public class Bridge implements IPostMessage {
             }
         }
 
-        if (!url.toString().startsWith(appUrl) && !appAllowNavigationMask.matches(url.getHost())) {
+        if (url.getScheme().equals("data")) {
+            return false;
+        }
+
+        Uri appUri = Uri.parse(appUrl);
+        if (
+            !(appUri.getHost().equals(url.getHost()) && url.getScheme().equals(appUri.getScheme())) &&
+            !appAllowNavigationMask.matches(url.getHost())
+        ) {
             try {
                 Intent openIntent = new Intent(Intent.ACTION_VIEW, url);
                 getContext().startActivity(openIntent);
@@ -461,7 +500,8 @@ public class Bridge implements IPostMessage {
         String lastVersionName = prefs.getString(LAST_BINARY_VERSION_NAME, null);
 
         try {
-            PackageInfo pInfo = getContext().getPackageManager().getPackageInfo(getContext().getPackageName(), 0);
+            PackageManager pm = getContext().getPackageManager();
+            PackageInfo pInfo = InternalUtils.getPackageInfo(pm, getContext().getPackageName());
             versionCode = Integer.toString((int) PackageInfoCompat.getLongVersionCode(pInfo));
             versionName = pInfo.versionName;
         } catch (Exception ex) {
@@ -626,6 +666,36 @@ public class Bridge implements IPostMessage {
         }
 
         WebView.setWebContentsDebuggingEnabled(this.config.isWebContentsDebuggingEnabled());
+
+        appUrlConfig = this.getServerUrl();
+        String authority = this.getHost();
+        authorities.add(authority);
+        String scheme = this.getScheme();
+
+        localUrl = scheme + "://" + authority;
+
+        if (appUrlConfig != null) {
+            try {
+                URL appUrlObject = new URL(appUrlConfig);
+                authorities.add(appUrlObject.getAuthority());
+            } catch (Exception ex) {
+                Logger.error("Provided server url is invalid: " + ex.getMessage());
+                return;
+            }
+            localUrl = appUrlConfig;
+            appUrl = appUrlConfig;
+        } else {
+            appUrl = localUrl;
+            // custom URL schemes requires path ending with /
+            if (!scheme.equals(Bridge.CAPACITOR_HTTP_SCHEME) && !scheme.equals(CAPACITOR_HTTPS_SCHEME)) {
+                appUrl += "/";
+            }
+        }
+
+        String appUrlPath = this.config.getStartPath();
+        if (appUrlPath != null && !appUrlPath.trim().isEmpty()) {
+            appUrl += appUrlPath;
+        }
     }
 
     /**
@@ -1563,7 +1633,7 @@ public class Bridge implements IPostMessage {
             return this;
         }
 
-        @SuppressLint("WrongThread")
+        @SuppressLint({"WrongThread", "SetJavaScriptEnabled"})
         public Bridge create() {
             // Cordova initialization
             ConfigXmlParser parser = new ConfigXmlParser();
@@ -1592,8 +1662,19 @@ public class Bridge implements IPostMessage {
                     .aboutConfigEnabled(false)
                     .remoteDebuggingEnabled(true)
                     .build();
+
             GeckoRuntime sRuntime = GeckoRuntime
                     .create(activity, runTimeSettings);
+
+//            GeckoRuntime sRuntime = GeckoRuntime
+//                    .getDefault(activity);
+//            GeckoRuntimeSettings runTimeSettings = sRuntime.getSettings();
+//                    runTimeSettings.setJavaScriptEnabled(true).setLoginAutofillEnabled(true)
+//                    .setWebManifestEnabled(false)
+//                    .setAboutConfigEnabled(false)
+//                    .setRemoteDebuggingEnabled(true);
+
+
 
             // Bridge initialization
             Bridge bridge = new Bridge(
