@@ -12,7 +12,7 @@ It is highly recommended to use `Web Media Foundation Studio` with this system, 
 
 ## Status
 
-Web Media Foundation is under active development, and we are currently focusing on optimizing the architecture, refining the documentation, and completing the functionality.
+Web Media Foundation is under (not) active development, and we are currently focusing on optimizing the architecture, refining the documentation, and completing the functionality.
 
 You can expect breaking changes at any time until we release the stable version.
 

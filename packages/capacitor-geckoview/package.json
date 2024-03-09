@@ -1,6 +1,6 @@
 {
   "name": "@web-media/capacitor-geckoview",
-  "version": "3.0.0",
+  "version": "5.7.0-experimental.0",
   "repository": "https://github.com/Web-Media-Foundation/infrastructure",
   "files": [
     "capacitor/build.gradle",
