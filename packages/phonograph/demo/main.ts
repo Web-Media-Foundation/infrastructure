@@ -6,6 +6,10 @@ const clip = new Clip({
   adapter: new Mp3DeMuxAdapter(),
 });
 
+console.log(
+  'The clip has been stored in a global variable called `clip`, you can explore the variable as you want.'
+);
+
 const init = document.querySelector('#init') as HTMLButtonElement;
 
 init.addEventListener('click', () => {
@@ -30,7 +34,6 @@ init.addEventListener('click', () => {
       progress.innerText = `${clip.currentTime}`;
     };
 
-    console.log(clip);
     clip.on('play', updateProgress);
     clip.on('pause', updateProgress);
     clip.on('ended', updateProgress);

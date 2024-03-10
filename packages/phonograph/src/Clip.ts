@@ -291,12 +291,6 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
       this._loadStarted = false;
 
       throw error;
-    } finally {
-      // @ts-ignore
-      console.log(
-        // @ts-ignore
-        this._chunks.flatMap((x) => x.chunk.metadata.map((a) => a.sampleRate))
-      );
     }
   }
 
