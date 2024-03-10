@@ -10,94 +10,25 @@ import {
   IAudioBufferSourceNode,
 } from 'standardized-audio-context';
 
-import { OpenPromise } from '@web-media/open-promise';
 import { EventTarget } from '@web-media/event-target';
+import { OpenPromise, OpenPromiseState } from '@web-media/open-promise';
 
 import Chunk from './Chunk';
 import { BinaryLoader } from './Loader';
 import { MediaDeMuxAdapter } from './adapters/MediaDeMuxAdapter';
 
+import { LoadEvent } from './utils/events/LoadEvent';
+import { PauseEvent } from './utils/events/PauseEvent';
+import { EndedEvent } from './utils/events/EndedEvent';
+import { DisposeEvent } from './utils/events/DisposeEvent';
+import { LoadErrorEvent } from './utils/events/LoadErrorEvent';
+import { LoadProgressEvent } from './utils/events/LoadProgressEvent';
+import { PlaybackErrorEvent } from './utils/events/PlaybackErrorEvent';
+import { CanPlayThroughEvent } from './utils/events/CanPlayThroughEvent';
+
+import { PhonographClipError } from './utils/error/PhonographClipError';
+
 const OVERLAP = 0.2;
-
-class PhonographClipError extends Error {
-  phonographCode: string;
-
-  url: string;
-
-  constructor(message: string, opts: { phonographCode: string; url: string }) {
-    super(message);
-
-    this.phonographCode = opts.phonographCode;
-    this.url = opts.url;
-  }
-}
-
-export class CanPlayThroughEvent extends CustomEvent<void> {
-  constructor() {
-    super('canplaythrough');
-  }
-}
-
-export class LoadEvent extends CustomEvent<void> {
-  constructor() {
-    super('load');
-  }
-}
-
-interface ILoadErrorEventDetail {
-  url: string;
-  phonographCode: string;
-  error: unknown;
-}
-
-export class LoadErrorEvent extends CustomEvent<ILoadErrorEventDetail> {
-  constructor(
-    url: string,
-    phonographCode: string,
-    error: unknown,
-    public cause?: unknown
-  ) {
-    super('loaderror', { detail: { url, phonographCode, error } });
-  }
-}
-
-export class PlaybackErrorEvent extends CustomEvent<unknown> {
-  constructor(error: unknown) {
-    super('playbackerror', { detail: error });
-  }
-}
-
-interface LoadProgressEventDetail {
-  progress: number;
-  loaded: number;
-  total: number;
-}
-
-export class LoadProgressEvent extends CustomEvent<LoadProgressEventDetail> {
-  constructor(progress: number, loaded: number, total: number) {
-    super('loadprogress', {
-      detail: { progress, loaded, total },
-    });
-  }
-}
-
-export class DisposeEvent extends CustomEvent<void> {
-  constructor() {
-    super('dispose');
-  }
-}
-
-export class PauseEvent extends CustomEvent<void> {
-  constructor() {
-    super('pause');
-  }
-}
-
-export class EndedEvent extends CustomEvent<void> {
-  constructor() {
-    super('ended');
-  }
-}
 
 // A cache of audio buffers starting from current time
 interface AudioBufferCache<FileMetadata, ChunkMetadata> {
@@ -243,7 +174,7 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
       // reached canplaythrough
       const availableAudio = (bytes / this.length) * estimatedDuration;
       if (availableAudio > estimatedTimeToDownload) {
-        if (!this.canPlayThough.resolvedValue) {
+        if (this.canPlayThough.state !== OpenPromiseState.Fulfilled) {
           this.canPlayThough.resolve(true);
         }
       }
@@ -329,7 +260,7 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
       }
 
       firstChunk.ready.then(() => {
-        if (!this.canPlayThough.resolvedValue) {
+        if (this.canPlayThough.state !== OpenPromiseState.Fulfilled) {
           this.canPlayThough.resolve(true);
         }
         this.loaded.resolve(true);
