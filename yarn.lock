@@ -9766,7 +9766,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@web-media/capacitor-geckoview@workspace:packages/capacitor-geckoview"
   peerDependencies:
-    "@capacitor/core": ^4.6.2
+    "@capacitor/core": ^5.7.0
   languageName: unknown
   linkType: soft
 
