@@ -542,17 +542,23 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
 
   // Start play the audioBuffer when the audioBufferCacheHit is true
   private startPlay() {
+    // Initialization of Start Time Variables.
     this._startTime = this._currentTime;
     this._actualPlaying = true;
     const { currentChunkStartTime, currentChunk, currentBuffer, nextBuffer } =
       this._audioBufferCache!;
 
+    // Recording the Current Context Time.
     this._contextTimeAtStart = this.context.currentTime;
+    // Playback of the Current Audio Chunk.
     if (currentChunk !== null) {
+      //  Calculates the time at which the current audio source should stop
+      // playing and potentially when the next audio source should start.
       this._pendingSourceStart =
         this._contextTimeAtStart +
         (currentChunk.duration! - (this._startTime - currentChunkStartTime));
 
+      // Setup and Scheduling of the Current Audio Source
       this._currentSource = this.context.createBufferSource();
       this._currentSource.buffer = currentBuffer!;
       this._currentGain = this.context.createGain();
@@ -562,13 +568,20 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
         this._pendingSourceStart + OVERLAP
       );
       this._currentSource.connect(this._currentGain);
+      // Starts the playback of the current buffer at the computed start time.
       this._currentSource.start(
         this._contextTimeAtStart,
         this._startTime - currentChunkStartTime
       );
+      // Stops the playback after the duration of the current chunk, plus an
+      // overlap period.
       this._currentSource.stop(this._pendingSourceStart + OVERLAP * 2);
       this._currentSource.addEventListener('ended', this.onCurrentSourceEnd);
+      // Setup and Scheduling of the Next Audio Source (if applicable)
       if (currentChunk.next !== null) {
+        // If there is a next chunk to play (currentChunk.next), the method
+        // repeats a similar process to set up the next audio source and gain
+        // node.
         const pendingStart =
           this._pendingSourceStart + currentChunk.next!.duration!;
         this._nextSource = this.context.createBufferSource();
@@ -582,6 +595,8 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
         );
         this._nextSource.connect(this._nextGain);
         this._nextSource.start(this._pendingSourceStart);
+        // Schedules the volume to fade in at the end of the current chunk and
+        // fade out at the end of the next chunk, creating a crossfade effect.
         this._nextGain.gain.setValueAtTime(0, pendingStart + OVERLAP);
         this._nextSource.stop(pendingStart + OVERLAP * 2);
         this._pendingSourceStart = pendingStart;
@@ -590,8 +605,11 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
       this.pause().currentTime = 0;
       // TODO: schedule playing of first chunk instead of do this
       if (this.loop) {
+        // If looping is enabled (this.loop), playback is restarted.
         this.play();
       } else {
+        // If looping is not enabled, sets the ended flag to true and dispatches
+        // an EndedEvent to signal the end of playback.
         this.ended = true;
         this.dispatchEvent(new EndedEvent());
       }
