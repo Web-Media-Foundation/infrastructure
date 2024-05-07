@@ -36,6 +36,7 @@ interface AudioBufferCache<FileMetadata, ChunkMetadata> {
   currentChunk: Chunk<FileMetadata, ChunkMetadata> | null;
   currentBuffer: IAudioBuffer | null;
   nextBuffer: IAudioBuffer | null;
+  /* Literally next next buffer */
   pendingBuffer: IAudioBuffer | null;
 }
 
@@ -180,7 +181,6 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
 
   private handleChunkReady = (loadStartTime: number, totalLoadedBytes: number) => {
     this.checkCanPlayThrough(loadStartTime, totalLoadedBytes);
-    this.trySetupAudioBufferCache();
   };
 
   private handleChunkError = (({ detail, target }: CustomEvent<Error>) => {
@@ -248,10 +248,10 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
             adapter: this.adapter,
           });
 
-          chunk.once('ready', () => {
-            this.handleChunkReady(loadStartTime, totalLoadedBytes);
-          });
           chunk.on('error', this.handleChunkError);
+
+          await chunk.decoded;
+          this.handleChunkReady(loadStartTime, totalLoadedBytes);
 
           // Connect last chunk with this chunk to create a chunk chain.
           const lastChunk = this._chunks[this._chunks.length - 1];
@@ -270,13 +270,13 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
         );
       }
 
-      // If there is only one chunk, it is not attached, we need to manually
-      // announce this case here.
-      if (this._chunks.length === 1) {
-        await firstChunk.attach(null);
-      }
+      // Last chunk should be resolved manually.
+      const lastChunk = this._chunks[this._chunks.length - 1];
+      await lastChunk.attach(null);
 
-      await firstChunk.ready;
+      await firstChunk.decoded;
+
+      await this.trySetupAudioBufferCache();
 
       if (this.canPlayThough.state !== OpenPromiseState.Fulfilled) {
         this.canPlayThough.resolve(true);
@@ -452,7 +452,7 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
 
   // Attempt to setup AudioBufferCache if it is not setup
   // Should be called when new chunk is ready
-  private trySetupAudioBufferCache() {
+  private async trySetupAudioBufferCache() {
     if (this._audioBufferCache !== null) {
       return;
     }
@@ -474,9 +474,13 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
           nextBuffer: null,
           pendingBuffer: null,
         };
-        this.decodeChunk(chunk ?? null);
-        this.decodeChunk(chunk?.next ?? null);
+
+        await this.decodeChunk(chunk);
+        await chunk.next?.attached;
+        await this.decodeChunk(chunk?.next);
+
         this.decodeChunk(chunk?.next?.next ?? null);
+
         return;
       }
       time = chunkEnd;
@@ -484,7 +488,7 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
       chunk = lastChunk.next;
     }
     // All available Chunk visited, check if there are more chunks to be load.
-    if (lastChunk?.ready) {
+    if (lastChunk?.decoded) {
       this._audioBufferCache = {
         currentChunkStartTime: time,
         currentChunk: null,
@@ -505,7 +509,7 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
     if (currentChunk === null) {
       return true;
     }
-    if (!currentChunk.ready) {
+    if (!currentChunk.decoded) {
       return false;
     }
     if (currentBuffer === null) {
@@ -515,7 +519,7 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
     if (nextChunk === null) {
       return true;
     }
-    if (!nextChunk.ready) {
+    if (!nextChunk.decoded) {
       return false;
     }
     if (nextBuffer === null) {
@@ -696,13 +700,11 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
       if (audioBufferCache.currentBuffer === null) {
         audioBufferCache.currentBuffer = buffer;
       }
-    }
-    if (audioBufferCache.currentChunk?.next === chunk) {
+    } else if (audioBufferCache.currentChunk?.next === chunk) {
       if (audioBufferCache.nextBuffer === null) {
         audioBufferCache.nextBuffer = buffer;
       }
-    }
-    if (audioBufferCache.currentChunk?.next?.next === chunk) {
+    } else if (audioBufferCache.currentChunk?.next?.next === chunk) {
       if (audioBufferCache.pendingBuffer === null) {
         audioBufferCache.pendingBuffer = buffer;
       }
@@ -711,24 +713,22 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
   }
 
   // Start chunk decode
-  private decodeChunk(chunk: Chunk<FileMetadata, ChunkMetadata> | null) {
+  private async decodeChunk(chunk: Chunk<FileMetadata, ChunkMetadata> | null) {
     if (chunk === null) {
       return;
     }
 
-    chunk.ready.then(() => {
-      chunk
-        .createBuffer()
-        .then((buffer) => {
-          this.onBufferDecoded(chunk, buffer);
-        })
-        .catch((error) => {
-          this.dispatchEvent(new PlaybackErrorEvent(error));
-        });
-    });
+    await chunk.decoded;
+
+    try {
+      const buffer = await chunk.createBuffer();
+      this.onBufferDecoded(chunk, buffer);
+    } catch (error) {
+      this.dispatchEvent(new PlaybackErrorEvent(error));
+    }
   }
 
-  // Attempt to resume playback when not actual Playing
+  // Attempt to resume playback when not actual playing
   private tryResumePlayback() {
     if (this._actualPlaying || !this.playing) {
       return;

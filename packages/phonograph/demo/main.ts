@@ -22,7 +22,7 @@ const init = document.querySelector('#init') as HTMLButtonElement;
 
 init.addEventListener('click', () => {
   clip.buffer().then(() => {
-    console.log('The buffer is loaded and the whole demo is operatable.')
+    console.log('The buffer is loaded and the whole demo is operatable.');
     const play = document.querySelector('#play') as HTMLButtonElement;
     const pause = document.querySelector('#pause') as HTMLButtonElement;
     const progress = document.querySelector('#progress') as HTMLSpanElement;
@@ -41,7 +41,7 @@ init.addEventListener('click', () => {
     });
 
     const updateProgress = () => {
-      progress.innerText = `${clip.currentTime}`;
+      progress.innerText = `${clip.currentTime.toFixed(3)} / ${clip.duration?.toFixed(3)}`;
     };
 
     clip.on('play', updateProgress);
