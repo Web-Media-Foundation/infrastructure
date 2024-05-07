@@ -68,15 +68,7 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
 
   private _currentTime = 0;
 
-  private __chunks: Chunk<FileMetadata, ChunkMetadata>[] = [];
-
-  public get _chunks(): Chunk<FileMetadata, ChunkMetadata>[] {
-    return this.__chunks;
-  }
-
-  public set _chunks(value: Chunk<FileMetadata, ChunkMetadata>[]) {
-    this.__chunks = value;
-  }
+  private _chunks: Chunk<FileMetadata, ChunkMetadata>[] = [];
 
   private _contextTimeAtStart: number = 0;
 
@@ -186,33 +178,30 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
     }
   };
 
+  private handleChunkReady = (loadStartTime: number, totalLoadedBytes: number) => {
+    this.checkCanPlayThrough(loadStartTime, totalLoadedBytes);
+    this.trySetupAudioBufferCache();
+  };
+
+  private handleChunkError = (({ detail, target }: CustomEvent<Error>) => {
+    const loadErrorEvent = new LoadErrorEvent(
+      this.url,
+      'COULD_NOT_DECODE',
+      detail,
+      target
+    );
+
+    this.dispatchEvent(loadErrorEvent);
+  }) as EventListenerOrEventListenerObject;
+
   /**
    * Asynchronously loads and processes audio data, checking for readiness to
    * play through and handling errors accordingly.
    */
   async buffer() {
-    if (this._loadStarted) return;
     this._loadStarted = true;
     const loadStartTime = Date.now();
     let totalLoadedBytes = 0;
-
-    const handleChunkReady = () => {
-      this.checkCanPlayThrough(loadStartTime, totalLoadedBytes);
-      this.trySetupAudioBufferCache();
-    };
-
-    const handleChunkError = () => {
-      (({ detail, target }: CustomEvent<Error>) => {
-        const loadErrorEvent = new LoadErrorEvent(
-          this.url,
-          'COULD_NOT_DECODE',
-          detail,
-          target
-        );
-
-        this.dispatchEvent(loadErrorEvent);
-      }) as EventListenerOrEventListenerObject;
-    };
 
     try {
       const fetcher = this.loader.fetch();
@@ -254,16 +243,19 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
 
           const chunk = new Chunk<FileMetadata, ChunkMetadata>({
             clip: this,
-            chunkIndex: this.__chunks.length,
+            chunkIndex: this._chunks.length,
             chunk: data,
             adapter: this.adapter,
           });
 
-          chunk.once('ready', handleChunkReady);
-          chunk.on('error', handleChunkError);
+          chunk.once('ready', () => {
+            this.handleChunkReady(loadStartTime, totalLoadedBytes);
+          });
+          chunk.on('error', this.handleChunkError);
 
+          // Connect last chunk with this chunk to create a chunk chain.
           const lastChunk = this._chunks[this._chunks.length - 1];
-          if (lastChunk) lastChunk.attach(chunk);
+          if (lastChunk) await lastChunk.attach(chunk);
 
           this._chunks.push(chunk);
           totalLoadedBytes += consumed;
@@ -276,6 +268,12 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
         throw new TypeError(
           `No first chunk found, this is not a valid MP3 file`
         );
+      }
+
+      // If there is only one chunk, it is not attached, we need to manually
+      // announce this case here.
+      if (this._chunks.length === 1) {
+        await firstChunk.attach(null);
       }
 
       await firstChunk.ready;
@@ -345,7 +343,7 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
   }
 
   play() {
-    const promise = new Promise((fulfil, reject) => {
+    const finishedPlaying = new Promise((fulfil, reject) => {
       this.once('ended', fulfil);
 
       this.once('loaderror', reject);
@@ -370,7 +368,7 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
     this.ended = false;
     this.tryResumePlayback();
 
-    return promise;
+    return finishedPlaying;
   }
 
   pause() {
@@ -402,7 +400,7 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
       this._currentTime = currentTime;
       this._audioBufferCache = null;
       this.trySetupAudioBufferCache();
-      this.play().catch(() => {});
+      this.play().catch(() => { });
     } else {
       this._currentTime = currentTime;
       this._audioBufferCache = null;

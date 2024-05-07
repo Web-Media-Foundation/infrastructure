@@ -6,6 +6,14 @@ const clip = new Clip({
   adapter: new Mp3DeMuxAdapter(),
 });
 
+clip.addEventListener('error', (error) => console.error(error));
+clip.addEventListener('loadprogress', ((event: CustomEvent) => {
+  console.log(event.detail);
+}) as EventListener);
+clip.addEventListener('ready', ((event: CustomEvent) => {
+  console.log(event.detail);
+}) as EventListener);
+
 console.log(
   'The clip has been stored in a global variable called `clip`, you can explore the variable as you want.'
 );
@@ -14,6 +22,7 @@ const init = document.querySelector('#init') as HTMLButtonElement;
 
 init.addEventListener('click', () => {
   clip.buffer().then(() => {
+    console.log('The buffer is loaded and the whole demo is operatable.')
     const play = document.querySelector('#play') as HTMLButtonElement;
     const pause = document.querySelector('#pause') as HTMLButtonElement;
     const progress = document.querySelector('#progress') as HTMLSpanElement;
@@ -23,6 +32,7 @@ init.addEventListener('click', () => {
     pause.disabled = false;
 
     play.addEventListener('click', () => {
+      console.log('play triggered');
       clip.play();
     });
 

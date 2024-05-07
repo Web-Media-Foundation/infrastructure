@@ -1,5 +1,5 @@
 import { EventTarget } from '@web-media/event-target';
-import { OpenPromise } from '@web-media/open-promise';
+import { OpenPromise, OpenPromiseState } from '@web-media/open-promise';
 import { AudioContext, IAudioBuffer } from 'standardized-audio-context';
 
 import type { Clip } from './Clip';
@@ -38,6 +38,8 @@ export default class Chunk<FileMetadata, ChunkMetadata> extends EventTarget {
 
   private _attached: boolean;
 
+  private audioDataDecoded = new OpenPromise<null>();
+
   constructor({
     clip,
     chunk,
@@ -63,26 +65,28 @@ export default class Chunk<FileMetadata, ChunkMetadata> extends EventTarget {
 
     this._attached = false;
 
-    const { wrappedData } = this.chunk;
+    const { wrappedData } = chunk;
 
     this.context
       .decodeAudioData(wrappedData.buffer)
       .then(() => {
         this.duration = this.chunk.duration;
-        this._ready();
+        this.audioDataDecoded.resolve(null);
       })
       .catch((error) => {
+        this.audioDataDecoded.reject(error);
         const warpedError = error ?? new Error(`Could not decode audio buffer`);
 
         this.dispatchEvent(new ErrorEvent(warpedError));
+        this.ready.reject(warpedError);
       });
   }
 
-  attach(nextChunk: Chunk<FileMetadata, ChunkMetadata> | null) {
+  async attach(nextChunk: Chunk<FileMetadata, ChunkMetadata> | null) {
     this.next = nextChunk;
     this._attached = true;
 
-    this._ready();
+    await this.resolveChunkReadyState();
   }
 
   createBuffer(): Promise<IAudioBuffer> {
@@ -95,8 +99,12 @@ export default class Chunk<FileMetadata, ChunkMetadata> extends EventTarget {
     return this.context.decodeAudioData(this.extended!.slice(0).buffer);
   }
 
-  private _ready() {
-    if (this.ready.resolvedValue) return;
+  private async resolveChunkReadyState() {
+    if (this.ready.state !== OpenPromiseState.Idle) {
+      return;
+    }
+
+    await this.audioDataDecoded;
 
     if (this._attached && this.duration !== null) {
       this.ready.resolve(true);
