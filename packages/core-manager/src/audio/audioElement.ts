@@ -6,10 +6,10 @@ import {
   getGlobalAudioStation,
 } from '@web-media/audio-station';
 import { IResourceFileForClient } from '@web-media/definitions';
-import { Clip as PhonographClip, mp3Adapter } from '@web-media/phonograph';
+import { Clip as PhonographClip, Mp3DeMuxAdapter } from '@web-media/phonograph';
 
 export class PhonographClipWithAudioStation {
-  phonograph: PhonographClip<unknown>;
+  phonograph: PhonographClip<unknown, unknown>;
 
   mixer: AudioMixer | null = null;
 
@@ -17,8 +17,8 @@ export class PhonographClipWithAudioStation {
     this.phonograph = new PhonographClip({
       context: audioStation.audioContext!,
       url,
-      adapter: mp3Adapter,
-    }) as PhonographClip<unknown>;
+      adapter: new Mp3DeMuxAdapter(),
+    }) as PhonographClip<unknown, unknown>;
     this.audioStation.eventTarget.addEventListener(
       'reset',
       this.audioStationResetHandler
