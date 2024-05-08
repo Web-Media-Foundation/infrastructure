@@ -67,7 +67,6 @@ export default class Chunk<FileMetadata, ChunkMetadata> extends EventTarget {
       .decodeAudioData(wrappedData.buffer)
       .then((buffer) => {
         this.duration = this.chunk.duration;
-        console.log('buffer: ', buffer.duration, 'adapter: ', this.chunk.duration);
         this.decoded.resolve(null);
       })
       .catch((error) => {

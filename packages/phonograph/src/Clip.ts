@@ -27,6 +27,7 @@ import { PlaybackErrorEvent } from './utils/events/PlaybackErrorEvent';
 import { CanPlayThroughEvent } from './utils/events/CanPlayThroughEvent';
 
 import { PhonographClipError } from './utils/error/PhonographClipError';
+import { concatenateUint8Arrays } from './utils/concatenateUint8Arrays';
 
 const OVERLAP = 0.2;
 
@@ -208,6 +209,7 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
       let done = false;
       let value: Uint8Array | null = null;
       let finalized = false;
+      let batchId = 0;
 
       while (!done || !finalized) {
         this.controller.signal.throwIfAborted();
@@ -225,11 +227,12 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
         );
 
         if (v) {
-          value = v;
+          value = value ? concatenateUint8Arrays(value, v) : v;
         }
 
         while (value) {
-          const parseResult = this.adapter.appendData(value, done);
+          const parseResult = this.adapter.appendData(value, batchId === 0, done);
+          batchId += 1;
 
           if (done) {
             finalized = true;

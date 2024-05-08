@@ -68,11 +68,11 @@ export class Mp3DeMuxAdapter extends MediaDeMuxAdapter<
   {},
   SeekableParsedMetadata[]
 > {
-  appendData = (value: Uint8Array, isLastChunk: boolean) => {
+  appendData = (value: Uint8Array, isFirstChunk: boolean, isLastChunk: boolean) => {
     let lastHeaderPosition: number | undefined | null = null;
     const frameMetadataSequence: SeekableParsedMetadata[] = [];
 
-    let headerPosition = 0;
+    let headerPosition = 0; // isFirstChunk ? 32 :
     while (headerPosition < value.length) {
       const headerValidate = Mp3DeMuxAdapter.validateHeader(value, headerPosition);
 
@@ -109,7 +109,7 @@ export class Mp3DeMuxAdapter extends MediaDeMuxAdapter<
 
       lastHeaderPosition = headerPosition;
 
-      headerPosition = end;
+      headerPosition = end - Math.min(frameLength, 4) + 1;
 
       if (headerPosition > CHUNK_SIZE) break;
     }
