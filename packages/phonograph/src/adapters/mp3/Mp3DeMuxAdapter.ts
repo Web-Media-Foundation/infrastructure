@@ -68,62 +68,50 @@ export class Mp3DeMuxAdapter extends MediaDeMuxAdapter<
   {},
   SeekableParsedMetadata[]
 > {
-  metadata = {};
-
   appendData = (value: Uint8Array, isLastChunk: boolean) => {
     let lastHeaderPosition: number | undefined | null = null;
     const frameMetadataSequence: SeekableParsedMetadata[] = [];
 
-    let skip = 0;
-    for (let i = 0; i < value.length; i += 1) {
-      const headerValidate = Mp3DeMuxAdapter.validateHeader(value, i);
+    let headerPosition = 0;
+    while (headerPosition < value.length) {
+      const headerValidate = Mp3DeMuxAdapter.validateHeader(value, headerPosition);
 
-      if (!headerValidate) continue;
+      if (!headerValidate) {
+        headerPosition += 1;
+        continue;
+      }
 
-      skip = i;
-      break;
-    }
-
-    // We found a valid header now
-    const fileFrameHeader = Mp3DeMuxAdapter.processFrameHeader(value, skip);
-    const fileMetadata = Mp3DeMuxAdapter.parseMetadata(fileFrameHeader);
-
-    if (!this.metadata) {
-      // Determine some facts about this mp3 file from the initial header
-      // This is simply some random guess
-      this.metadata = fileMetadata;
-    }
-
-    for (let j = skip + 4; j < value.length; j += 1) {
-      const nextHeaderValidate = Mp3DeMuxAdapter.validateHeader(value, j);
-
-      if (!nextHeaderValidate) continue;
-
-      const start = lastHeaderPosition === null ? skip : lastHeaderPosition;
-
-      const frameFrameHeader = Mp3DeMuxAdapter.processFrameHeader(value, j);
+      const frameFrameHeader = Mp3DeMuxAdapter.processFrameHeader(value, headerPosition);
       const frameMetadata = Mp3DeMuxAdapter.parseMetadata(frameFrameHeader);
 
-      if (j - start <= 4) continue;
-
-      frameMetadataSequence.push({
-        ...frameMetadata,
-        start,
-        end: j,
-      });
-
-      lastHeaderPosition = j;
+      if (
+        lastHeaderPosition !== null &&
+        headerPosition - lastHeaderPosition <= 4
+      ) continue;
 
       const frameLength = Mp3DeMuxAdapter.getFrameLength(
         value,
-        j,
+        headerPosition,
         frameMetadata
       );
 
-      j += frameLength;
-      j += 3;
+      if (!frameLength) {
+        headerPosition += 1;
+        continue;
+      }
 
-      if (j > CHUNK_SIZE) break;
+      const end = headerPosition + frameLength;
+      frameMetadataSequence.push({
+        ...frameMetadata,
+        start: headerPosition,
+        end: end,
+      });
+
+      lastHeaderPosition = headerPosition;
+
+      headerPosition = end;
+
+      if (headerPosition > CHUNK_SIZE) break;
     }
 
     if (frameMetadataSequence.length < 4) {
@@ -242,11 +230,7 @@ export class Mp3DeMuxAdapter extends MediaDeMuxAdapter<
 
     const bitrateCode = (data[i + 2] & 0b11110000) >> 4;
 
-    const bitrateBase = bitrateLookup[`${mpegVersion}${mpegLayer}`][bitrateCode];
-
-    if (!bitrateBase) {
-      throw new TypeError(`Bitrate not found`);
-    }
+    const bitrateBase = bitrateLookup[`${mpegVersion}${mpegLayer}`][bitrateCode] ?? 0;
 
     const bitrate = bitrateBase * 1e3;
     const padding = (data[i + 2] & 0b00000010) >> 1;

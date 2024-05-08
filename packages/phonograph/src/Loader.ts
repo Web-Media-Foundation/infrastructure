@@ -1,10 +1,10 @@
-class AudioFetcherError extends Error {}
+class AudioFetcherError extends Error { }
 
 export class BinaryLoader {
   constructor(
     public readonly url: string,
     public readonly abortSignal: AbortSignal
-  ) {}
+  ) { }
 
   public fetched = false;
 

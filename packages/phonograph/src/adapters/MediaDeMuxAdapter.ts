@@ -16,8 +16,6 @@ export interface IAppendDataResult<ChunkMetadata> {
 }
 
 export abstract class MediaDeMuxAdapter<FileMetadata, ChunkMetadata> {
-  abstract metadata: FileMetadata;
-
   abstract appendData(
     x: Uint8Array,
     isLastChunk: boolean
