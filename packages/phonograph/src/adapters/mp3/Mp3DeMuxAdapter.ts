@@ -179,13 +179,13 @@ export class Mp3DeMuxAdapter extends MediaDeMuxAdapter<
   };
 
   static processFrameHeader = (data: Uint8Array, i = 0): RawFrameHeader =>
-    ({
-      type: 'raw',
-      mpegVersion: data[i + 1] & 0b00001000,
-      mpegLayer: data[i + 1] & 0b00000110,
-      sampleRate: data[i + 2] & 0b00001100,
-      channelMode: data[i + 3] & 0b11000000,
-    } as const);
+  ({
+    type: 'raw',
+    mpegVersion: data[i + 1] & 0b00001000,
+    mpegLayer: data[i + 1] & 0b00000110,
+    sampleRate: data[i + 2] & 0b00001100,
+    channelMode: data[i + 3] & 0b11000000,
+  } as const);
 
   static parseMetadata = (metadata: RawFrameHeader): ParsedMetadata => {
     const mpegVersion = mpegVersionLookup[metadata.mpegVersion >> 3];

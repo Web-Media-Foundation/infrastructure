@@ -251,6 +251,7 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
           chunk.on('error', this.handleChunkError);
 
           await chunk.decoded;
+
           this.handleChunkReady(loadStartTime, totalLoadedBytes);
 
           // Connect last chunk with this chunk to create a chunk chain.

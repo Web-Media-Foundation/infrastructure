@@ -31,6 +31,7 @@ export default class Chunk<FileMetadata, ChunkMetadata> extends EventTarget {
   extended: Uint8Array | null;
 
   readonly decoded = new OpenPromise<null>();
+
   readonly attached = new OpenPromise<boolean>();
 
   next: Chunk<FileMetadata, ChunkMetadata> | null = null;
@@ -64,8 +65,9 @@ export default class Chunk<FileMetadata, ChunkMetadata> extends EventTarget {
 
     this.context
       .decodeAudioData(wrappedData.buffer)
-      .then(() => {
+      .then((buffer) => {
         this.duration = this.chunk.duration;
+        console.log('buffer: ', buffer.duration, 'adapter: ', this.chunk.duration);
         this.decoded.resolve(null);
       })
       .catch((error) => {
