@@ -62,6 +62,8 @@ const bitrateLookup: Record<string, (number | null)[]> = {
 // eslint-disable-next-line prefer-destructuring
 bitrateLookup[23] = bitrateLookup[22];
 
+const CHUNK_SIZE = 64 * 1024;
+
 export class Mp3DeMuxAdapter extends MediaDeMuxAdapter<
   {},
   SeekableParsedMetadata[]
@@ -119,6 +121,8 @@ export class Mp3DeMuxAdapter extends MediaDeMuxAdapter<
 
         j += frameLength;
         j += 3;
+
+        if (j > CHUNK_SIZE) break;
       }
     }
 
