@@ -97,6 +97,8 @@ export class Mp3DeMuxAdapter extends MediaDeMuxAdapter<
     for (let j = skip + 4; j < value.length; j += 1) {
       const nextHeaderValidate = Mp3DeMuxAdapter.validateHeader(value, j);
 
+      if (!nextHeaderValidate) continue;
+
       const start = lastHeaderPosition === null ? skip : lastHeaderPosition;
 
       const frameFrameHeader = Mp3DeMuxAdapter.processFrameHeader(value, j);
@@ -104,26 +106,24 @@ export class Mp3DeMuxAdapter extends MediaDeMuxAdapter<
 
       if (j - start <= 4) continue;
 
-      if (nextHeaderValidate) {
-        frameMetadataSequence.push({
-          ...frameMetadata,
-          start,
-          end: j,
-        });
+      frameMetadataSequence.push({
+        ...frameMetadata,
+        start,
+        end: j,
+      });
 
-        lastHeaderPosition = j;
+      lastHeaderPosition = j;
 
-        const frameLength = Mp3DeMuxAdapter.getFrameLength(
-          value,
-          j,
-          frameMetadata
-        );
+      const frameLength = Mp3DeMuxAdapter.getFrameLength(
+        value,
+        j,
+        frameMetadata
+      );
 
-        j += frameLength;
-        j += 3;
+      j += frameLength;
+      j += 3;
 
-        if (j > CHUNK_SIZE) break;
-      }
+      if (j > CHUNK_SIZE) break;
     }
 
     if (frameMetadataSequence.length < 4) {
@@ -234,9 +234,7 @@ export class Mp3DeMuxAdapter extends MediaDeMuxAdapter<
     i: number,
     metadata: ParsedMetadata
   ) => {
-    const { mpegVersion } = metadata;
-    const { mpegLayer } = metadata;
-    const { sampleRate } = metadata;
+    const { mpegVersion, mpegLayer, sampleRate } = metadata;
 
     const bitrateCode = (data[i + 2] & 0b11110000) >> 4;
 
