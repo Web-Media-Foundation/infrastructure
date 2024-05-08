@@ -178,14 +178,18 @@ export class Mp3DeMuxAdapter extends MediaDeMuxAdapter<
     return valid;
   };
 
-  static processFrameHeader = (data: Uint8Array, i = 0): RawFrameHeader =>
-  ({
-    type: 'raw',
-    mpegVersion: data[i + 1] & 0b00001000,
-    mpegLayer: data[i + 1] & 0b00000110,
-    sampleRate: data[i + 2] & 0b00001100,
-    channelMode: data[i + 3] & 0b11000000,
-  } as const);
+  static processFrameHeader = (data: Uint8Array, i = 0): RawFrameHeader => {
+    if (data[i + 0] !== 0b11111111 || (data[i + 1] & 0b11110000) !== 0b11110000)
+      throw new TypeError(`Invalid frame header!`);
+
+    return {
+      type: 'raw',
+      mpegVersion: data[i + 1] & 0b00001000,
+      mpegLayer: data[i + 1] & 0b00000110,
+      sampleRate: data[i + 2] & 0b00001100,
+      channelMode: data[i + 3] & 0b11000000,
+    } as const
+  };
 
   static parseMetadata = (metadata: RawFrameHeader): ParsedMetadata => {
     const mpegVersion = mpegVersionLookup[metadata.mpegVersion >> 3];
@@ -238,8 +242,13 @@ export class Mp3DeMuxAdapter extends MediaDeMuxAdapter<
 
     const bitrateCode = (data[i + 2] & 0b11110000) >> 4;
 
-    const bitrate =
-      (bitrateLookup[`${mpegVersion}${mpegLayer}`][bitrateCode] ?? 0) * 1e3;
+    const bitrateBase = bitrateLookup[`${mpegVersion}${mpegLayer}`][bitrateCode];
+
+    if (!bitrateBase) {
+      throw new TypeError(`Bitrate not found`);
+    }
+
+    const bitrate = bitrateBase * 1e3;
     const padding = (data[i + 2] & 0b00000010) >> 1;
 
     const length = ~~(mpegLayer === 1
