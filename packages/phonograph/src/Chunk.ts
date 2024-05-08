@@ -1,5 +1,5 @@
 import { EventTarget } from '@web-media/event-target';
-import { OpenPromise } from '@web-media/open-promise';
+import { OpenPromise, OpenPromiseState } from '@web-media/open-promise';
 import { AudioContext, IAudioBuffer } from 'standardized-audio-context';
 
 import type { Clip } from './Clip';
@@ -30,13 +30,12 @@ export default class Chunk<FileMetadata, ChunkMetadata> extends EventTarget {
 
   extended: Uint8Array | null;
 
-  ready = new OpenPromise<boolean>();
+  readonly decoded = new OpenPromise<null>();
+  readonly attached = new OpenPromise<boolean>();
 
   next: Chunk<FileMetadata, ChunkMetadata> | null = null;
 
   readonly adapter: MediaDeMuxAdapter<FileMetadata, ChunkMetadata>;
-
-  private _attached: boolean;
 
   constructor({
     clip,
@@ -61,32 +60,39 @@ export default class Chunk<FileMetadata, ChunkMetadata> extends EventTarget {
 
     this.duration = null;
 
-    this._attached = false;
-
-    const { wrappedData } = this.chunk;
+    const { wrappedData } = chunk;
 
     this.context
       .decodeAudioData(wrappedData.buffer)
       .then(() => {
         this.duration = this.chunk.duration;
-        this._ready();
+        this.decoded.resolve(null);
       })
       .catch((error) => {
+        this.decoded.reject(error);
         const warpedError = error ?? new Error(`Could not decode audio buffer`);
 
         this.dispatchEvent(new ErrorEvent(warpedError));
+        this.attached.reject(warpedError);
       });
   }
 
-  attach(nextChunk: Chunk<FileMetadata, ChunkMetadata> | null) {
-    this.next = nextChunk;
-    this._attached = true;
+  async attach(nextChunk: Chunk<FileMetadata, ChunkMetadata> | null) {
+    if (nextChunk === this) {
+      throw new Error(`Loop chain detected`);
+    }
 
-    this._ready();
+    if (this.attached.state !== OpenPromiseState.Idle) {
+      throw new Error(`Chunk alreay attached`);
+    }
+
+    this.next = nextChunk;
+
+    await this.resolveAttachedState();
   }
 
   createBuffer(): Promise<IAudioBuffer> {
-    if (!this.ready) {
+    if (!this.attached) {
       throw new Error(
         'Something went wrong! Chunk was not ready in time for playback'
       );
@@ -95,37 +101,37 @@ export default class Chunk<FileMetadata, ChunkMetadata> extends EventTarget {
     return this.context.decodeAudioData(this.extended!.slice(0).buffer);
   }
 
-  private _ready() {
-    if (this.ready.resolvedValue) return;
+  private async resolveAttachedState() {
+    this.attached.resolve(true);
 
-    if (this._attached && this.duration !== null) {
-      this.ready.resolve(true);
+    await this.decoded;
 
-      const thisChunkData = this.chunk.wrappedData;
+    if (this.duration === null) {
+      throw new Error('Edge case detected, duration is null');
+    }
 
-      if (this.next) {
-        const nextChunkData = this.next.chunk.rawData;
+    const thisChunkData = this.chunk.wrappedData;
 
-        const thisLength = thisChunkData.length;
-        // we don't need the whole thing
-        const nextLength = nextChunkData.length >> 1;
+    if (this.next) {
+      const nextChunkData = this.next.chunk.rawData;
 
-        this.extended = new Uint8Array(thisLength + nextLength);
+      const thisLength = thisChunkData.length;
+      // we don't need the whole thing
+      const nextLength = nextChunkData.length >> 1;
 
-        let p = 0;
+      this.extended = new Uint8Array(thisLength + nextLength);
 
-        for (let i = 0; i < thisLength; i += 1, p += 1) {
-          this.extended[p] = thisChunkData[i];
-        }
+      let p = 0;
 
-        for (let i = 0; i < nextLength; i += 1, p += 1) {
-          this.extended[p] = nextChunkData[i];
-        }
-      } else {
-        this.extended = thisChunkData;
+      for (let i = 0; i < thisLength; i += 1, p += 1) {
+        this.extended[p] = thisChunkData[i];
       }
 
-      this.dispatchEvent(new ReadyEvent());
+      for (let i = 0; i < nextLength; i += 1, p += 1) {
+        this.extended[p] = nextChunkData[i];
+      }
+    } else {
+      this.extended = thisChunkData;
     }
   }
 }
