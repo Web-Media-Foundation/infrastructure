@@ -36,7 +36,6 @@
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -cw",
-    "prepublish": "yarn build",
     "test": "serve .",
     "pretest": "yarn build"
   },
