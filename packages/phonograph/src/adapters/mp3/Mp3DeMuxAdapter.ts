@@ -68,6 +68,7 @@ export class Mp3DeMuxAdapter extends MediaDeMuxAdapter<
   {},
   SeekableParsedMetadata[]
 > {
+  // eslint-disable-next-line class-methods-use-this
   appendData = (value: Uint8Array, isFirstChunk: boolean, isLastChunk: boolean) => {
     let lastHeaderPosition: number | undefined | null = null;
     const frameMetadataSequence: SeekableParsedMetadata[] = [];
@@ -104,7 +105,7 @@ export class Mp3DeMuxAdapter extends MediaDeMuxAdapter<
       frameMetadataSequence.push({
         ...frameMetadata,
         start: headerPosition,
-        end: end,
+        end,
       });
 
       lastHeaderPosition = headerPosition;
