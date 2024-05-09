@@ -162,7 +162,7 @@ export class Mp3DeMuxAdapter extends MediaDeMuxAdapter<
       // Sampling Rate Frequency should not be 11, the value is reserved
       (data[i + 2] & 0b00001100) !== 0b00001100 &&
       // Emphasis should not be 10, the value is reserved
-      (data[i + 2] & 0b00000011) !== 0b00000010;
+      (data[i + 3] & 0b00000011) !== 0b00000010;
 
     return valid;
   };
