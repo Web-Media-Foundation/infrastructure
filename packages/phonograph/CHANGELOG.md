@@ -1,5 +1,12 @@
 # phonograph changelog
 
+## 2.3.0
+
+### Minor Changes
+
+- 582e496: fix: Data are not loaded properly if there is only one chunk
+- 582e496: fix: Duration of the audio is not recognized properly
+
 ## 2.2.2
 
 ### Patch Changes

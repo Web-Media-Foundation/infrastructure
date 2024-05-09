@@ -1,5 +1,11 @@
 # @web-media/ogg-polyfill
 
+## 0.1.2
+
+### Patch Changes
+
+- 6c8b83f: docs: Add script to run the demo
+
 ## 0.1.1
 
 ### Patch Changes
