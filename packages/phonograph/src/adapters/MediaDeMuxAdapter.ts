@@ -26,5 +26,5 @@ export abstract class MediaDeMuxAdapter<FileMetadata, ChunkMetadata> {
 }
 
 export enum ParsingBehavior {
-  Break,
+  WaitForMoreData,
 }

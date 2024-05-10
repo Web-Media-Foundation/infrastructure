@@ -232,7 +232,7 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
           );
           batchId += 1;
 
-          if (parseResult === ParsingBehavior.Break) break;
+          if (parseResult === ParsingBehavior.WaitForMoreData) break;
 
           const { consumed, data } = parseResult;
 

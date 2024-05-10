@@ -82,7 +82,7 @@ export class Mp3DeMuxAdapter extends MediaDeMuxAdapter<
     if (
       value.length < CHUNK_SIZE + 4 &&
       !loadStreamFinalized
-    ) return ParsingBehavior.Break;
+    ) return ParsingBehavior.WaitForMoreData;
 
     let headerPosition = 0; // isFirstChunk ? 32 :
     while (headerPosition < value.length) {
@@ -130,7 +130,7 @@ export class Mp3DeMuxAdapter extends MediaDeMuxAdapter<
     }
 
     if (frameMetadataSequence.length < 4 && !loadStreamFinalized) {
-      return ParsingBehavior.Break;
+      return ParsingBehavior.WaitForMoreData;
     }
 
     const { start } = frameMetadataSequence[0];
