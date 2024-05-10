@@ -65,7 +65,7 @@ export default class Chunk<FileMetadata, ChunkMetadata> extends EventTarget {
 
     this.context
       .decodeAudioData(wrappedData.buffer)
-      .then((buffer) => {
+      .then(() => {
         this.duration = this.chunk.duration;
         this.decoded.resolve(null);
       })

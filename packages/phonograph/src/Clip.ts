@@ -15,7 +15,7 @@ import { OpenPromise, OpenPromiseState } from '@web-media/open-promise';
 
 import Chunk from './Chunk';
 import { BinaryLoader } from './Loader';
-import { MediaDeMuxAdapter } from './adapters/MediaDeMuxAdapter';
+import { MediaDeMuxAdapter, ParsingBehavior } from './adapters/MediaDeMuxAdapter';
 
 import { LoadEvent } from './utils/events/LoadEvent';
 import { PauseEvent } from './utils/events/PauseEvent';
@@ -27,7 +27,6 @@ import { PlaybackErrorEvent } from './utils/events/PlaybackErrorEvent';
 import { CanPlayThroughEvent } from './utils/events/CanPlayThroughEvent';
 
 import { PhonographClipError } from './utils/error/PhonographClipError';
-import { concatenateUint8Arrays } from './utils/concatenateUint8Arrays';
 
 const OVERLAP = 0.2;
 
@@ -205,15 +204,14 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
     let totalLoadedBytes = 0;
 
     try {
-      const fetcher = this.loader.fetch();
+      const { loader } = this;
+      const fetcher = loader.fetch();
       let done = false;
-      let value: Uint8Array | null = null;
-      let finalized = false;
       let batchId = 0;
 
-      while (!done || !finalized) {
+      while (!done || loader.buffer?.length !== 0) {
         this.controller.signal.throwIfAborted();
-        const { value: v, done: d } = await fetcher.next();
+        const { done: d } = await fetcher.next();
         done = !!d;
 
         this.buffered = this.loader.downloadedSize;
@@ -226,23 +224,19 @@ export class Clip<FileMetadata, ChunkMetadata> extends EventTarget {
           )
         );
 
-        if (v) {
-          value = value ? concatenateUint8Arrays(value, v) : v;
-        }
-
-        while (value) {
-          const parseResult = this.adapter.appendData(value, batchId === 0, done);
+        while (loader.buffer?.length) {
+          const parseResult = this.adapter.appendData(
+            loader.buffer,
+            batchId,
+            done
+          );
           batchId += 1;
 
-          if (done) {
-            finalized = true;
-          }
-
-          if (!parseResult) break;
+          if (parseResult === ParsingBehavior.Break) break;
 
           const { consumed, data } = parseResult;
 
-          value = this.loader.consume(consumed);
+          this.loader.consume(consumed);
 
           const chunk = new Chunk<FileMetadata, ChunkMetadata>({
             clip: this,

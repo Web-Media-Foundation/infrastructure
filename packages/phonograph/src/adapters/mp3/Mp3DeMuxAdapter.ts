@@ -1,4 +1,4 @@
-import { MediaDeMuxAdapter } from '../MediaDeMuxAdapter';
+import { MediaDeMuxAdapter, ParsingBehavior } from '../MediaDeMuxAdapter';
 
 export interface RawFrameHeader {
   type: 'raw';
@@ -65,13 +65,24 @@ bitrateLookup[23] = bitrateLookup[22];
 const CHUNK_SIZE = 64 * 1024;
 
 export class Mp3DeMuxAdapter extends MediaDeMuxAdapter<
-  {},
+  void,
   SeekableParsedMetadata[]
 > {
+  metadata = undefined;
+
   // eslint-disable-next-line class-methods-use-this
-  appendData = (value: Uint8Array, isFirstChunk: boolean, isLastChunk: boolean) => {
+  appendData = (
+    value: Uint8Array,
+    _loadBatchId: number,
+    loadStreamFinalized: boolean,
+  ) => {
     let lastHeaderPosition: number | undefined | null = null;
     const frameMetadataSequence: SeekableParsedMetadata[] = [];
+
+    if (
+      value.length < CHUNK_SIZE + 4 &&
+      !loadStreamFinalized
+    ) return ParsingBehavior.Break;
 
     let headerPosition = 0; // isFirstChunk ? 32 :
     while (headerPosition < value.length) {
@@ -102,6 +113,9 @@ export class Mp3DeMuxAdapter extends MediaDeMuxAdapter<
       }
 
       const end = headerPosition + frameLength;
+
+      if (end > value.length) break;
+
       frameMetadataSequence.push({
         ...frameMetadata,
         start: headerPosition,
@@ -115,14 +129,14 @@ export class Mp3DeMuxAdapter extends MediaDeMuxAdapter<
       if (headerPosition > CHUNK_SIZE) break;
     }
 
-    if (frameMetadataSequence.length < 4) {
-      return null;
+    if (frameMetadataSequence.length < 4 && !loadStreamFinalized) {
+      return ParsingBehavior.Break;
     }
 
     const { start } = frameMetadataSequence[0];
     let { end } = frameMetadataSequence[frameMetadataSequence.length - 1];
 
-    if (isLastChunk) {
+    if (loadStreamFinalized) {
       end = value.length;
     }
 
