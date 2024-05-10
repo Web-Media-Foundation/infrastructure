@@ -5,7 +5,6 @@
   "source": "src/index.ts",
   "main": "dist/main.js",
   "module": "dist/module.js",
-  "browser": "dist/browser.js",
   "types": "dist/types.d.ts",
   "homepage": "https://github.com/Web-Media-Foundation/infrastructure#readme",
   "repository": {
