@@ -2,6 +2,7 @@
 
 [![GitHub](https://img.shields.io/github/license/web-media-foundation/infrastructure)](https://github.com/Web-Media-Foundation/infrastructure)
 [![npm](https://img.shields.io/npm/v/%40web-media%2Fphonograph)](https://www.npmjs.com/package/@web-media/phonograph)
+[![Demo](https://img.shields.io/badge/demo-blue?logo=CodeSandbox&label=CSB)](https://codesandbox.io/p/sandbox/web-media-phonograph-wpwz6m)
 
 Phonograph is an advanced JavaScript library designed to handle the complex task of audio playback in web applications, particularly on mobile devices.
 
