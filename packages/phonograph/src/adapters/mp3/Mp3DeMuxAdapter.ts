@@ -88,7 +88,10 @@ export class Mp3DeMuxAdapter extends MediaDeMuxAdapter<
       if (
         lastHeaderPosition !== null &&
         headerPosition - lastHeaderPosition <= 4
-      ) continue;
+      ) {
+        headerPosition += 1;
+        continue;
+      }
 
       const frameLength = Mp3DeMuxAdapter.getFrameLength(
         value,
