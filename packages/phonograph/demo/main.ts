@@ -20,7 +20,10 @@ console.log(
 
 const init = document.querySelector('#init') as HTMLButtonElement;
 
+init.disabled = false;
+
 init.addEventListener('click', () => {
+  init.disabled = true;
   clip.buffer().then(() => {
     console.log('The buffer is loaded and the whole demo is operatable.');
     const play = document.querySelector('#play') as HTMLButtonElement;

@@ -1,5 +1,11 @@
 # phonograph changelog
 
+## 2.3.1
+
+### Patch Changes
+
+- bddf1fc: fix: Media playback not works correctly under slow Internet connection
+
 ## 2.3.0
 
 ### Minor Changes
