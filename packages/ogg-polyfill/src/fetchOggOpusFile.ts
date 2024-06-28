@@ -12,15 +12,15 @@ export interface IOggParseResult<Type extends string, T> {
 }
 
 export interface IOggHeaderParseResult
-  extends IOggParseResult<'header', IOggHeader> {}
+  extends IOggParseResult<'header', IOggHeader> { }
 
 export interface IOggTagsParseResult
-  extends IOggParseResult<'tags', IOggTags> {}
+  extends IOggParseResult<'tags', IOggTags> { }
 
 export interface IOggPacketsParseResult
-  extends IOggParseResult<'packets', IOpusPacket[]> {}
+  extends IOggParseResult<'packets', IOpusPacket[]> { }
 
-export async function* fetchOggOpusFile(url: string) {
+export async function* fetchOggOpusFile(url: string, tolerate = false) {
   const request = await fetch(url);
   const reader = request.body?.getReader();
 
@@ -62,39 +62,44 @@ export async function* fetchOggOpusFile(url: string) {
       throw e;
     }
 
-    if (page.pageSequenceNumber === 0) {
-      const result: IOggHeaderParseResult = {
-        type: 'header',
-        page,
-        data: page.getOggHeader(),
-      };
+    const parseHeader = (): IOggHeaderParseResult => ({
+      type: 'header',
+      page,
+      data: page.getOggHeader(),
+    });
 
-      yield result;
+    const parseTags = (): IOggTagsParseResult => ({
+      type: 'tags',
+      page,
+      data: page.getOggTags(),
+    })
+
+    const parsePackets = (): IOggPacketsParseResult => ({
+      type: 'packets',
+      page,
+      data: page.mapSegments(parseOpusPacket),
+    });
+
+    console.log(page.pageSequenceNumber);
+    try {
+      if (page.pageSequenceNumber > 1) {
+        yield parsePackets();
+      } else if (page.isHeaderPage()) {
+        yield parseHeader();
+      } else if (page.isTagsPage()) {
+        yield parseTags();
+      } else {
+        yield parsePackets();
+      }
+      buffer = buffer.slice(page.pageSize);
+    } catch (e) {
+      if (tolerate) {
+        throw e;
+      } else {
+        buffer = buffer.slice(1);
+      }
     }
 
-    if (page.pageSequenceNumber === 1) {
-      const result: IOggTagsParseResult = {
-        type: 'tags',
-        page,
-        data: page.getOggTags(),
-      };
-
-      yield result;
-    }
-
-    if (page.pageSequenceNumber > 1) {
-      const packets = page.mapSegments(parseOpusPacket);
-
-      const result: IOggPacketsParseResult = {
-        type: 'packets',
-        page,
-        data: packets,
-      };
-
-      yield result;
-    }
-
-    buffer = buffer.slice(page.pageSize);
   }
 
   return null;

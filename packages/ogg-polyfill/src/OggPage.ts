@@ -4,7 +4,7 @@ const opusCommentMagicSignature = [
   0x4f, 0x70, 0x75, 0x73, 0x54, 0x61, 0x67, 0x73,
 ];
 
-export class OggFormatError extends Error {}
+export class OggFormatError extends Error { }
 
 export interface IOpusChannelMapping {
   streamCount: number;
@@ -182,10 +182,8 @@ export class OggPage {
     const array = this.getPageSegment(0);
     const dataView = new DataView(array.buffer);
 
-    for (let i = 0; i < opusHeadMagicSignature.length; i += 1) {
-      if (array[i] !== opusHeadMagicSignature[i]) {
-        throw new OggFormatError('Invalid magic signature');
-      }
+    if (!this.isHeaderPage()) {
+      throw new OggFormatError('Invalid magic signature');
     }
 
     const version = dataView.getUint8(8);
@@ -229,10 +227,8 @@ export class OggPage {
     const array = this.getPageSegment(0);
     const dataView = new DataView(array.buffer);
 
-    for (let i = 0; i < opusCommentMagicSignature.length; i += 1) {
-      if (array[i] !== opusCommentMagicSignature[i]) {
-        throw new Error('Invalid magic signature.');
-      }
+    if (!this.isTagsPage()) {
+      throw new Error('Invalid magic signature.');
     }
 
     const vendorStringLength = dataView.getInt32(8, true);
@@ -274,5 +270,27 @@ export class OggPage {
 
   getTimestamp(preSkip: number) {
     return (this.absoluteGranulePosition - BigInt(preSkip)) / BigInt(48000.0);
+  }
+
+  isHeaderPage(): boolean {
+    const array = this.getPageSegment(0);
+    for (let i = 0; i < opusHeadMagicSignature.length; i += 1) {
+      console.log('yes');
+      if (array[i] !== opusHeadMagicSignature[i]) {
+        console.log('no');
+        return false;
+      }
+    }
+    return true;
+  }
+
+  isTagsPage(): boolean {
+    const array = this.getPageSegment(0);
+    for (let i = 0; i < opusCommentMagicSignature.length; i += 1) {
+      if (array[i] !== opusCommentMagicSignature[i]) {
+        return false;
+      }
+    }
+    return true;
   }
 }

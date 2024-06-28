@@ -7,7 +7,7 @@ import {
 import { oggExample } from './@example';
 
 (async () => {
-  const x = fetchOggOpusFile(oggExample);
+  const x = fetchOggOpusFile(oggExample, true);
 
   let done = false;
   let data:
