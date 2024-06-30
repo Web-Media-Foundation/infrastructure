@@ -1,4 +1,4 @@
-import { IOggTags, IOggHeader, OggPage } from './OggPage';
+import { IOpusTags, IOpusHeader, OggOpusPage } from './OggOpusPage';
 import {
   IOpusPacket,
   OpusParseError,
@@ -7,15 +7,15 @@ import {
 
 export interface IOggParseResult<Type extends string, T> {
   type: Type;
-  page: OggPage;
+  page: OggOpusPage;
   data: T;
 }
 
 export interface IOggHeaderParseResult
-  extends IOggParseResult<'header', IOggHeader> { }
+  extends IOggParseResult<'header', IOpusHeader> { }
 
 export interface IOggTagsParseResult
-  extends IOggParseResult<'tags', IOggTags> { }
+  extends IOggParseResult<'tags', IOpusTags> { }
 
 export interface IOggPacketsParseResult
   extends IOggParseResult<'packets', IOpusPacket[]> { }
@@ -50,7 +50,7 @@ export async function* fetchOggOpusFile(url: string, tolerate = false) {
       throw new Error('Buffer not ready');
     }
 
-    const page = new OggPage(buffer);
+    const page = new OggOpusPage(buffer);
 
     try {
       page.validatePageSize();

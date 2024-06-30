@@ -4,10 +4,10 @@ import {
   IOggTagsParseResult,
   fetchOggOpusFile,
 } from '../src/fetchOggOpusFile';
-import { oggExample } from './@example';
+import { oggOpusExample } from './@example';
 
 (async () => {
-  const x = fetchOggOpusFile(oggExample, true);
+  const x = fetchOggOpusFile(oggOpusExample, true);
 
   let done = false;
   let data:

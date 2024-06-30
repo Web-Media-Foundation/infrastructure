@@ -1,9 +1,9 @@
 import { fetchOggOpusFile } from '../src/fetchOggOpusFile';
 import { oggOpusToCaf } from '../src/oggOpusToCaf';
-import { oggExample } from './@example';
+import { oggOpusExample } from './@example';
 
 (async () => {
-  const x = fetchOggOpusFile(oggExample);
+  const x = fetchOggOpusFile(oggOpusExample);
   const caf = oggOpusToCaf(x, true);
 
   let done = false;

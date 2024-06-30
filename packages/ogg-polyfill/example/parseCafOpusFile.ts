@@ -1,8 +1,8 @@
 import { fetchCafOpusFile } from '../src/fetchCafOpusFile';
-import { cafExample } from './@example';
+import { cafOpusExample } from './@example';
 
 (async () => {
-  const cafStream = fetchCafOpusFile(cafExample, true);
+  const cafStream = fetchCafOpusFile(cafOpusExample, true);
 
   let done = false;
   let data: unknown = null;
