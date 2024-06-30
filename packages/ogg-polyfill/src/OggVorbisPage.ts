@@ -222,14 +222,14 @@ export enum VorbisHeaderType {
 }
 
 export class OggVorbisPage extends OggPage {
-  getIdentification(pageIndex = 0): IVorbisIdentificationHeader {
-    const array = this.getPageSegment(pageIndex);
+  getIdentification(segmentIndex = 0): IVorbisIdentificationHeader {
+    const array = this.getPageSegment(segmentIndex);
 
-    if (!this.isHeaderPacket(pageIndex)) {
+    if (!this.isHeaderPacket(segmentIndex)) {
       throw new VorbisFormatError('Invalid magic signature');
     }
 
-    if (!this.isIdentificationPacket(pageIndex)) {
+    if (!this.isIdentificationPacket(segmentIndex)) {
       throw new VorbisFormatError('The packet is not an identification packet');
     }
 
@@ -289,14 +289,14 @@ export class OggVorbisPage extends OggPage {
 
   private decoder = new TextDecoder('utf-8');
 
-  getComments(pageIndex = 1): IVorbisCommentHeader {
-    const array = this.getPageSegment(pageIndex);
+  getComments(segmentIndex = 1): IVorbisCommentHeader {
+    const array = this.getPageSegment(segmentIndex);
 
-    if (!this.isHeaderPacket(pageIndex)) {
+    if (!this.isHeaderPacket(segmentIndex)) {
       throw new VorbisFormatError('Invalid magic signature');
     }
 
-    if (!this.isCommentPacket(pageIndex)) {
+    if (!this.isCommentPacket(segmentIndex)) {
       throw new VorbisFormatError('The packet is not a comment packet');
     }
 
@@ -325,7 +325,7 @@ export class OggVorbisPage extends OggPage {
       reader.cursor += commentLength * 8;
 
       // Split the comment into field name and value
-      const [fieldName, fieldValue] = comment.split('=');
+      const [fieldName, fieldValue] = comment.split('=', 2);
       const normalizedFieldName = fieldName.toUpperCase();
 
       // Add the comment to the comments object
@@ -758,18 +758,18 @@ export class OggVorbisPage extends OggPage {
     return modes;
   }
 
-  getSetup(pageIndex = 2, audioChannels: number): IVorbisSetupHeader {
-    const array = this.getPageSegment(pageIndex);
+  getSetup(segmentIndex = 0, audioChannels: number): IVorbisSetupHeader {
+    const array = this.getPageSegment(segmentIndex);
 
-    if (!this.isHeaderPacket(pageIndex)) {
+    if (!this.isHeaderPacket(segmentIndex)) {
       throw new VorbisFormatError('Invalid magic signature');
     }
 
-    if (!this.isSetupPacket(pageIndex)) {
+    if (!this.isSetupPacket(segmentIndex)) {
       throw new VorbisFormatError('The packet is not a setup packet');
     }
 
-    const reader = new BitStreamReader(array, 1);
+    const reader = new BitStreamReader(array, 7 * 8);
 
     // Step 1: Parse codebooks
     const codebookCount = reader.readUint8() + 1;
@@ -834,8 +834,8 @@ export class OggVorbisPage extends OggPage {
     };
   }
 
-  isHeaderPacket(pageIndex: number): boolean {
-    const array = this.getPageSegment(pageIndex);
+  isHeaderPacket(segmentIndex: number): boolean {
+    const array = this.getPageSegment(segmentIndex);
     for (let i = 0; i < vorbisHeadMagicSignature.length; i += 1) {
       if (array[i + 1] !== vorbisHeadMagicSignature[i]) {
         return false;
@@ -844,20 +844,20 @@ export class OggVorbisPage extends OggPage {
     return true;
   }
 
-  isIdentificationPacket(pageIndex = 0): boolean {
-    const array = this.getPageSegment(pageIndex);
+  isIdentificationPacket(segmentIndex = 0): boolean {
+    const array = this.getPageSegment(segmentIndex);
 
     return array[0] === VorbisHeaderType.Identification;
   }
 
-  isCommentPacket(pageIndex = 0): boolean {
-    const array = this.getPageSegment(pageIndex);
+  isCommentPacket(segmentIndex = 0): boolean {
+    const array = this.getPageSegment(segmentIndex);
 
     return array[0] === VorbisHeaderType.Comment;
   }
 
-  isSetupPacket(pageIndex = 0): boolean {
-    const array = this.getPageSegment(pageIndex);
+  isSetupPacket(segmentIndex = 0): boolean {
+    const array = this.getPageSegment(segmentIndex);
 
     return array[0] === VorbisHeaderType.Setup;
   }

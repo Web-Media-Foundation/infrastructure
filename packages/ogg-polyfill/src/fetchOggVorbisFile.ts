@@ -16,7 +16,7 @@ export interface IOggVorbiseHeaderSetupParseResult
   extends IOggParseResult<'setup', IVorbisSetupHeader> { }
 
 export interface IOggVorbisPacketsParseResult {
-  type: 'packet';
+  type: 'body';
   page: OggVorbisPage;
 }
 
@@ -83,29 +83,36 @@ export async function* fetchOggVorbisFile(url: string, tolerate = false) {
     });
 
     const parsePackets = (): IOggVorbisPacketsParseResult => ({
-      type: 'packet',
+      type: 'body',
       page
     });
 
+    let accumulatedSegments = 0;
     try {
-      if (page.pageSequenceNumber > 1) {
-        yield parsePackets();
-      } else if (page.isIdentificationPacket()) {
-        const identification = parseIdentification();
-        audioChannels = identification.data.audioChannels;
 
-        yield identification;
-      } else if (page.isCommentPacket()) {
-        yield parseComments();
-      } else if (page.isSetupPacket()) {
-        if (audioChannels !== null) {
-          yield parseSetup(audioChannels);
+      for (let segment = 0; segment < page.pageSegments; segment += 1) {
+        if (accumulatedSegments > 3) {
+          yield parsePackets();
+        } else if (page.isIdentificationPacket(segment)) {
+          const identification = parseIdentification(segment);
+          audioChannels = identification.data.audioChannels;
+
+          yield identification;
+        } else if (page.isCommentPacket(segment)) {
+          yield parseComments(segment);
+        } else if (page.isSetupPacket(segment)) {
+          if (audioChannels !== null) {
+            yield parseSetup(audioChannels, segment);
+          } else {
+            console.warn("Found a setup packet but no identification packet detected, will skip");
+          }
         } else {
-          console.warn("Found a setup packet but no identification packet detected, will skip");
+          yield parsePackets();
         }
-      } else {
-        yield parsePackets();
+
+        accumulatedSegments += 1;
       }
+
       buffer = buffer.slice(page.pageSize);
     } catch (e) {
       if (tolerate) {
