@@ -3,6 +3,8 @@ import { OggPage } from './OggPage';
 const vorbisHeadMagicSignature = [0x76, 0x6f, 0x72, 0x62, 0x69, 0x73];
 const vorbisSetupCodebookMagicSignature = [0x42, 0x43, 0x56];
 
+const allowedBlockSizes = new Set([64, 128, 256, 512, 1024, 2048, 4096, 8192]);
+
 /**
  * This class implemented Chapter 2 (Bitpacking Convention) of Vorbis I 
  * specification
@@ -18,7 +20,7 @@ class BitStreamReader {
 
   private readBit(): number {
     const byteIndex = Math.floor(this.cursor / 8);
-    const bitIndex = 7 - (this.cursor % 8);
+    const bitIndex = this.cursor % 8;
     const bit = (this.data[byteIndex] >> bitIndex) & 1;
     this.cursor++;
     return bit;
@@ -27,7 +29,8 @@ class BitStreamReader {
   private readBitsAsNumber(numBits: number): number {
     let result = 0;
     for (let i = 0; i < numBits; i++) {
-      result |= (this.readBit() << i);
+      const bit = this.readBit();
+      result |= (bit << i);
     }
     return result;
   }
@@ -112,13 +115,7 @@ const lookup1Values = (entries: number, dimensions: number): number => {
 
 export class VorbisFormatError extends Error { }
 
-export interface IOpusChannelMapping {
-  streamCount: number;
-  coupledCount: number;
-  channelMapping: number[];
-}
-
-export interface IVorbisHeader {
+export interface IVorbisIdentificationHeader {
   vorbisVersion: number;
   audioChannels: number;
   audioSampleRate: number;
@@ -130,7 +127,7 @@ export interface IVorbisHeader {
   framingFlag: boolean;
 }
 
-interface IVorbisComment {
+export interface IVorbisCommentHeader {
   vendor: string;
   comments: Record<string, string[]>;
 }
@@ -166,7 +163,7 @@ interface IVorbisMode {
   endingPosition: number;
 }
 
-interface IVorbisSetup {
+export interface IVorbisSetupHeader {
   codebooks: IVorbisSetupCodebook[];
   floors: (IVorbisFloorType0 | IVorbisFloorType1)[];
   residues: IVorbisResidue[];
@@ -225,27 +222,57 @@ export enum VorbisHeaderType {
 }
 
 export class OggVorbisPage extends OggPage {
-  getIdentification(pageIndex = 0): IVorbisHeader {
+  getIdentification(pageIndex = 0): IVorbisIdentificationHeader {
     const array = this.getPageSegment(pageIndex);
-    const dataView = new DataView(array.buffer);
 
     if (!this.isHeaderPacket(pageIndex)) {
       throw new VorbisFormatError('Invalid magic signature');
     }
 
     if (!this.isIdentificationPacket(pageIndex)) {
-      throw new VorbisFormatError('The packet is not a identification packet');
+      throw new VorbisFormatError('The packet is not an identification packet');
     }
 
-    const vorbisVersion = dataView.getUint32(2);
-    const audioChannels = dataView.getUint8(6);
-    const audioSampleRate = dataView.getUint32(7);
-    const bitrateMaximum = dataView.getInt32(11);
-    const bitrateNominal = dataView.getInt32(15);
-    const bitrateMinimum = dataView.getInt32(19);
-    const blocksize0 = (dataView.getInt32(23) & 0xF0) >> 4;
-    const blocksize1 = dataView.getInt32(23) & 0x0F;
-    const framingFlag = !!((dataView.getUint8(24) & 0x80) >> 7);
+    const reader = new BitStreamReader(array, 7 * 8);
+
+    const vorbisVersion = reader.readUint32();
+    if (vorbisVersion !== 0) {
+      throw new VorbisFormatError(`Unsupported Vorbis version: ${vorbisVersion}`);
+    }
+
+    const audioChannels = reader.readUint8();
+    if (audioChannels <= 0) {
+      throw new VorbisFormatError('Invalid number of audio channels');
+    }
+
+    const audioSampleRate = reader.readUint32();
+    if (audioSampleRate <= 0) {
+      throw new VorbisFormatError('Invalid audio sample rate');
+    }
+
+    const bitrateMaximum = reader.readUint32();
+    const bitrateNominal = reader.readUint32();
+    const bitrateMinimum = reader.readUint32();
+
+    const blocksize0 = 1 << reader.readUint4();
+    const blocksize1 = 1 << reader.readUint4();
+
+    if (!allowedBlockSizes.has(blocksize0)) {
+      throw new VorbisFormatError(`Invalid blocksize0 values: ${blocksize0}`);
+    }
+
+    if (!allowedBlockSizes.has(blocksize1)) {
+      throw new VorbisFormatError(`Invalid blocksize1 values: ${blocksize1}`);
+    }
+
+    if (blocksize0 > blocksize1) {
+      throw new VorbisFormatError('blocksize0 must be less than or equal to blocksize1');
+    }
+
+    const framingFlag = reader.readBool();
+    if (!framingFlag) {
+      throw new VorbisFormatError('Framing bit must be nonzero');
+    }
 
     return {
       vorbisVersion,
@@ -262,7 +289,7 @@ export class OggVorbisPage extends OggPage {
 
   private decoder = new TextDecoder('utf-8');
 
-  getComments(pageIndex = 1): IVorbisComment {
+  getComments(pageIndex = 1): IVorbisCommentHeader {
     const array = this.getPageSegment(pageIndex);
     const dataView = new DataView(array.buffer);
 
@@ -735,7 +762,7 @@ export class OggVorbisPage extends OggPage {
     return modes;
   }
 
-  getSetup(pageIndex = 2, audioChannels: number): IVorbisSetup {
+  getSetup(pageIndex = 2, audioChannels: number): IVorbisSetupHeader {
     const array = this.getPageSegment(pageIndex);
 
     if (!this.isHeaderPacket(pageIndex)) {

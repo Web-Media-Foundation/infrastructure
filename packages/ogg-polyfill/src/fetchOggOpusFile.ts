@@ -80,7 +80,6 @@ export async function* fetchOggOpusFile(url: string, tolerate = false) {
       data: page.mapSegments(parseOpusPacket),
     });
 
-    console.log(page.pageSequenceNumber);
     try {
       if (page.pageSequenceNumber > 1) {
         yield parsePackets();
