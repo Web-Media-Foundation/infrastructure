@@ -291,64 +291,60 @@ export class OggVorbisPage extends OggPage {
 
   getComments(pageIndex = 1): IVorbisCommentHeader {
     const array = this.getPageSegment(pageIndex);
-    const dataView = new DataView(array.buffer);
 
     if (!this.isHeaderPacket(pageIndex)) {
       throw new VorbisFormatError('Invalid magic signature');
     }
 
-    if (!this.isIdentificationPacket(pageIndex)) {
-      throw new VorbisFormatError('The packet is not a identification packet');
+    if (!this.isCommentPacket(pageIndex)) {
+      throw new VorbisFormatError('The packet is not a comment packet');
     }
 
-    let offset = 1;
+    const reader = new BitStreamReader(array, 7 * 8);
 
-    const readUint32 = () => {
-      const value = dataView.getFloat32(offset);
-      offset += 4;
-      return value;
-    }
+    // Step 1: Read vendor string length (32 bits)
+    const vendorLength = reader.readUint32();
 
-    const readString = (length: number) => {
-      const value = this.decoder.decode(array.subarray(offset, offset + length));
-      offset += length;
+    // Step 2: Read vendor string (UTF-8 vector as vendorLength octets)
+    const vendorArray = array.subarray(reader.cursor / 8, (reader.cursor / 8) + vendorLength);
+    const vendor = this.decoder.decode(vendorArray);
+    reader.cursor += vendorLength * 8;
 
-      return value;
-    }
+    // Step 3: Read number of comment fields (32 bits)
+    const userCommentListLength = reader.readUint32();
 
-    // Read vendor length and vendor string
-    const vendorLength = readUint32();
-    const vendorString = readString(vendorLength);
-
-    // Read number of user comments
-    const userCommentListLength = readUint32();
-
-    // Read each user comment
+    // Step 4: Iterate over the number of comment fields
     const comments: Record<string, string[]> = {};
-
     for (let i = 0; i < userCommentListLength; i++) {
-      const commentLength = readUint32();
-      const comment = readString(commentLength);
+      // Step 5: Read length of this user comment (32 bits)
+      const commentLength = reader.readUint32();
 
-      const [fieldName, fieldValue] = comment.split('=', 2);
+      // Step 6: Read this user comment (UTF-8 vector as commentLength octets)
+      const commentArray = array.subarray(reader.cursor / 8, (reader.cursor / 8) + commentLength);
+      const comment = this.decoder.decode(commentArray);
+      reader.cursor += commentLength * 8;
+
+      // Split the comment into field name and value
+      const [fieldName, fieldValue] = comment.split('=');
       const normalizedFieldName = fieldName.toUpperCase();
 
+      // Add the comment to the comments object
       if (!comments[normalizedFieldName]) {
         comments[normalizedFieldName] = [];
       }
-
       comments[normalizedFieldName].push(fieldValue);
     }
 
-    // Read the framing bit
-    const framingBit = !!((dataView.getUint8(24) & 0x80) >> 7);
+    // Step 7: Read framing bit (1 bit)
+    const framingBit = reader.readBool();
     if (!framingBit) {
-      throw new VorbisFormatError("Invalid framing bit");
+      throw new VorbisFormatError('Framing bit must be nonzero');
     }
 
+    // Return the parsed comment header
     return {
-      vendor: vendorString,
-      comments: comments
+      vendor,
+      comments,
     };
   }
 
@@ -854,13 +850,13 @@ export class OggVorbisPage extends OggPage {
     return array[0] === VorbisHeaderType.Identification;
   }
 
-  isCommentPacket(pageIndex = 1): boolean {
+  isCommentPacket(pageIndex = 0): boolean {
     const array = this.getPageSegment(pageIndex);
 
     return array[0] === VorbisHeaderType.Comment;
   }
 
-  isSetupPacket(pageIndex = 2): boolean {
+  isSetupPacket(pageIndex = 0): boolean {
     const array = this.getPageSegment(pageIndex);
 
     return array[0] === VorbisHeaderType.Setup;
