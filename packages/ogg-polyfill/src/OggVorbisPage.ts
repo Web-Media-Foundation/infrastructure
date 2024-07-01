@@ -221,6 +221,10 @@ export enum VorbisHeaderType {
   Setup = 5,
 }
 
+const dbgHex = (x: number) => {
+  return `0x${x.toString(16).padStart(2, '0')}`
+}
+
 export class OggVorbisPage extends OggPage {
   getIdentification(segmentIndex = 0): IVorbisIdentificationHeader {
     const array = this.getPageSegment(segmentIndex);
@@ -349,13 +353,14 @@ export class OggVorbisPage extends OggPage {
   }
 
   private parseSetupCodebook(data: Uint8Array, offset: number): IVorbisSetupCodebook {
+    const reader = new BitStreamReader(data, offset);
+
     for (let i = 0, l = vorbisSetupCodebookMagicSignature.length; i < l; i += 1) {
-      if (data[offset + i] !== vorbisSetupCodebookMagicSignature[i]) {
-        throw new VorbisFormatError("Invalid codebook magic string");
+      const byte = reader.readUint8();
+      if (byte !== vorbisSetupCodebookMagicSignature[i]) {
+        throw new VorbisFormatError(`Invalid codebook magic string, expected ${dbgHex(vorbisSetupCodebookMagicSignature[i])}, got ${dbgHex(data[offset + i])} in position ${offset + i}`);
       }
     }
-
-    const reader = new BitStreamReader(data, offset + vorbisSetupCodebookMagicSignature.length);
 
     // Read dimensions and entries
     const dimensions = reader.readUint16();
