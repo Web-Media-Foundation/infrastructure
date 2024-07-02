@@ -558,9 +558,9 @@ export class OggVorbisPage extends OggPage {
     const reader = new BitStreamReader(data, offset);
 
     // Read residue type (0, 1, or 2)
-    const residueType = reader.readUint2();
+    const residueType = reader.readUint16();
     if (residueType > 2) {
-      throw new VorbisFormatError('Invalid residue type');
+      throw new VorbisFormatError(`Invalid residue type ${residueType}`);
     }
 
     // Read residue header
@@ -615,103 +615,93 @@ export class OggVorbisPage extends OggPage {
     };
   }
 
-  private parseMapping(data: Uint8Array, offset: number, audioChannels: number, floorCount: number, residueCount: number): IVorbisMapping[] {
+  private parseMapping(data: Uint8Array, offset: number, audioChannels: number, floorCount: number, residueCount: number): IVorbisMapping {
     const reader = new BitStreamReader(data, offset);
 
-    // Step 1: Read vorbis_mapping_count and add one
-    const mappingCount = reader.readUint6() + 1;
+    // Step 2a: Read the mapping type (16 bits)
+    const mappingType = reader.readUint16();
 
-    // Initialize mapping configuration array
-    const mappings: IVorbisMapping[] = [];
-
-    for (let i = 0; i < mappingCount; i++) {
-      // Step 2a: Read the mapping type (16 bits)
-      const mappingType = reader.readUint16();
-
-      // Step 2b: If the mapping type is nonzero, the stream is undecodable
-      if (mappingType !== 0) {
-        throw new VorbisFormatError('Unsupported mapping type');
-      }
-
-      // Step 2c: If the mapping type is zero, proceed with parsing
-      // Step 2c-i: Read 1 bit as a boolean flag for submaps
-      const submapsFlag = reader.readBool();
-      let submaps: number;
-      if (submapsFlag) {
-        submaps = reader.readUint4() + 1;
-      } else {
-        submaps = 1;
-      }
-
-      // Step 2c-ii: Read 1 bit as a boolean flag for coupling steps
-      const couplingFlag = reader.readBool();
-      let couplingSteps: number;
-      let magnitudes: number[] = [];
-      let angles: number[] = [];
-      if (couplingFlag) {
-        couplingSteps = reader.readUint8() + 1;
-        for (let j = 0; j < couplingSteps; j++) {
-          const magnitude = reader.readUintN(Math.ceil(Math.log2(audioChannels - 1)));
-          const angle = reader.readUintN(Math.ceil(Math.log2(audioChannels - 1)));
-          if (magnitude === angle || magnitude >= audioChannels || angle >= audioChannels) {
-            throw new VorbisFormatError('Invalid coupling channel numbers');
-          }
-          magnitudes.push(magnitude);
-          angles.push(angle);
-        }
-      } else {
-        couplingSteps = 0;
-      }
-
-      // Step 2c-iii: Read 2 bits reserved field; if nonzero, the stream is undecodable
-      const reserved = reader.readUint2();
-      if (reserved !== 0) {
-        throw new VorbisFormatError('Invalid reserved field in mapping');
-      }
-
-      // Step 2c-iv: Read channel multiplex settings if submaps > 1
-      let mux: number[] = [];
-      if (submaps > 1) {
-        for (let j = 0; j < audioChannels; j++) {
-          const muxValue = reader.readUint4();
-          if (muxValue >= submaps) {
-            throw new VorbisFormatError('Invalid multiplex value');
-          }
-          mux.push(muxValue);
-        }
-      }
-
-      // Step 2c-v: Read floor and residue numbers for each submap
-      let submapFloor: number[] = [];
-      let submapResidue: number[] = [];
-      for (let j = 0; j < submaps; j++) {
-        reader.readUint8(); // Discard 8 bits (unused time configuration placeholder)
-        const floorNumber = reader.readUint8();
-        if (floorNumber >= floorCount) {
-          throw new VorbisFormatError('Invalid floor number');
-        }
-        submapFloor.push(floorNumber);
-        const residueNumber = reader.readUint8();
-        if (residueNumber >= residueCount) {
-          throw new VorbisFormatError('Invalid residue number');
-        }
-        submapResidue.push(residueNumber);
-      }
-
-      // Save the mapping configuration
-      mappings.push({
-        submaps,
-        couplingSteps,
-        magnitudes,
-        angles,
-        mux,
-        submapFloor,
-        submapResidue,
-        endingPosition: reader.cursor,
-      });
+    // Step 2b: If the mapping type is nonzero, the stream is undecodable
+    if (mappingType !== 0) {
+      throw new VorbisFormatError('Unsupported mapping type');
     }
 
-    return mappings;
+    // Step 2c: If the mapping type is zero, proceed with parsing
+    // Step 2c-i: Read 1 bit as a boolean flag for submaps
+    const submapsFlag = reader.readBool();
+    let submaps: number;
+    if (submapsFlag) {
+      submaps = reader.readUint4() + 1;
+    } else {
+      submaps = 1;
+    }
+
+    // Step 2c-ii: Read 1 bit as a boolean flag for coupling steps
+    const couplingFlag = reader.readBool();
+    let couplingSteps: number;
+    let magnitudes: number[] = [];
+    let angles: number[] = [];
+    if (couplingFlag) {
+      couplingSteps = reader.readUint8() + 1;
+      for (let j = 0; j < couplingSteps; j++) {
+        const magnitude = reader.readUintN(Math.ceil(Math.log2(audioChannels - 1)));
+        const angle = reader.readUintN(Math.ceil(Math.log2(audioChannels - 1)));
+        if (magnitude === angle || magnitude >= audioChannels || angle >= audioChannels) {
+          throw new VorbisFormatError('Invalid coupling channel numbers');
+        }
+        magnitudes.push(magnitude);
+        angles.push(angle);
+      }
+    } else {
+      couplingSteps = 0;
+    }
+
+    // Step 2c-iii: Read 2 bits reserved field; if nonzero, the stream is undecodable
+    const reserved = reader.readUint2();
+    if (reserved !== 0) {
+      throw new VorbisFormatError('Invalid reserved field in mapping');
+    }
+
+    // Step 2c-iv: Read channel multiplex settings if submaps > 1
+    let mux: number[] = [];
+    if (submaps > 1) {
+      for (let j = 0; j < audioChannels; j++) {
+        const muxValue = reader.readUint4();
+        if (muxValue >= submaps) {
+          throw new VorbisFormatError('Invalid multiplex value');
+        }
+        mux.push(muxValue);
+      }
+    }
+
+    // Step 2c-v: Read floor and residue numbers for each submap
+    let submapFloor: number[] = [];
+    let submapResidue: number[] = [];
+    for (let j = 0; j < submaps; j++) {
+      reader.readUint8(); // Discard 8 bits (unused time configuration placeholder)
+      const floorNumber = reader.readUint8();
+      if (floorNumber >= floorCount) {
+        throw new VorbisFormatError('Invalid floor number');
+      }
+      submapFloor.push(floorNumber);
+      const residueNumber = reader.readUint8();
+      if (residueNumber >= residueCount) {
+        throw new VorbisFormatError('Invalid residue number');
+      }
+      submapResidue.push(residueNumber);
+    }
+
+    // Save the mapping configuration
+    return {
+      submaps,
+      couplingSteps,
+      magnitudes,
+      angles,
+      mux,
+      submapFloor,
+      submapResidue,
+      endingPosition: reader.cursor,
+    };
   }
 
   private parseMode(data: Uint8Array, offset: number, mappingCount: number): IVorbisMode[] {
@@ -823,8 +813,12 @@ export class OggVorbisPage extends OggPage {
 
     // Step 5: Parse mappings
     const mappingCount = reader.readUint6() + 1;
-    const mappings: IVorbisMapping[] = this.parseMapping(array, reader.cursor, audioChannels, floorCount, residueCount);
-    reader.cursor = mappings[mappings.length - 1].endingPosition;
+    const mappings: IVorbisMapping[] = [];
+    for (let i = 0; i < residueCount; i++) {
+      const mapping = this.parseMapping(array, reader.cursor, audioChannels, floorCount, residueCount);
+      mappings.push(mapping);
+      reader.cursor = mappings[mappings.length - 1].endingPosition;
+    }
 
     // Step 6: Parse modes
     const modes: IVorbisMode[] = this.parseMode(array, reader.cursor, mappingCount);
