@@ -160,35 +160,46 @@ export class OggPage {
     return (this.absoluteGranulePosition - BigInt(preSkip)) / BigInt(48000.0);
   }
 
-  removePageSegment(index: number) {
+  protected removePageSegmentAndGetRawResult(index: number, n: number) {
     if (index < 0 || index >= this.parsedSegmentTable.length) {
       throw new RangeError('Segment index out of range');
     }
+    if (n <= 0) {
+      throw new RangeError('Number of segments to remove must be greater than 0');
+    }
+    if (index + n > this.parsedSegmentTable.length) {
+      throw new RangeError('Segment range out of bounds');
+    }
 
-    // Calculate the starting point of the segment to be removed
+    // Calculate the starting point of the segments to be removed
     const accumulatedPageSegmentSize = this.parsedSegmentTable
       .slice(0, index)
       .reduce((a, b) => a + b, 0);
-    const segmentLength = this.parsedSegmentTable[index];
+    const segmentsToRemove = this.parsedSegmentTable.slice(index, index + n);
+    const totalRemoveLength = segmentsToRemove.reduce((a, b) => a + b, 0);
 
     const newParsedSegmentTable = [...this.parsedSegmentTable];
-    // Remove the segment from the parsedSegmentTable
-    newParsedSegmentTable.splice(index, 1);
+    // Remove the segments from the parsedSegmentTable
+    newParsedSegmentTable.splice(index, n);
 
     // Update the segmentTable
-    const newSegmentTable = new Uint8Array(this.segmentTable.length - 1);
+    const newSegmentTable = new Uint8Array(this.segmentTable.length - n);
     newSegmentTable.set(this.segmentTable.slice(0, index));
-    newSegmentTable.set(this.segmentTable.slice(index + 1), index);
+    newSegmentTable.set(this.segmentTable.slice(index + n), index);
 
-    // Create a new buffer excluding the segment to be removed
-    const newBuffer = new Uint8Array(this.buffer.length - segmentLength);
+    // Create a new buffer excluding the segments to be removed
+    const newBuffer = new Uint8Array(this.buffer.length - totalRemoveLength);
     newBuffer.set(this.buffer.slice(0, 27 + this.pageSegments + accumulatedPageSegmentSize));
     newBuffer.set(
-      this.buffer.slice(27 + this.pageSegments + accumulatedPageSegmentSize + segmentLength),
+      this.buffer.slice(27 + this.pageSegments + accumulatedPageSegmentSize + totalRemoveLength),
       27 + this.pageSegments + accumulatedPageSegmentSize
     );
 
-    return new OggPage(newBuffer);
+    return newBuffer;
+  }
+
+  removePageSegment(index: number, n: number = 1) {
+    return new OggPage(this.removePageSegmentAndGetRawResult(index, n));
   }
 
   updatePageChecksum() {
