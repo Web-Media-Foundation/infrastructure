@@ -20,7 +20,7 @@ export interface IOggVorbisPacketsParseResult {
   page: OggVorbisPage;
 }
 
-export async function* fetchOggVorbisFile(url: string, tolerate = false) {
+export async function* fetchOggVorbisFile(url: string, tolerate = false, headerSearchRange = 3) {
   const request = await fetch(url);
   const reader = request.body?.getReader();
 
@@ -91,7 +91,7 @@ export async function* fetchOggVorbisFile(url: string, tolerate = false) {
     try {
 
       for (let segment = 0; segment < page.pageSegments; segment += 1) {
-        if (accumulatedSegments > 3) {
+        if (accumulatedSegments > headerSearchRange) {
           yield parsePackets();
         } else if (page.isIdentificationPacket(segment)) {
           const identification = parseIdentification(segment);

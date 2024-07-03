@@ -219,6 +219,21 @@ const dbgHex = (x: number) => {
   return `0x${x.toString(16).padStart(2, '0')}`
 }
 
+const ilog = (x: number): number => {
+  if (x <= 0) {
+    return 0;
+  }
+
+  let returnValue = 0;
+
+  while (x > 0) {
+    returnValue++;
+    x >>>= 1;
+  }
+
+  return returnValue;
+}
+
 export class OggVorbisPage extends OggPage {
   getIdentification(segmentIndex = 0): IVorbisIdentificationHeader {
     const array = this.getPageSegment(segmentIndex);
@@ -369,7 +384,7 @@ export class OggVorbisPage extends OggPage {
       let currentLength = reader.readUint5() + 1;
 
       while (currentEntry < entries) {
-        const number = reader.readUintN(Math.ceil(Math.log2(entries - currentEntry)));
+        const number = reader.readUintN(ilog(entries - currentEntry));
         if (currentEntry + number > entries) {
           throw new VorbisFormatError('Invalid codebook: too many codewords');
         }
@@ -623,9 +638,11 @@ export class OggVorbisPage extends OggPage {
     let angles: number[] = [];
     if (couplingFlag) {
       couplingSteps = reader.readUint8() + 1;
+      const couplingBits = ilog(audioChannels - 1);
+
       for (let j = 0; j < couplingSteps; j++) {
-        const magnitude = reader.readUintN(Math.ceil(Math.log2(audioChannels - 1)));
-        const angle = reader.readUintN(Math.ceil(Math.log2(audioChannels - 1)));
+        const magnitude = reader.readUintN(couplingBits);
+        const angle = reader.readUintN(couplingBits);
         if (magnitude === angle || magnitude >= audioChannels || angle >= audioChannels) {
           throw new VorbisFormatError('Invalid coupling channel numbers');
         }

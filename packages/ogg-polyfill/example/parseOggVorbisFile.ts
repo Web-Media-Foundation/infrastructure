@@ -8,7 +8,7 @@ import {
 import { oggVorbisExample } from './@example';
 
 (async () => {
-  const x = fetchOggVorbisFile(oggVorbisExample, true);
+  const x = fetchOggVorbisFile(oggVorbisExample, true, 4);
 
   let done = false;
   let data:
