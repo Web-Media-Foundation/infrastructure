@@ -1,4 +1,4 @@
-const oggMagicSignature = [0x4f, 0x67, 0x67, 0x53];
+export const oggMagicSignature = [0x4f, 0x67, 0x67, 0x53];
 
 export class OggFormatError extends Error { }
 
@@ -123,7 +123,7 @@ export class OggPage {
   static validatePage(buffer: Uint8Array) {
     for (let i = 0; i < oggMagicSignature.length; i += 1) {
       if (buffer[i] !== oggMagicSignature[i]) {
-        throw new OggFormatError('Invalid OGG magic signature');
+        throw new OggFormatError(`Invalid OGG magic signature at position ${i}, got ${buffer[i]} but expected ${oggMagicSignature[i]}`);
       }
     }
 
@@ -156,5 +156,36 @@ export class OggPage {
 
   getTimestamp(preSkip: number) {
     return (this.absoluteGranulePosition - BigInt(preSkip)) / BigInt(48000.0);
+  }
+
+  removePageSegment(index: number) {
+    if (index < 0 || index >= this.parsedSegmentTable.length) {
+      throw new RangeError('Segment index out of range');
+    }
+
+    // Calculate the starting point of the segment to be removed
+    const accumulatedPageSegmentSize = this.parsedSegmentTable
+      .slice(0, index)
+      .reduce((a, b) => a + b, 0);
+    const segmentLength = this.parsedSegmentTable[index];
+
+    const newParsedSegmentTable = [...this.parsedSegmentTable];
+    // Remove the segment from the parsedSegmentTable
+    newParsedSegmentTable.splice(index, 1);
+
+    // Update the segmentTable
+    const newSegmentTable = new Uint8Array(this.segmentTable.length - 1);
+    newSegmentTable.set(this.segmentTable.slice(0, index));
+    newSegmentTable.set(this.segmentTable.slice(index + 1), index);
+
+    // Create a new buffer excluding the segment to be removed
+    const newBuffer = new Uint8Array(this.buffer.length - segmentLength);
+    newBuffer.set(this.buffer.slice(0, 27 + this.pageSegments + accumulatedPageSegmentSize));
+    newBuffer.set(
+      this.buffer.slice(27 + this.pageSegments + accumulatedPageSegmentSize + segmentLength),
+      27 + this.pageSegments + accumulatedPageSegmentSize
+    );
+
+    return new OggPage(newBuffer);
   }
 }
