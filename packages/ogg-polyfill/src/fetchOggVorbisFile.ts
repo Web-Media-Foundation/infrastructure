@@ -2,8 +2,9 @@ import { IVorbisCommentHeader, IVorbisIdentificationHeader, IVorbisSetupHeader, 
 
 export interface IOggParseResult<Type extends string, T> {
   type: Type;
-  page: OggVorbisPage;
   data: T;
+  index: number;
+  getRawSegment: () => Uint8Array;
 }
 
 export interface IOggVorbiseHeaderIdentificationParseResult
@@ -17,7 +18,19 @@ export interface IOggVorbiseHeaderSetupParseResult
 
 export interface IOggVorbisPacketsParseResult {
   type: 'body';
+  index: number;
+  getRawSegment: () => Uint8Array;
+}
+
+export type IOggVorbisParseResult =
+  | IOggVorbiseHeaderIdentificationParseResult
+  | IOggVorbiseHeaderCommentParseResult
+  | IOggVorbiseHeaderSetupParseResult
+  | IOggVorbisPacketsParseResult;
+
+export interface IOggVorbisPage {
   page: OggVorbisPage;
+  packets: IOggVorbisParseResult[];
 }
 
 export async function* fetchOggVorbisFile(url: string, tolerate = false, headerSearchRange = 3) {
@@ -64,58 +77,66 @@ export async function* fetchOggVorbisFile(url: string, tolerate = false, headerS
       throw e;
     }
 
+    const result: IOggVorbisPage = {
+      page,
+      packets: [],
+    };
+
     const parseIdentification = (pageIndex = 0): IOggVorbiseHeaderIdentificationParseResult => ({
       type: 'identification',
-      page,
       data: page.getIdentification(pageIndex),
+      index: pageIndex,
+      getRawSegment: () => page.getPageSegment(pageIndex),
     });
 
     const parseComments = (pageIndex = 0): IOggVorbiseHeaderCommentParseResult => ({
       type: 'comment',
-      page,
       data: page.getComments(pageIndex),
+      index: pageIndex,
+      getRawSegment: () => page.getPageSegment(pageIndex),
     });
 
     const parseSetup = (audioChannels: number, pageIndex = 0): IOggVorbiseHeaderSetupParseResult => ({
       type: 'setup',
-      page,
       data: page.getSetup(pageIndex, audioChannels),
+      index: pageIndex,
+      getRawSegment: () => page.getPageSegment(pageIndex),
     });
 
-    const parsePackets = (): IOggVorbisPacketsParseResult => ({
+    const parseBody = (pageIndex: number): IOggVorbisPacketsParseResult => ({
       type: 'body',
-      page
+      index: pageIndex,
+      getRawSegment: () => page.getPageSegment(pageIndex),
     });
 
     let accumulatedSegments = 0;
     try {
-
       for (let segment = 0; segment < page.pageSegments; segment += 1) {
         if (accumulatedSegments > headerSearchRange) {
-          yield parsePackets();
+          result.packets.push(parseBody(segment));
         } else if (page.isIdentificationPacket(segment)) {
           const identification = parseIdentification(segment);
           audioChannels = identification.data.audioChannels;
 
-          yield identification;
+          result.packets.push(identification);
         } else if (page.isCommentPacket(segment)) {
-          yield parseComments(segment);
+          result.packets.push(parseComments(segment));
         } else if (page.isSetupPacket(segment)) {
           if (audioChannels !== null) {
-            yield parseSetup(audioChannels, segment);
+            result.packets.push(parseSetup(audioChannels, segment));
           } else {
             console.warn("Found a setup packet but no identification packet detected, will skip");
           }
         } else {
-          yield parsePackets();
+          result.packets.push(parseBody(segment));
         }
-
         accumulatedSegments += 1;
       }
 
+      yield result;
       buffer = buffer.slice(page.pageSize);
     } catch (e) {
-      if (tolerate) {
+      if (!tolerate) {
         throw e;
       } else {
         buffer = buffer.slice(1);

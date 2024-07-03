@@ -1,8 +1,5 @@
 import {
-  IOggVorbiseHeaderIdentificationParseResult,
-  IOggVorbiseHeaderCommentParseResult,
-  IOggVorbiseHeaderSetupParseResult,
-  IOggVorbisPacketsParseResult,
+  IOggVorbisPage,
   fetchOggVorbisFile,
 } from '../src/fetchOggVorbisFile';
 import { oggVorbisExample } from './@example';
@@ -12,10 +9,7 @@ import { oggVorbisExample } from './@example';
 
   let done = false;
   let data:
-    | IOggVorbiseHeaderIdentificationParseResult
-    | IOggVorbiseHeaderCommentParseResult
-    | IOggVorbiseHeaderSetupParseResult
-    | IOggVorbisPacketsParseResult
+    | IOggVorbisPage
     | null = null;
 
   while (!done) {

@@ -72,7 +72,7 @@ export async function* fetchOggOpusFile(url: string, tolerate = false) {
       type: 'tags',
       page,
       data: page.getOggTags(),
-    })
+    });
 
     const parsePackets = (): IOggPacketsParseResult => ({
       type: 'packets',
@@ -92,7 +92,7 @@ export async function* fetchOggOpusFile(url: string, tolerate = false) {
       }
       buffer = buffer.slice(page.pageSize);
     } catch (e) {
-      if (tolerate) {
+      if (!tolerate) {
         throw e;
       } else {
         buffer = buffer.slice(1);
