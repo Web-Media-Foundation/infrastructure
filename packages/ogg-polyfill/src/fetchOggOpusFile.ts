@@ -1,4 +1,5 @@
 import { IOpusTags, IOpusHeader, OggOpusPage } from './OggOpusPage';
+import { oggMagicSignature } from './OggPage';
 import {
   IOpusPacket,
   OpusParseError,
@@ -48,6 +49,11 @@ export async function* fetchOggOpusFile(url: string, tolerate = false) {
 
     if (!buffer) {
       throw new Error('Buffer not ready');
+    }
+
+    if (done && buffer.byteLength < oggMagicSignature.length) {
+      // The leftover should not be parsed anymore
+      break;
     }
 
     const page = new OggOpusPage(buffer);

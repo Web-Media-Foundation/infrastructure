@@ -1,3 +1,4 @@
+import { oggMagicSignature } from './OggPage';
 import { IVorbisCommentHeader, IVorbisIdentificationHeader, IVorbisSetupHeader, OggVorbisPage, VorbisFormatError } from './OggVorbisPage';
 
 export interface IOggParseResult<Type extends string, T> {
@@ -63,6 +64,11 @@ export async function* fetchOggVorbisFile(url: string, tolerate = false, headerS
 
     if (!buffer) {
       throw new Error('Buffer not ready');
+    }
+
+    if (done && buffer.byteLength < oggMagicSignature.length) {
+      // The leftover should not be parsed anymore
+      break;
     }
 
     const page = new OggVorbisPage(buffer);
