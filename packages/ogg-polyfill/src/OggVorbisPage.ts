@@ -849,4 +849,10 @@ export class OggVorbisPage extends OggPage {
 
     return array[0] === VorbisHeaderType.Setup;
   }
+
+  removePageSegment(index: number) {
+    const page = super.removePageSegment(index);
+
+    return new OggVorbisPage(page.buffer);
+  }
 }

@@ -34,14 +34,7 @@ export interface IOggVorbisPage {
   packets: IOggVorbisParseResult[];
 }
 
-export async function* fetchOggVorbisFile(url: string, tolerate = false, headerSearchRange = 3) {
-  const request = await fetch(url);
-  const reader = request.body?.getReader();
-
-  if (!reader) {
-    throw new TypeError(`Valid reader not found`);
-  }
-
+export async function* readOggVorbisFile(reader: ReadableStreamDefaultReader<Uint8Array>, tolerate = false, headerSearchRange = 3) {
   let done = false;
   let buffer: Uint8Array | null = null;
 
@@ -150,8 +143,20 @@ export async function* fetchOggVorbisFile(url: string, tolerate = false, headerS
         buffer = buffer.slice(1);
       }
     }
-
   }
+
+  return null;
+}
+
+export async function* fetchOggVorbisFile(url: string, tolerate = false, headerSearchRange = 3) {
+  const request = await fetch(url);
+  const reader = request.body?.getReader();
+
+  if (!reader) {
+    throw new TypeError(`Valid reader not found`);
+  }
+
+  yield* readOggVorbisFile(reader, tolerate, headerSearchRange);
 
   return null;
 }
