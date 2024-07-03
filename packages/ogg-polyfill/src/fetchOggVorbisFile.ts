@@ -102,9 +102,9 @@ export async function* fetchOggVorbisFile(url: string, tolerate = false, headerS
       getRawSegment: () => page.getPageSegment(pageIndex),
     });
 
-    const parseSetup = (audioChannels: number, pageIndex = 0): IOggVorbiseHeaderSetupParseResult => ({
+    const parseSetup = (channels: number, pageIndex = 0): IOggVorbiseHeaderSetupParseResult => ({
       type: 'setup',
-      data: page.getSetup(pageIndex, audioChannels),
+      data: page.getSetup(channels, pageIndex),
       index: pageIndex,
       getRawSegment: () => page.getPageSegment(pageIndex),
     });
@@ -131,6 +131,8 @@ export async function* fetchOggVorbisFile(url: string, tolerate = false, headerS
           if (audioChannels !== null) {
             result.packets.push(parseSetup(audioChannels, segment));
           } else {
+            // Wee need to tell developers that the file is abnormal
+            // eslint-disable-next-line no-console
             console.warn("Found a setup packet but no identification packet detected, will skip");
           }
         } else {

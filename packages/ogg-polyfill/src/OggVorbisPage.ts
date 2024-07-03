@@ -11,6 +11,7 @@ const allowedBlockSizes = new Set([64, 128, 256, 512, 1024, 2048, 4096, 8192]);
  */
 class BitStreamReader {
   private data: Uint8Array;
+
   cursor: number;
 
   constructor(data: Uint8Array, offset = 0) {
@@ -22,13 +23,13 @@ class BitStreamReader {
     const byteIndex = Math.floor(this.cursor / 8);
     const bitIndex = this.cursor % 8;
     const bit = (this.data[byteIndex] >> bitIndex) & 1;
-    this.cursor++;
+    this.cursor += 1;
     return bit;
   }
 
   private readBitsAsNumber(numBits: number): number {
     let result = 0;
-    for (let i = 0; i < numBits; i++) {
+    for (let i = 0; i < numBits; i += 1) {
       const bit = this.readBit();
       result |= (bit << i);
     }
@@ -94,7 +95,7 @@ const float32Unpack = (x: number): number => {
   const signedMantissa = sign ? -mantissa : mantissa;
 
   // Step 5: Calculate and return the floating-point value
-  return signedMantissa * Math.pow(2, exponent - 788);
+  return signedMantissa * 2 ** (exponent - 788);
 }
 
 const lookup1Values = (entries: number, dimensions: number): number => {
@@ -103,7 +104,7 @@ const lookup1Values = (entries: number, dimensions: number): number => {
 
   while (low < high) {
     const mid = Math.floor((low + high + 1) / 2);
-    if (Math.pow(mid, dimensions) <= entries) {
+    if (mid ** dimensions <= entries) {
       low = mid;
     } else {
       high = mid - 1;
@@ -220,15 +221,16 @@ const dbgHex = (x: number) => {
 }
 
 const ilog = (x: number): number => {
-  if (x <= 0) {
+  let result = x;
+  if (result <= 0) {
     return 0;
   }
 
   let returnValue = 0;
 
-  while (x > 0) {
-    returnValue++;
-    x >>>= 1;
+  while (result > 0) {
+    returnValue += 1;
+    result >>>= 1;
   }
 
   return returnValue;
@@ -328,7 +330,7 @@ export class OggVorbisPage extends OggPage {
 
     // Step 4: Iterate over the number of comment fields
     const comments: Record<string, string[]> = {};
-    for (let i = 0; i < userCommentListLength; i++) {
+    for (let i = 0; i < userCommentListLength; i += 1) {
       // Step 5: Read length of this user comment (32 bits)
       const commentLength = reader.readUint32();
 
@@ -361,7 +363,7 @@ export class OggVorbisPage extends OggPage {
     };
   }
 
-  private parseSetupCodebook(reader: BitStreamReader): IVorbisSetupCodebook {
+  private static parseSetupCodebook(reader: BitStreamReader): IVorbisSetupCodebook {
     for (let i = 0, l = vorbisSetupCodebookMagicSignature.length; i < l; i += 1) {
       const byte = reader.readUint8();
       if (byte !== vorbisSetupCodebookMagicSignature[i]) {
@@ -388,14 +390,14 @@ export class OggVorbisPage extends OggPage {
         if (currentEntry + number > entries) {
           throw new VorbisFormatError('Invalid codebook: too many codewords');
         }
-        for (let i = 0; i < number; i++) {
-          codewordLengths[currentEntry++] = currentLength;
+        for (let i = 0; i < number; i += 1) {
+          codewordLengths[currentEntry += 1] = currentLength;
         }
-        currentLength++;
+        currentLength += 1;
       }
     } else {
       const sparse = reader.readBool();
-      for (let i = 0; i < entries; i++) {
+      for (let i = 0; i < entries; i += 1) {
         if (sparse) {
           const flag = reader.readBool();
           if (flag) {
@@ -433,7 +435,7 @@ export class OggVorbisPage extends OggPage {
       }
 
       multiplicands = new Array(lookupValues);
-      for (let i = 0; i < lookupValues; i++) {
+      for (let i = 0; i < lookupValues; i += 1) {
         multiplicands[i] = reader.readUintN(valueBits);
       }
     } else if (lookupType > VorbisSetupCodebookLookupType.Explicitly) {
@@ -453,7 +455,7 @@ export class OggVorbisPage extends OggPage {
     };
   }
 
-  private parseFloorType0(codebookCount: number, reader: BitStreamReader): IVorbisFloorType0 {
+  private static parseFloorType0(codebookCount: number, reader: BitStreamReader): IVorbisFloorType0 {
     const floor0Order = reader.readUint8();
     const floor0Rate = reader.readUint16();
     const floor0BarkMapSize = reader.readUint16();
@@ -462,7 +464,7 @@ export class OggVorbisPage extends OggPage {
     const floor0NumberOfBooks = reader.readUint4() + 1;
 
     const floor0BookList: number[] = [];
-    for (let i = 0; i < floor0NumberOfBooks; i++) {
+    for (let i = 0; i < floor0NumberOfBooks; i += 1) {
       const book = reader.readUint8();
       if (book > codebookCount) {
         throw new VorbisFormatError('Invalid book number in floor0_book_list');
@@ -481,13 +483,13 @@ export class OggVorbisPage extends OggPage {
     };
   }
 
-  private parseFloorType1(reader: BitStreamReader): IVorbisFloorType1 {
+  private static parseFloorType1(reader: BitStreamReader): IVorbisFloorType1 {
     // Step 1: Read the number of partitions
     const floor1Partitions = reader.readUint5();
 
     // Step 2: Initialize partition class list and read values
     const floor1PartitionClassList: number[] = new Array(floor1Partitions);
-    for (let i = 0; i < floor1Partitions; i++) {
+    for (let i = 0; i < floor1Partitions; i += 1) {
       floor1PartitionClassList[i] = reader.readUint4();
     }
 
@@ -501,13 +503,13 @@ export class OggVorbisPage extends OggPage {
     const floor1SubclassBooks: number[][] = new Array(maximumClass + 1).fill(null).map(() => []);
 
     // Step 5: Read class dimensions, subclasses, masterbooks, and subclass books
-    for (let i = 0; i <= maximumClass; i++) {
+    for (let i = 0; i <= maximumClass; i += 1) {
       floor1ClassDimensions[i] = reader.readUint3() + 1;
       floor1ClassSubclasses[i] = reader.readUint2();
       if (floor1ClassSubclasses[i] > 0) {
         floor1ClassMasterbooks[i] = reader.readUint8();
       }
-      for (let j = 0; j < (1 << floor1ClassSubclasses[i]); j++) {
+      for (let j = 0; j < (1 << floor1ClassSubclasses[i]); j += 1) {
         floor1SubclassBooks[i][j] = reader.readUint8() - 1;
       }
     }
@@ -521,10 +523,10 @@ export class OggVorbisPage extends OggPage {
     let floor1Values = 2;
 
     // Step 8: Read the rest of the X list
-    for (let i = 0; i < floor1Partitions; i++) {
+    for (let i = 0; i < floor1Partitions; i += 1) {
       const currentClassNumber = floor1PartitionClassList[i];
-      for (let j = 0; j < floor1ClassDimensions[currentClassNumber]; j++) {
-        floor1XList[floor1Values++] = reader.readUintN(rangebits);
+      for (let j = 0; j < floor1ClassDimensions[currentClassNumber]; j += 1) {
+        floor1XList[floor1Values += 1] = reader.readUintN(rangebits);
       }
     }
 
@@ -548,13 +550,13 @@ export class OggVorbisPage extends OggPage {
       classMasterbooks: floor1ClassMasterbooks,
       subclassBooks: floor1SubclassBooks,
       multiplier: floor1Multiplier,
-      rangebits: rangebits,
+      rangebits,
       XList: floor1XList,
       values: floor1Values,
     };
   }
 
-  private parseResidue(codebookCount: number, reader: BitStreamReader): IVorbisResidue {
+  private static parseResidue(codebookCount: number, reader: BitStreamReader): IVorbisResidue {
     // Read residue type (0, 1, or 2)
     const residueType = reader.readUint16();
     if (residueType > 2) {
@@ -575,7 +577,7 @@ export class OggVorbisPage extends OggPage {
 
     // Read residue cascade
     const residueCascade: number[] = new Array(residueClassifications);
-    for (let i = 0; i < residueClassifications; i++) {
+    for (let i = 0; i < residueClassifications; i += 1) {
       let highBits = 0;
       const lowBits = reader.readUint3();
       const bitflag = reader.readBool();
@@ -587,9 +589,9 @@ export class OggVorbisPage extends OggPage {
 
     // Read residue books
     const residueBooks: number[][] = new Array(residueClassifications);
-    for (let i = 0; i < residueClassifications; i++) {
+    for (let i = 0; i < residueClassifications; i += 1) {
       residueBooks[i] = new Array(8).fill(-1); // Initialize with -1 (unused)
-      for (let j = 0; j < 8; j++) {
+      for (let j = 0; j < 8; j += 1) {
         if ((residueCascade[i] & (1 << j)) !== 0) {
           const book = reader.readUint8();
           if (book >= codebookCount) {
@@ -612,7 +614,7 @@ export class OggVorbisPage extends OggPage {
     };
   }
 
-  private parseMapping(audioChannels: number, floorCount: number, residueCount: number, reader: BitStreamReader): IVorbisMapping {
+  private static parseMapping(audioChannels: number, floorCount: number, residueCount: number, reader: BitStreamReader): IVorbisMapping {
     // Step 2a: Read the mapping type (16 bits)
     const mappingType = reader.readUint16();
 
@@ -634,13 +636,13 @@ export class OggVorbisPage extends OggPage {
     // Step 2c-ii: Read 1 bit as a boolean flag for coupling steps
     const couplingFlag = reader.readBool();
     let couplingSteps: number;
-    let magnitudes: number[] = [];
-    let angles: number[] = [];
+    const magnitudes: number[] = [];
+    const angles: number[] = [];
     if (couplingFlag) {
       couplingSteps = reader.readUint8() + 1;
       const couplingBits = ilog(audioChannels - 1);
 
-      for (let j = 0; j < couplingSteps; j++) {
+      for (let j = 0; j < couplingSteps; j += 1) {
         const magnitude = reader.readUintN(couplingBits);
         const angle = reader.readUintN(couplingBits);
         if (magnitude === angle || magnitude >= audioChannels || angle >= audioChannels) {
@@ -660,9 +662,9 @@ export class OggVorbisPage extends OggPage {
     }
 
     // Step 2c-iv: Read channel multiplex settings if submaps > 1
-    let mux: number[] = [];
+    const mux: number[] = [];
     if (submaps > 1) {
-      for (let j = 0; j < audioChannels; j++) {
+      for (let j = 0; j < audioChannels; j += 1) {
         const muxValue = reader.readUint4();
         if (muxValue >= submaps) {
           throw new VorbisFormatError('Invalid multiplex value');
@@ -672,9 +674,9 @@ export class OggVorbisPage extends OggPage {
     }
 
     // Step 2c-v: Read floor and residue numbers for each submap
-    let submapFloor: number[] = [];
-    let submapResidue: number[] = [];
-    for (let j = 0; j < submaps; j++) {
+    const submapFloor: number[] = [];
+    const submapResidue: number[] = [];
+    for (let j = 0; j < submaps; j += 1) {
       reader.readUint8(); // Discard 8 bits (unused time configuration placeholder)
       const floorNumber = reader.readUint8();
       if (floorNumber >= floorCount) {
@@ -700,14 +702,14 @@ export class OggVorbisPage extends OggPage {
     };
   }
 
-  private parseMode(mappingCount: number, reader: BitStreamReader): IVorbisMode[] {
+  private static parseMode(mappingCount: number, reader: BitStreamReader): IVorbisMode[] {
     // Step 1: Read vorbis_mode_count and add one
     const modeCount = reader.readUint6() + 1;
 
     // Initialize mode configuration array
     const modes: IVorbisMode[] = [];
 
-    for (let i = 0; i < modeCount; i++) {
+    for (let i = 0; i < modeCount; i += 1) {
       // Step 2a: Read the mode block flag (1 bit)
       const blockFlag = reader.readBool();
 
@@ -746,7 +748,7 @@ export class OggVorbisPage extends OggPage {
     return modes;
   }
 
-  getSetup(segmentIndex = 0, audioChannels: number): IVorbisSetupHeader {
+  getSetup(audioChannels: number, segmentIndex = 0): IVorbisSetupHeader {
     const array = this.getPageSegment(segmentIndex);
 
     if (!this.isHeaderPacket(segmentIndex)) {
@@ -762,14 +764,14 @@ export class OggVorbisPage extends OggPage {
     // Step 1: Parse codebooks
     const codebookCount = reader.readUint8() + 1;
     const codebooks: IVorbisSetupCodebook[] = [];
-    for (let i = 0; i < codebookCount; i++) {
-      const codebook = this.parseSetupCodebook(reader);
+    for (let i = 0; i < codebookCount; i += 1) {
+      const codebook = OggVorbisPage.parseSetupCodebook(reader);
       codebooks.push(codebook);
     }
 
     // Step 2: Parse time configurations (skip as they are not used)
     const timeCount = reader.readUint6() + 1;
-    for (let i = 0; i < timeCount; i++) {
+    for (let i = 0; i < timeCount; i += 1) {
       const timeType = reader.readUint16();
       if (timeType !== 0) {
         throw new VorbisFormatError('Unsupported time type');
@@ -779,13 +781,13 @@ export class OggVorbisPage extends OggPage {
     // Step 3: Parse floors
     const floorCount = reader.readUint6() + 1;
     const floors: (IVorbisFloorType0 | IVorbisFloorType1)[] = [];
-    for (let i = 0; i < floorCount; i++) {
+    for (let i = 0; i < floorCount; i += 1) {
       const floorType = reader.readUint16();
       if (floorType === 0) {
-        const floor = this.parseFloorType0(codebookCount, reader);
+        const floor = OggVorbisPage.parseFloorType0(codebookCount, reader);
         floors.push(floor);
       } else if (floorType === 1) {
-        const floor = this.parseFloorType1(reader);
+        const floor = OggVorbisPage.parseFloorType1(reader);
         floors.push(floor);
       } else {
         throw new VorbisFormatError('Unsupported floor type');
@@ -795,21 +797,21 @@ export class OggVorbisPage extends OggPage {
     // Step 4: Parse residues
     const residueCount = reader.readUint6() + 1;
     const residues: IVorbisResidue[] = [];
-    for (let i = 0; i < residueCount; i++) {
-      const residue = this.parseResidue(codebookCount, reader);
+    for (let i = 0; i < residueCount; i += 1) {
+      const residue = OggVorbisPage.parseResidue(codebookCount, reader);
       residues.push(residue);
     }
 
     // Step 5: Parse mappings
     const mappingCount = reader.readUint6() + 1;
     const mappings: IVorbisMapping[] = [];
-    for (let i = 0; i < residueCount; i++) {
-      const mapping = this.parseMapping(audioChannels, floorCount, residueCount, reader);
+    for (let i = 0; i < residueCount; i += 1) {
+      const mapping = OggVorbisPage.parseMapping(audioChannels, floorCount, residueCount, reader);
       mappings.push(mapping);
     }
 
     // Step 6: Parse modes
-    const modes: IVorbisMode[] = this.parseMode(mappingCount, reader);
+    const modes: IVorbisMode[] = OggVorbisPage.parseMode(mappingCount, reader);
 
     return {
       codebooks,
