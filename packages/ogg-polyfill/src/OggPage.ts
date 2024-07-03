@@ -1,3 +1,5 @@
+import { updateCrc32 } from "./crc";
+
 export const oggMagicSignature = [0x4f, 0x67, 0x67, 0x53];
 
 export class OggFormatError extends Error { }
@@ -187,5 +189,12 @@ export class OggPage {
     );
 
     return new OggPage(newBuffer);
+  }
+
+  updatePageChecksum() {
+    this.dataView.setUint32(22, 0, true);
+    const crc = updateCrc32(this.buffer);
+    this.dataView.setUint32(22, crc, true);
+    this.pageChecksum = crc;
   }
 }
