@@ -255,34 +255,56 @@ export class OggPage {
     if (index < 0) {
       throw new RangeError('index is smaller than 0');
     }
-
     if (index > this.parsedSegmentTable.length) {
-      throw new RangeError(`Segment index out of range, index: ${index}, range: ${this.parsedSegmentTable.length}`);
+      throw new RangeError(`Segment start index out of range, index: ${index}, range: ${this.parsedSegmentTable.length}`);
     }
 
-    // Flatten packets into a single Uint8Array
-    const newSegments = segments.map(packet => packet.length);
-    const newSegmentTable = new Uint8Array(this.segmentTable.length + newSegments.length);
-    newSegmentTable.set(this.segmentTable.slice(0, index));
-    newSegmentTable.set(newSegments, index);
-    newSegmentTable.set(this.segmentTable.slice(index), index + newSegments.length);
+    const newSegmentsLengths = segments.map(segment => segment.length);
+    const newParsedSegmentTable = [
+      ...this.parsedSegmentTable.slice(0, index),
+      ...newSegmentsLengths,
+      ...this.parsedSegmentTable.slice(index),
+    ];
 
-    const totalNewSegmentLength = segments.reduce((acc, packet) => acc + packet.length, 0);
-    const newBuffer = new Uint8Array(this.buffer.length + totalNewSegmentLength);
+    const newSegmentTable = OggPage.createLacedUint8Array(newParsedSegmentTable);
+    const newSegments = newSegmentTable.length;
 
-    // Copy existing data before the insertion point
-    const accumulatedPageSegmentSize = this.parsedSegmentTable.slice(0, index).reduce((a, b) => a + b, 0);
-    newBuffer.set(this.buffer.slice(0, 27 + this.pageSegments + accumulatedPageSegmentSize));
+    const totalNewLength = newSegmentsLengths.reduce((a, b) => a + b, 0);
+    const newBufferSize = this.buffer.length + totalNewLength + newSegmentTable.length - this.segmentTable.length;
 
-    // Copy new segments into the new buffer
-    let offset = 27 + this.pageSegments + accumulatedPageSegmentSize;
-    segments.forEach(packet => {
-      newBuffer.set(packet, offset);
-      offset += packet.length;
-    });
+    const newBuffer = new Uint8Array(newBufferSize);
 
-    // Copy remaining data after the insertion point
-    newBuffer.set(this.buffer.slice(27 + this.pageSegments + accumulatedPageSegmentSize), offset);
+    newBuffer.set(this.buffer.slice(0, 26));
+    newBuffer.set([newSegmentTable.length], 26);
+    newBuffer.set(newSegmentTable, 27);
+
+    const accumulatedPageSegmentSize = this.parsedSegmentTable
+      .slice(0, index)
+      .reduce((a, b) => a + b, 0);
+
+    const insertAt = 27 + this.segmentTable.length + accumulatedPageSegmentSize;
+
+    newBuffer.set(
+      this.buffer.slice(27 + this.segmentTable.length, insertAt),
+      27 + newSegments
+    );
+
+    let offset = 27 + newSegments + (insertAt - (27 + this.segmentTable.length));
+    for (let i = 0, l = segments.length; i < l; i += 1) {
+      const segment = segments[i];
+
+      newBuffer.set(segment, offset);
+      offset += segment.length;
+    }
+
+    newBuffer.set(
+      this.buffer.slice(insertAt),
+      offset
+    );
+
+    if (newBuffer.length !== newBufferSize) {
+      throw new Error(`Calculated new buffer size ${newBufferSize} does not match actual size ${newBuffer.length}`);
+    }
 
     return newBuffer;
   }
@@ -291,34 +313,49 @@ export class OggPage {
     if (index < 0) {
       throw new RangeError('index is smaller than 0');
     }
-    if (index > this.parsedSegmentTable.length) {
-      throw new RangeError(`Segment index out of range, index: ${index}, range: ${this.parsedSegmentTable.length}`);
+    if (index >= this.parsedSegmentTable.length) {
+      throw new RangeError(`Segment start index out of range, index: ${index}, range: ${this.parsedSegmentTable.length}`);
     }
 
-    const oldSegmentSize = this.parsedSegmentTable[index];
-    const newSegmentSize = segment.length;
+    const oldSegmentLength = this.parsedSegmentTable[index];
+    const newSegmentLength = segment.length;
 
-    if (newSegmentSize > 255) {
-      throw new RangeError('Segment size exceeds the maximum allowed size of 255 bytes');
-    }
+    const newParsedSegmentTable = [...this.parsedSegmentTable];
+    newParsedSegmentTable[index] = newSegmentLength;
 
-    // Update the segment table
-    const newSegmentTable = new Uint8Array(this.segmentTable);
-    newSegmentTable[index] = newSegmentSize;
+    const newSegmentTable = OggPage.createLacedUint8Array(newParsedSegmentTable);
+    const newSegments = newSegmentTable.length;
 
-    // Calculate the starting point of the segment to be replaced
+    const newBufferSize = this.buffer.length - oldSegmentLength + newSegmentLength + newSegmentTable.length - this.segmentTable.length;
+
+    const newBuffer = new Uint8Array(newBufferSize);
+
+    newBuffer.set(this.buffer.slice(0, 26));
+    newBuffer.set([newSegmentTable.length], 26);
+    newBuffer.set(newSegmentTable, 27);
+
     const accumulatedPageSegmentSize = this.parsedSegmentTable
       .slice(0, index)
       .reduce((a, b) => a + b, 0);
 
-    // Create a new buffer including the replaced segment
-    const newBuffer = new Uint8Array(this.buffer.length - oldSegmentSize + newSegmentSize);
-    newBuffer.set(this.buffer.slice(0, 27 + this.pageSegments + accumulatedPageSegmentSize));
-    newBuffer.set(segment, 27 + this.pageSegments + accumulatedPageSegmentSize);
+    const replaceAt = 27 + this.segmentTable.length + accumulatedPageSegmentSize;
+    const replaceEnd = replaceAt + oldSegmentLength;
+
     newBuffer.set(
-      this.buffer.slice(27 + this.pageSegments + accumulatedPageSegmentSize + oldSegmentSize),
-      27 + this.pageSegments + accumulatedPageSegmentSize + newSegmentSize
+      this.buffer.slice(27 + this.segmentTable.length, replaceAt),
+      27 + newSegments
     );
+
+    newBuffer.set(segment, 27 + newSegments + (replaceAt - (27 + this.segmentTable.length)));
+
+    newBuffer.set(
+      this.buffer.slice(replaceEnd),
+      27 + newSegments + (replaceAt - (27 + this.segmentTable.length)) + newSegmentLength
+    );
+
+    if (newBuffer.length !== newBufferSize) {
+      throw new Error(`Calculated new buffer size ${newBufferSize} does not match actual size ${newBuffer.length}`);
+    }
 
     return newBuffer;
   }
