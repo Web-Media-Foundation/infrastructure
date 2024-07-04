@@ -26,12 +26,9 @@ async function trimOggVorbisFile(reader: ReadableStreamDefaultReader<Uint8Array>
         continue;
       } else {
         // Remove segments before the first header packet
-        for (let i = 0; i < foundHeaderIndex; i += 1) {
-          pageResult.page = pageResult.page.removePageSegment(0);
-          pageResult.page.updatePageChecksum();
-        }
-
+        pageResult.page = pageResult.page.removePageSegment(0, foundHeaderIndex);
         pageResult.packets.slice(foundHeaderIndex);
+        pageResult.page.updatePageChecksum();
       }
     }
 
