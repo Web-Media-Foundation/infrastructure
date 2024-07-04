@@ -24,7 +24,7 @@ async function trimOggVorbisFile(reader: ReadableStreamDefaultReader<Uint8Array>
       if (foundHeaderIndex === -1) {
         // If no headers found, continue to the next page
         continue;
-      } else {
+      } else if (foundHeaderIndex > 0) {
         // Remove segments before the first header packet
         pageResult.page = pageResult.page.removePageSegment(0, foundHeaderIndex);
         pageResult.packets.slice(foundHeaderIndex);

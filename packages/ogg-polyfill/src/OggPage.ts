@@ -127,6 +127,7 @@ export class OggPage {
   };
 
   static validatePage(buffer: Uint8Array) {
+    // Check Ogg magic signature
     for (let i = 0; i < oggMagicSignature.length; i += 1) {
       if (buffer[i] !== oggMagicSignature[i]) {
         throw new OggFormatError(`Invalid OGG magic signature at position ${i}, got ${buffer[i]} but expected ${oggMagicSignature[i]}`);
@@ -137,6 +138,7 @@ export class OggPage {
     if (buffer.length < 27) {
       throw new OggFormatError('Incomplete buffer length');
     }
+
     const dataView = new DataView(buffer.buffer);
 
     const pageSegmentsCount = dataView.getUint8(26);
@@ -154,7 +156,7 @@ export class OggPage {
     const pageSize = 27 + pageSegmentsCount + pageBodySize;
     // OGG content not loaded completely
     if (buffer.length < pageSize) {
-      throw new OggFormatError('Insufficient page size');
+      throw new OggFormatError(`Insufficient page size, expected ${pageSize}, at least ${buffer.length}`);
     }
 
     return { dataView, pageBodySize, pageSize, pageSegmentsCount };
@@ -164,11 +166,33 @@ export class OggPage {
     return (this.absoluteGranulePosition - BigInt(preSkip)) / BigInt(48000.0);
   }
 
+  static createLacedUint8Array(input: number[]): Uint8Array {
+    const result: number[] = [];
+
+    for (let i = 0; i < input.length; i += 1) {
+      let value = input[i];
+
+      while (value >= 255) {
+        result.push(255);
+        value -= 255;
+      }
+
+      result.push(value);
+    }
+
+    // Add a terminating 0 if the last value was 255
+    if (result[result.length - 1] === 255) {
+      result.push(0);
+    }
+
+    return new Uint8Array(result);
+  }
+
   protected removePageSegmentAndGetRawResult(index: number, n: number) {
     if (index < 0) {
       throw new RangeError('index is smaller than 0');
     }
-    if (index > this.parsedSegmentTable.length) {
+    if (index >= this.parsedSegmentTable.length) {
       throw new RangeError(`Segment start index out of range, index: ${index}, range: ${this.parsedSegmentTable.length}`);
     }
     if (n <= 0) {
@@ -190,17 +214,39 @@ export class OggPage {
     newParsedSegmentTable.splice(index, n);
 
     // Update the segmentTable
-    const newSegmentTable = new Uint8Array(this.segmentTable.length - n);
-    newSegmentTable.set(this.segmentTable.slice(0, index));
-    newSegmentTable.set(this.segmentTable.slice(index + n), index);
+    const newSegmentTable = OggPage.createLacedUint8Array(newParsedSegmentTable);
+    const newSegments = newSegmentTable.length;
+
+    // Calculate new buffer size
+    const newBufferSize = this.buffer.length - totalRemoveLength - this.segmentTable.length + newSegmentTable.length;
 
     // Create a new buffer excluding the segments to be removed
-    const newBuffer = new Uint8Array(this.buffer.length - totalRemoveLength);
-    newBuffer.set(this.buffer.slice(0, 27 + this.pageSegments + accumulatedPageSegmentSize));
+    const newBuffer = new Uint8Array(newBufferSize);
+
+    // Set the header
+    newBuffer.set(this.buffer.slice(0, 26));
+    newBuffer.set([newSegmentTable.length], 26);
+    // Set the new segment table
+    newBuffer.set(newSegmentTable, 27);
+
+    const removeFrom = 27 + this.segmentTable.length + accumulatedPageSegmentSize;
+    const removeTo = removeFrom + totalRemoveLength;
+
+    // Set the data before the segments to be removed
     newBuffer.set(
-      this.buffer.slice(27 + this.pageSegments + accumulatedPageSegmentSize + totalRemoveLength),
-      27 + this.pageSegments + accumulatedPageSegmentSize
+      this.buffer.slice(27 + this.segmentTable.length, removeFrom),
+      27 + newSegments,
     );
+    // Set the data after the segments to be removed
+    newBuffer.set(
+      this.buffer.slice(removeTo),
+      27 + newSegments + (removeFrom - (27 + this.segmentTable.length))
+    );
+
+    // Validate the new buffer size
+    if (newBuffer.length !== newBufferSize) {
+      throw new Error(`Calculated new buffer size ${newBufferSize} does not match actual size ${newBuffer.length}`);
+    }
 
     return newBuffer;
   }
