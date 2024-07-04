@@ -198,8 +198,81 @@ export class OggPage {
     return newBuffer;
   }
 
+  protected addPageSegmentAndGetRawResult(segments: Uint8Array[], index: number) {
+    if (index < 0 || index > this.parsedSegmentTable.length) {
+      throw new RangeError('Segment index out of range');
+    }
+
+    // Flatten packets into a single Uint8Array
+    const newSegments = segments.map(packet => packet.length);
+    const newSegmentTable = new Uint8Array(this.segmentTable.length + newSegments.length);
+    newSegmentTable.set(this.segmentTable.slice(0, index));
+    newSegmentTable.set(newSegments, index);
+    newSegmentTable.set(this.segmentTable.slice(index), index + newSegments.length);
+
+    const totalNewSegmentLength = segments.reduce((acc, packet) => acc + packet.length, 0);
+    const newBuffer = new Uint8Array(this.buffer.length + totalNewSegmentLength);
+
+    // Copy existing data before the insertion point
+    const accumulatedPageSegmentSize = this.parsedSegmentTable.slice(0, index).reduce((a, b) => a + b, 0);
+    newBuffer.set(this.buffer.slice(0, 27 + this.pageSegments + accumulatedPageSegmentSize));
+
+    // Copy new segments into the new buffer
+    let offset = 27 + this.pageSegments + accumulatedPageSegmentSize;
+    segments.forEach(packet => {
+      newBuffer.set(packet, offset);
+      offset += packet.length;
+    });
+
+    // Copy remaining data after the insertion point
+    newBuffer.set(this.buffer.slice(27 + this.pageSegments + accumulatedPageSegmentSize), offset);
+
+    return newBuffer;
+  }
+
+  protected replacePageSegmentAndGetRawResult(segment: Uint8Array, index: number) {
+    if (index < 0 || index >= this.parsedSegmentTable.length) {
+      throw new RangeError('Segment index out of range');
+    }
+
+    const oldSegmentSize = this.parsedSegmentTable[index];
+    const newSegmentSize = segment.length;
+
+    if (newSegmentSize > 255) {
+      throw new RangeError('Segment size exceeds the maximum allowed size of 255 bytes');
+    }
+
+    // Update the segment table
+    const newSegmentTable = new Uint8Array(this.segmentTable);
+    newSegmentTable[index] = newSegmentSize;
+
+    // Calculate the starting point of the segment to be replaced
+    const accumulatedPageSegmentSize = this.parsedSegmentTable
+      .slice(0, index)
+      .reduce((a, b) => a + b, 0);
+
+    // Create a new buffer including the replaced segment
+    const newBuffer = new Uint8Array(this.buffer.length - oldSegmentSize + newSegmentSize);
+    newBuffer.set(this.buffer.slice(0, 27 + this.pageSegments + accumulatedPageSegmentSize));
+    newBuffer.set(segment, 27 + this.pageSegments + accumulatedPageSegmentSize);
+    newBuffer.set(
+      this.buffer.slice(27 + this.pageSegments + accumulatedPageSegmentSize + oldSegmentSize),
+      27 + this.pageSegments + accumulatedPageSegmentSize + newSegmentSize
+    );
+
+    return newBuffer;
+  }
+
   removePageSegment(index: number, n: number = 1) {
     return new OggPage(this.removePageSegmentAndGetRawResult(index, n));
+  }
+
+  addPageSegment(segments: Uint8Array[], index: number) {
+    return new OggPage(this.addPageSegmentAndGetRawResult(segments, index));
+  }
+
+  replacePageSegment(segment: Uint8Array, index: number) {
+    return new OggPage(this.replacePageSegmentAndGetRawResult(segment, index));
   }
 
   updatePageChecksum() {

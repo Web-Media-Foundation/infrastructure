@@ -850,8 +850,80 @@ export class OggVorbisPage extends OggPage {
     return array[0] === VorbisHeaderType.Setup;
   }
 
+  static buildComments(header: IVorbisCommentHeader): Uint8Array {
+    const encoder = new TextEncoder();
+
+    // Step 1: Encode vendor string
+    const vendorArray = encoder.encode(header.vendor);
+    const vendorLength = vendorArray.length;
+
+    // Step 2: Encode number of comment fields
+    const { comments } = header;
+    const commentEntries = Object.entries(comments).flatMap(([fieldName, values]) =>
+      values.map(value => `${fieldName}=${value}`)
+    );
+    const userCommentListLength = commentEntries.length;
+
+    // Calculate the total length needed
+    let totalLength = 4 + vendorLength + 4; // vendor length (4 bytes) + vendor string + comment list length (4 bytes)
+    commentEntries.forEach(comment => {
+      const commentArray = encoder.encode(comment);
+      totalLength += 4 + commentArray.length; // comment length (4 bytes) + comment string
+    });
+    totalLength += 1; // framing bit
+
+    // Create the result array
+    const result = new Uint8Array(totalLength);
+    const view = new DataView(result.buffer);
+
+    let offset = 0;
+
+    // Write vendor length (32 bits)
+    view.setUint32(offset, vendorLength, true);
+    offset += 4;
+
+    // Write vendor string
+    result.set(vendorArray, offset);
+    offset += vendorLength;
+
+    // Write number of comment fields (32 bits)
+    view.setUint32(offset, userCommentListLength, true);
+    offset += 4;
+
+    // Write each comment
+    commentEntries.forEach(comment => {
+      const commentArray = encoder.encode(comment);
+      const commentLength = commentArray.length;
+
+      // Write comment length (32 bits)
+      view.setUint32(offset, commentLength, true);
+      offset += 4;
+
+      // Write comment string
+      result.set(commentArray, offset);
+      offset += commentLength;
+    });
+
+    // Write framing bit (1 bit)
+    result[offset] = 1; // Framing bit must be nonzero
+
+    return result;
+  }
+
   removePageSegment(index: number, n: number = 1) {
     const buffer = super.removePageSegmentAndGetRawResult(index, n);
+
+    return new OggVorbisPage(buffer);
+  }
+
+  addPageSegment(segments: Uint8Array[], index: number) {
+    const buffer = super.addPageSegmentAndGetRawResult(segments, index);
+
+    return new OggVorbisPage(buffer);
+  }
+
+  replacePageSegment(segment: Uint8Array, index: number): OggPage {
+    const buffer = super.replacePageSegmentAndGetRawResult(segment, index);
 
     return new OggVorbisPage(buffer);
   }
