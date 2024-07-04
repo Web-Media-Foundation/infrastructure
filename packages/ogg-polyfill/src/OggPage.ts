@@ -53,7 +53,6 @@ export class OggPage {
     this.streamSerialNumber = dataView.getUint32(14, true);
     this.pageSequenceNumber = dataView.getUint32(18, true);
     this.pageChecksum = dataView.getUint32(22, true);
-    this.pageSegments = pageSegmentsCount;
     this.segmentTable = buffer.slice(27, 27 + pageSegmentsCount);
 
     this.pageSize = pageSize;
@@ -85,10 +84,12 @@ export class OggPage {
         this.parsedSegmentTable.push(segmentSize);
       }
     }
+
+    this.pageSegments = this.parsedSegmentTable.length;
   }
 
   validatePageSize = () => {
-    const headerSize = this.pageSegments + 27;
+    const headerSize = this.segmentTable.length + 27;
     const pageBodySize = this.segmentTable.reduce((a, b) => a + b, 0);
     const pageSize = headerSize + pageBodySize;
 
@@ -99,15 +100,18 @@ export class OggPage {
     }
   };
 
-  getPageSegment = (i: number) => {
+  getPageSegment = (index: number) => {
+    if (index > this.parsedSegmentTable.length) {
+      throw new RangeError(`Segment start index out of range, index: ${index}, range: ${this.parsedSegmentTable.length}`);
+    }
     const accumulatedPageSegmentSize = this.parsedSegmentTable
-      .slice(0, i)
+      .slice(0, index)
       .reduce((a, b) => a + b, 0);
-    const segmentLength = this.parsedSegmentTable[i];
+    const segmentLength = this.parsedSegmentTable[index];
 
     return this.buffer.slice(
-      27 + this.pageSegments + accumulatedPageSegmentSize,
-      27 + this.pageSegments + accumulatedPageSegmentSize + segmentLength
+      27 + this.segmentTable.length + accumulatedPageSegmentSize,
+      27 + this.segmentTable.length + accumulatedPageSegmentSize + segmentLength
     );
   };
 
@@ -161,14 +165,17 @@ export class OggPage {
   }
 
   protected removePageSegmentAndGetRawResult(index: number, n: number) {
-    if (index < 0 || index >= this.parsedSegmentTable.length) {
-      throw new RangeError('Segment index out of range');
+    if (index < 0) {
+      throw new RangeError('index is smaller than 0');
+    }
+    if (index > this.parsedSegmentTable.length) {
+      throw new RangeError(`Segment start index out of range, index: ${index}, range: ${this.parsedSegmentTable.length}`);
     }
     if (n <= 0) {
       throw new RangeError('Number of segments to remove must be greater than 0');
     }
     if (index + n > this.parsedSegmentTable.length) {
-      throw new RangeError('Segment range out of bounds');
+      throw new RangeError(`Segment end index out of range, index: ${index + n}, range: ${this.parsedSegmentTable.length}`);
     }
 
     // Calculate the starting point of the segments to be removed
@@ -199,8 +206,12 @@ export class OggPage {
   }
 
   protected addPageSegmentAndGetRawResult(segments: Uint8Array[], index: number) {
-    if (index < 0 || index > this.parsedSegmentTable.length) {
-      throw new RangeError('Segment index out of range');
+    if (index < 0) {
+      throw new RangeError('index is smaller than 0');
+    }
+
+    if (index > this.parsedSegmentTable.length) {
+      throw new RangeError(`Segment index out of range, index: ${index}, range: ${this.parsedSegmentTable.length}`);
     }
 
     // Flatten packets into a single Uint8Array
@@ -231,8 +242,11 @@ export class OggPage {
   }
 
   protected replacePageSegmentAndGetRawResult(segment: Uint8Array, index: number) {
-    if (index < 0 || index >= this.parsedSegmentTable.length) {
-      throw new RangeError('Segment index out of range');
+    if (index < 0) {
+      throw new RangeError('index is smaller than 0');
+    }
+    if (index > this.parsedSegmentTable.length) {
+      throw new RangeError(`Segment index out of range, index: ${index}, range: ${this.parsedSegmentTable.length}`);
     }
 
     const oldSegmentSize = this.parsedSegmentTable[index];
