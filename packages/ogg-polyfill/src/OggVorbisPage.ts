@@ -917,18 +917,18 @@ export class OggVorbisPage extends OggPage {
   removePageSegment(index: number, n: number = 1) {
     const buffer = super.removePageSegmentAndGetRawResult(index, n);
 
-    return new OggVorbisPage(buffer);
+    return new OggVorbisPage(buffer).updatePageChecksum();
   }
 
   addPageSegment(segments: Uint8Array[], index: number) {
     const buffer = super.addPageSegmentAndGetRawResult(segments, index);
 
-    return new OggVorbisPage(buffer);
+    return new OggVorbisPage(buffer).updatePageChecksum();
   }
 
   replacePageSegment(segment: Uint8Array, index: number) {
     const buffer = super.replacePageSegmentAndGetRawResult(segment, index);
 
-    return new OggVorbisPage(buffer);
+    return new OggVorbisPage(buffer).updatePageChecksum();
   }
 }

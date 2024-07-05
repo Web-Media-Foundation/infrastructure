@@ -1,9 +1,10 @@
-import { updateCrc32 } from "./crc";
+import { vorbisCrc32 } from "./crc";
 
 export const oggMagicSignature = [0x4f, 0x67, 0x67, 0x53];
 
-export class OggFormatError extends Error { }
+const fourZeroBytes = new Uint8Array(4);
 
+export class OggFormatError extends Error { }
 
 export class OggPage {
   ready = false;
@@ -361,21 +362,43 @@ export class OggPage {
   }
 
   removePageSegment(index: number, n: number = 1) {
-    return new OggPage(this.removePageSegmentAndGetRawResult(index, n));
+    return new OggPage(this.removePageSegmentAndGetRawResult(index, n)).updatePageChecksum();
   }
 
   addPageSegment(segments: Uint8Array[], index: number) {
-    return new OggPage(this.addPageSegmentAndGetRawResult(segments, index));
+    return new OggPage(this.addPageSegmentAndGetRawResult(segments, index)).updatePageChecksum();
   }
 
   replacePageSegment(segment: Uint8Array, index: number) {
-    return new OggPage(this.replacePageSegmentAndGetRawResult(segment, index));
+    return new OggPage(this.replacePageSegmentAndGetRawResult(segment, index)).updatePageChecksum();
+  }
+
+  calculatePageChecksum() {
+    let calculatedChecksum = 0;
+
+    // Update CRC32 with the header part before the checksum field
+    calculatedChecksum = vorbisCrc32(this.buffer, calculatedChecksum, 0, 22);
+
+    // Update CRC32 with four zero bytes (the checksum field)
+    calculatedChecksum = vorbisCrc32(fourZeroBytes, calculatedChecksum);
+
+    // Update CRC32 with the rest of the buffer after the checksum field
+    calculatedChecksum = vorbisCrc32(this.buffer, calculatedChecksum, 26);
+
+    return calculatedChecksum;
   }
 
   updatePageChecksum() {
-    this.dataView.setUint32(22, 0, true);
-    const crc = updateCrc32(this.buffer);
-    this.dataView.setUint32(22, crc, true);
-    this.pageChecksum = crc;
+    const pageChecksum = this.calculatePageChecksum();
+    this.dataView.setUint32(22, pageChecksum, true);
+    this.pageChecksum = pageChecksum;
+
+    return this;
+  }
+
+  ifPageChecksumCorrect(): boolean {
+
+    // Compare the calculated checksum with the original checksum
+    return this.calculatePageChecksum() === this.pageChecksum;
   }
 }
