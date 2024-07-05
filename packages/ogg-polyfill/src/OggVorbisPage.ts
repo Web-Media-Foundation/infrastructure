@@ -873,10 +873,14 @@ export class OggVorbisPage extends OggPage {
     totalLength += 1; // framing bit
 
     // Create the result array
-    const result = new Uint8Array(totalLength);
+    const result = new Uint8Array(totalLength + 7);
     const view = new DataView(result.buffer);
 
-    let offset = 0;
+    // Set header information
+    view.setUint8(0, 3);
+    vorbisHeadMagicSignature.forEach((x, i) => view.setUint8(i + 1, x));
+
+    let offset = 7;
 
     // Write vendor length (32 bits)
     view.setUint32(offset, vendorLength, true);
@@ -922,7 +926,7 @@ export class OggVorbisPage extends OggPage {
     return new OggVorbisPage(buffer);
   }
 
-  replacePageSegment(segment: Uint8Array, index: number): OggPage {
+  replacePageSegment(segment: Uint8Array, index: number) {
     const buffer = super.replacePageSegmentAndGetRawResult(segment, index);
 
     return new OggVorbisPage(buffer);
