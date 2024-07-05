@@ -20,6 +20,7 @@
     "demo:parse:ogg:vorbis": "yarn run parcel ./example/parseOggVorbisFile.html",
     "demo:parse:caf:opus": "yarn run parcel ./example/parseCafOpusFile.html",
     "demo:trim:ogg:vorbis": "yarn run parcel ./example/trimOggVorbisFile.html",
+    "demo:edit:ogg:vorbis": "yarn run parcel ./example/editOggVorbisComments.html",
     "test": "jest"
   },
   "files": [

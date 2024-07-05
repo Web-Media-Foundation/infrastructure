@@ -3,6 +3,7 @@
 /* eslint-disable no-restricted-syntax */
 
 import { IOggVorbisPage, readOggVorbisFile } from "../src/fetchOggVorbisFile";
+import { downloadBuffer } from "./utils/downloadBuffer";
 
 async function trimOggVorbisFile(reader: ReadableStreamDefaultReader<Uint8Array>, tolerate = false, headerSearchRange = 3): Promise<IOggVorbisPage[]> {
   const result: IOggVorbisPage[] = [];
@@ -36,18 +37,6 @@ async function trimOggVorbisFile(reader: ReadableStreamDefaultReader<Uint8Array>
   }
 
   return result;
-}
-
-function downloadBuffer(buffer: Uint8Array, filename: string) {
-  const blob = new Blob([buffer], { type: 'application/octet-stream' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
 }
 
 const $fileInput = document.querySelector<HTMLInputElement>('input[type="file"]');

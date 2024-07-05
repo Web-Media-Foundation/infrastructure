@@ -1,0 +1,46 @@
+<head>
+  <title>Trim OGG/Vorbis</title>
+  <link rel="stylesheet" type="text/css" href="css/topcoat.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      color: #f0f1f1;
+    }
+    .field {
+      margin-bottom: 20px;
+      display: flex;
+    }
+    .field label {
+      width: 10em;
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .field .value {
+      flex-grow: 1;
+    }
+    .input-group {
+      display: flex;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+    .input-group input {
+      flex: 1;
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Vorbis Editor</h1>
+  <label class="topcoat-button--large">
+    Pick a file
+    <input type="file" id="fileInput" accept=".ogg" hidden />
+  </label>
+  <div id="editorPanel" style="display: none">
+    <h2>Edit Metadata</h2>
+    <div id="fieldsContainer"></div>
+    <button id="submitButton">Submit</button>
+  </div>
+  <script src="./editOggVorbisComments.ts" type="module"></script>
+</body>
