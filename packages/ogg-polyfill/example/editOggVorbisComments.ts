@@ -1,3 +1,5 @@
+/* eslint-disable no-alert */
+/* eslint-disable no-console */
 /* eslint-disable no-restricted-syntax */
 import { IVorbisCommentHeader, OggVorbisPage } from "../src/OggVorbisPage";
 import { IOggVorbisPage, IOggVorbiseHeaderCommentParseResult, readOggVorbisFile } from "../src/fetchOggVorbisFile";
@@ -10,7 +12,7 @@ const fields = [
 ];
 
 let globalOggVorbisFile: IOggVorbisPage[] | null = null;
-let globalCommentsPage: IOggVorbisPage | null = null;
+let globalCommentsPageIndex: number | null = null;
 let globalCommentsIndex: number | null = null;
 
 const $fileInput = document.getElementById('fileInput') as HTMLInputElement | null;
@@ -61,6 +63,18 @@ function createInputGroup(field: string, value: string) {
   return $inputGroup;
 }
 
+const wrapText = (input: string, lineLength = 36) => {
+  let result = '';
+  for (let i = 0; i < input.length; i += lineLength) {
+    result += `${input.slice(i, i + lineLength)}\n`;
+  }
+  return result;
+}
+
+export const dumpBuffer = (x: Uint8Array) => {
+  return wrapText([...x].map((y) => y.toString(16).padStart(2, '0')).join(' '))
+}
+
 $fileInput.addEventListener('change', async () => {
   const file = $fileInput.files?.[0];
   if (!file) return;
@@ -69,13 +83,14 @@ $fileInput.addEventListener('change', async () => {
   const result = await collectOggVorbisFile(reader);
 
   globalOggVorbisFile = result;
-  console.log(globalOggVorbisFile);
 
-  const commentsPage = result.find(page => page.packets.some((packet) => packet.type === 'comment')) ?? null;
-  globalCommentsPage = commentsPage;
+  const commentsPageIndex = result.findIndex(page => page.packets.some((packet) => packet.type === 'comment')) ?? null;
+  globalCommentsPageIndex = commentsPageIndex;
 
-  const commentsPacketIndex = commentsPage?.packets.findIndex((packet) => packet.type === 'comment') as number;
-  const commentsPacket = commentsPage?.packets?.[commentsPacketIndex] as IOggVorbiseHeaderCommentParseResult | null;
+  const globalCommentsPage = result[globalCommentsPageIndex];
+
+  const commentsPacketIndex = globalCommentsPage?.packets.findIndex((packet) => packet.type === 'comment') as number;
+  const commentsPacket = globalCommentsPage?.packets?.[commentsPacketIndex] as IOggVorbiseHeaderCommentParseResult | null;
   globalCommentsIndex = commentsPacketIndex;
 
   const { comments } = commentsPacket?.data ?? {} as IVorbisCommentHeader;
@@ -114,7 +129,7 @@ $fileInput.addEventListener('change', async () => {
 
 $submitButton.addEventListener('click', async () => {
   if (!globalOggVorbisFile) return;
-  if (!globalCommentsPage) {
+  if (!globalCommentsPageIndex) {
     alert('No comments page found');
     return;
   }
@@ -129,14 +144,17 @@ $submitButton.addEventListener('click', async () => {
 
   if (globalCommentsIndex === null) throw new TypeError('globalCommentsIndex not found');
 
-  if (globalCommentsPage) {
+  if (globalCommentsPageIndex !== -1) {
+    const globalCommentsPage = globalOggVorbisFile[globalCommentsPageIndex];
+
     const newCommentHeader = {
       vendor: (globalCommentsPage.packets[globalCommentsIndex] as IOggVorbiseHeaderCommentParseResult).data.vendor,
       comments: newComments
     };
     const newCommentSegment = OggVorbisPage.buildComments(newCommentHeader);
-    globalCommentsPage.page = globalCommentsPage.page.replacePageSegment(newCommentSegment, globalCommentsIndex);
-    globalCommentsPage.page.updatePageChecksum();
+    const newPage = globalCommentsPage.page.replacePageSegment(newCommentSegment, globalCommentsIndex);
+
+    globalCommentsPage.page = newPage;
   }
 
   const totalLength = globalOggVorbisFile.reduce((acc, page) => acc + page.page.buffer.byteLength, 0);

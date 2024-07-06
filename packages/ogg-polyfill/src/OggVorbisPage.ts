@@ -237,7 +237,7 @@ const ilog = (x: number): number => {
 }
 
 export class OggVorbisPage extends OggPage {
-  getIdentification(segmentIndex = 0): IVorbisIdentificationHeader {
+  getIdentification = (segmentIndex = 0): IVorbisIdentificationHeader => {
     const array = this.getPageSegment(segmentIndex);
 
     if (!this.isHeaderPacket(segmentIndex)) {
@@ -304,7 +304,7 @@ export class OggVorbisPage extends OggPage {
 
   private decoder = new TextDecoder('utf-8');
 
-  getComments(segmentIndex = 1): IVorbisCommentHeader {
+  getComments = (segmentIndex = 1): IVorbisCommentHeader => {
     const array = this.getPageSegment(segmentIndex);
 
     if (!this.isHeaderPacket(segmentIndex)) {
@@ -748,7 +748,7 @@ export class OggVorbisPage extends OggPage {
     return modes;
   }
 
-  getSetup(audioChannels: number, segmentIndex = 0): IVorbisSetupHeader {
+  getSetup = (audioChannels: number, segmentIndex = 0): IVorbisSetupHeader => {
     const array = this.getPageSegment(segmentIndex);
 
     if (!this.isHeaderPacket(segmentIndex)) {
@@ -822,7 +822,7 @@ export class OggVorbisPage extends OggPage {
     };
   }
 
-  isHeaderPacket(segmentIndex: number): boolean {
+  isHeaderPacket = (segmentIndex: number): boolean => {
     const array = this.getPageSegment(segmentIndex);
     for (let i = 0; i < vorbisHeadMagicSignature.length; i += 1) {
       if (array[i + 1] !== vorbisHeadMagicSignature[i]) {
@@ -914,20 +914,20 @@ export class OggVorbisPage extends OggPage {
     return result;
   }
 
-  removePageSegment(index: number, n: number = 1) {
-    const buffer = super.removePageSegmentAndGetRawResult(index, n);
+  removePageSegment = (index: number, n: number = 1) => {
+    const buffer = this.removePageSegmentAndGetRawResult(index, n);
 
     return new OggVorbisPage(buffer).updatePageChecksum();
   }
 
-  addPageSegment(segments: Uint8Array[], index: number) {
-    const buffer = super.addPageSegmentAndGetRawResult(segments, index);
+  addPageSegment = (segments: Uint8Array[], index: number) => {
+    const buffer = this.addPageSegmentAndGetRawResult(segments, index);
 
     return new OggVorbisPage(buffer).updatePageChecksum();
   }
 
-  replacePageSegment(segment: Uint8Array, index: number) {
-    const buffer = super.replacePageSegmentAndGetRawResult(segment, index);
+  replacePageSegment = (segment: Uint8Array, index: number) => {
+    const buffer = this.replacePageSegmentAndGetRawResult(segment, index);
 
     return new OggVorbisPage(buffer).updatePageChecksum();
   }

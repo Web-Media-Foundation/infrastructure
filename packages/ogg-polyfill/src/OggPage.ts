@@ -9,6 +9,8 @@ export class OggFormatError extends Error { }
 export class OggPage {
   ready = false;
 
+  readonly buffer: Uint8Array;
+
   structureVersion: number;
 
   headerType: number;
@@ -33,32 +35,31 @@ export class OggPage {
 
   parsedSegmentTable: number[];
 
-  dataView: DataView;
+  readonly dataView: DataView;
 
   pageSize: number;
 
-  constructor(readonly buffer: Uint8Array) {
-    const { dataView, pageSize, pageSegmentsCount } =
-      OggPage.validatePage(buffer);
+  constructor(buffer: Uint8Array) {
+    const { pageSize, pageSegmentsCount } = OggPage.validatePage(buffer);
 
-    this.dataView = dataView;
-    this.structureVersion = dataView.getUint8(4);
+    this.buffer = buffer.slice(0, pageSize);
+    this.dataView = new DataView(this.buffer.buffer);
 
-    const headerType = dataView.getUint8(5);
+    this.structureVersion = this.dataView.getUint8(4);
+
+    const headerType = this.dataView.getUint8(5);
     this.headerType = headerType;
     this.isFreshPacket = !(headerType & 0x1);
     this.isBos = !!((headerType & 0x2) >>> 1);
     this.isBoe = !!((headerType & 0x4) >>> 2);
 
-    this.absoluteGranulePosition = dataView.getBigUint64(6, true);
-    this.streamSerialNumber = dataView.getUint32(14, true);
-    this.pageSequenceNumber = dataView.getUint32(18, true);
-    this.pageChecksum = dataView.getUint32(22, true);
-    this.segmentTable = buffer.slice(27, 27 + pageSegmentsCount);
+    this.absoluteGranulePosition = this.dataView.getBigUint64(6, true);
+    this.streamSerialNumber = this.dataView.getUint32(14, true);
+    this.pageSequenceNumber = this.dataView.getUint32(18, true);
+    this.pageChecksum = this.dataView.getUint32(22, true);
+    this.segmentTable = this.buffer.slice(27, 27 + pageSegmentsCount);
 
     this.pageSize = pageSize;
-
-    this.buffer = buffer.slice(0, pageSize);
 
     this.parsedSegmentTable = [];
 
@@ -127,7 +128,9 @@ export class OggPage {
     return result;
   };
 
-  static validatePage(buffer: Uint8Array) {
+  static validatePage = (buffer: Uint8Array) => {
+    const dataView = new DataView(buffer.buffer);
+
     // Check Ogg magic signature
     for (let i = 0; i < oggMagicSignature.length; i += 1) {
       if (buffer[i] !== oggMagicSignature[i]) {
@@ -139,8 +142,6 @@ export class OggPage {
     if (buffer.length < 27) {
       throw new OggFormatError('Incomplete buffer length');
     }
-
-    const dataView = new DataView(buffer.buffer);
 
     const pageSegmentsCount = dataView.getUint8(26);
     // OGG segment table incomplete
@@ -160,14 +161,14 @@ export class OggPage {
       throw new OggFormatError(`Insufficient page size, expected ${pageSize}, at least ${buffer.length}`);
     }
 
-    return { dataView, pageBodySize, pageSize, pageSegmentsCount };
+    return { pageBodySize, pageSize, pageSegmentsCount };
   }
 
-  getTimestamp(preSkip: number) {
+  getTimestamp = (preSkip: number) => {
     return (this.absoluteGranulePosition - BigInt(preSkip)) / BigInt(48000.0);
   }
 
-  static createLacedUint8Array(input: number[]): Uint8Array {
+  static createLacedUint8Array = (input: number[]): Uint8Array => {
     const result: number[] = [];
 
     for (let i = 0; i < input.length; i += 1) {
@@ -189,7 +190,7 @@ export class OggPage {
     return new Uint8Array(result);
   }
 
-  protected removePageSegmentAndGetRawResult(index: number, n: number) {
+  protected removePageSegmentAndGetRawResult = (index: number, n: number) => {
     if (index < 0) {
       throw new RangeError('index is smaller than 0');
     }
@@ -252,7 +253,7 @@ export class OggPage {
     return newBuffer;
   }
 
-  protected addPageSegmentAndGetRawResult(segments: Uint8Array[], index: number) {
+  protected addPageSegmentAndGetRawResult = (segments: Uint8Array[], index: number) => {
     if (index < 0) {
       throw new RangeError('index is smaller than 0');
     }
@@ -310,7 +311,7 @@ export class OggPage {
     return newBuffer;
   }
 
-  protected replacePageSegmentAndGetRawResult(segment: Uint8Array, index: number) {
+  protected replacePageSegmentAndGetRawResult = (segment: Uint8Array, index: number) => {
     if (index < 0) {
       throw new RangeError('index is smaller than 0');
     }
@@ -361,19 +362,19 @@ export class OggPage {
     return newBuffer;
   }
 
-  removePageSegment(index: number, n: number = 1) {
+  removePageSegment = (index: number, n: number = 1) => {
     return new OggPage(this.removePageSegmentAndGetRawResult(index, n)).updatePageChecksum();
   }
 
-  addPageSegment(segments: Uint8Array[], index: number) {
+  addPageSegment = (segments: Uint8Array[], index: number) => {
     return new OggPage(this.addPageSegmentAndGetRawResult(segments, index)).updatePageChecksum();
   }
 
-  replacePageSegment(segment: Uint8Array, index: number) {
+  replacePageSegment = (segment: Uint8Array, index: number) => {
     return new OggPage(this.replacePageSegmentAndGetRawResult(segment, index)).updatePageChecksum();
   }
 
-  calculatePageChecksum() {
+  calculatePageChecksum = () => {
     let calculatedChecksum = 0;
 
     // Update CRC32 with the header part before the checksum field
@@ -388,7 +389,7 @@ export class OggPage {
     return calculatedChecksum;
   }
 
-  updatePageChecksum() {
+  updatePageChecksum = () => {
     const pageChecksum = this.calculatePageChecksum();
     this.dataView.setUint32(22, pageChecksum, true);
     this.pageChecksum = pageChecksum;
@@ -396,7 +397,7 @@ export class OggPage {
     return this;
   }
 
-  ifPageChecksumCorrect(): boolean {
+  ifPageChecksumCorrect = (): boolean => {
 
     // Compare the calculated checksum with the original checksum
     return this.calculatePageChecksum() === this.pageChecksum;
